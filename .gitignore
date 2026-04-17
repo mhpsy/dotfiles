@@ -1,1 +1,6 @@
-waybar/weather/ed25519-private.pem
+*.pem
+*.key
+*-private.*
+*_private.*
+id_rsa
+id_ed25519

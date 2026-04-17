@@ -118,8 +118,7 @@ source $ZSH/oh-my-zsh.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-eval "$(/home/mhpsy/.local/bin/mise activate zsh)"
-eval "$(/home/mhpsy/.local/bin/mise activate zsh)"
+[[ -x "$HOME/.local/bin/mise" ]] && eval "$("$HOME/.local/bin/mise" activate zsh)"
 
 export EDITOR='vim'
 export VISUAL='vim'
@@ -127,7 +126,9 @@ export VISUAL='vim'
 # alias "."="cd .."
 # alias ".."="cd ../.."
 
-export PATH=$PATH:/home/mhpsy/.local/share/mise/installs/go/1.25.6/bin
+_mise_go_bin="$HOME/.local/share/mise/installs/go/1.25.6/bin"
+[[ -d "$_mise_go_bin" ]] && export PATH="$PATH:$_mise_go_bin"
+unset _mise_go_bin
 
 # 让 ls 变成 lsd
 alias ls='lsd'
@@ -151,7 +152,7 @@ function y() {
 }
 
 # OpenClaw Completion
-source "/home/mhpsy/.openclaw/completions/openclaw.zsh"
+[[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
 
 export IDF_PATH=/home/mhpsy/esp/v5.5.2/esp-idf
 alias get_idf='. $IDF_PATH/export.sh'  
