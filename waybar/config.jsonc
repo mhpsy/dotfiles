@@ -18,6 +18,7 @@
     ],
     "modules-right": [
         "custom/updates",
+        "custom/caffeine",
         "custom/brightness",
         "pulseaudio",
         "bluetooth",
@@ -76,6 +77,17 @@
         "interval": 3600,
         "on-click": "~/.config/waybar/updates.sh > /dev/null 2>&1; pkill -SIGRTMIN+8 waybar",
         "on-click-right": "kitty -e bash -c 'yay -Syu; echo \"\\nDone. Press any key...\"; read -n1'",
+        "signal": 8,
+        "tooltip": true
+    },
+
+    // Caffeine — toggle hypridle to keep screen awake
+    "custom/caffeine": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/caffeine.sh get",
+        "interval": 5,
+        "on-click": "~/.config/waybar/caffeine.sh toggle",
         "signal": 8,
         "tooltip": true
     },

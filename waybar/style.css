@@ -128,6 +128,20 @@ window#waybar.empty #window {
     padding: 0px 6px;
 }
 
+/* ============ Right: Caffeine (keep-awake) ============ */
+#custom-caffeine {
+    background-color: @bg;
+    color: @fg;
+    border-radius: 15px;
+    padding: 4px 12px;
+    margin: 6px 4px;
+    transition: color 200ms ease, background-color 200ms ease;
+}
+
+#custom-caffeine.active {
+    color: #ff3b3b;
+}
+
 /* ============ Right: Brightness ============ */
 #custom-brightness {
     background-color: @bg;
