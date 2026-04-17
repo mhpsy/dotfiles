@@ -1,0 +1,49 @@
+/* Pull in matugen-generated color variables (blur_background, primary, etc.) */
+@import "colors.css";
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Noto Sans CJK SC", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    background-image: none;
+    transition: 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Overall window: fully transparent so hypr's blur shows through */
+window {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+/* Each power button */
+button {
+    color: @on_surface;
+    background-color: @blur_background;
+    border: 2px solid alpha(@on_surface, 0.08);
+    border-radius: 24px;
+    margin: 14px;
+    padding: 24px;
+
+    background-repeat: no-repeat;
+    background-position: center 28%;
+    background-size: 38%;
+}
+
+button:focus,
+button:hover {
+    background-color: alpha(@primary, 0.35);
+    color: @on_primary;
+    border-color: alpha(@primary, 0.6);
+    outline-style: none;
+}
+
+button:active {
+    background-color: alpha(@primary, 0.55);
+}
+
+/* Per-button icons (referenced by the `label` field in layout) */
+#lock      { background-image: url("icons/lock.png"); }
+#logout    { background-image: url("icons/logout.png"); }
+#suspend   { background-image: url("icons/suspend.png"); }
+#hibernate { background-image: url("icons/hibernate.png"); }
+#reboot    { background-image: url("icons/reboot.png"); }
+#shutdown  { background-image: url("icons/shutdown.png"); }

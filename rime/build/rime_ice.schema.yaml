@@ -2,16 +2,16 @@ __build_info:
   rime_version: 1.16.1
   timestamps:
     default: 1774018450
-    default.custom: 1770006988
+    default.custom: 1776447174
     key_bindings: 1774018450
     key_bindings.custom: 0
     punctuation: 1774018450
     punctuation.custom: 0
-    rime_ice.custom: 1774427502
-    rime_ice.schema: 1775481147
-    rime_ice_suggestion: 1775481147
+    rime_ice.custom: 1776447174
+    rime_ice.schema: 1776112076
+    rime_ice_suggestion: 1776112076
     rime_ice_suggestion.custom: 0
-    symbols_v: 1775481147
+    symbols_v: 1776112076
     symbols_v.custom: 0
 cn_en:
   comment_format:

@@ -2,14 +2,14 @@ __build_info:
   rime_version: 1.16.1
   timestamps:
     default: 1774018450
-    default.custom: 1770006988
+    default.custom: 1776447174
     key_bindings: 1774018450
     key_bindings.custom: 0
     melt_eng.custom: 0
-    melt_eng.schema: 1775481147
+    melt_eng.schema: 1776112076
     punctuation: 1774018450
     punctuation.custom: 0
-    rime_ice_suggestion: 1775481147
+    rime_ice_suggestion: 1776112076
     rime_ice_suggestion.custom: 0
 algebra_abc:
   __append:
