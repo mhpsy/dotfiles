@@ -68,7 +68,7 @@ command -v fzf >/dev/null && source <(fzf --zsh)
 # -----------------------------------------------------
 # Drop mise's cached original-PATH so re-sourcing picks up latest PATH additions.
 unset __MISE_ORIG_PATH __MISE_DIFF __MISE_SESSION __MISE_ZSH_PRECMD_RUN 2>/dev/null
-[[ -x "$HOME/.local/bin/mise" ]] && eval "$("$HOME/.local/bin/mise" activate zsh)"
+command -v mise >/dev/null && eval "$(mise activate zsh)"
 [[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
