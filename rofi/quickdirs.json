@@ -1,0 +1,26 @@
+[
+    {
+        "path": "/home/mhpsy/code/project",
+        "name": "项目目录"
+    },
+    {
+        "path": "/home/mhpsy/code/temp",
+        "name": "临时代码"
+    },
+    {
+        "path": "~/.config/hypr/wallpapers",
+        "name": "壁纸都在这里"
+    },
+    {
+        "path": "~/.config/rofi",
+        "name": "Rofi 配置"
+    },
+    {
+        "path": "~/.config/waybar",
+        "name": "Waybar 配置"
+    },
+    {
+        "path": "~/.config/hypr",
+        "name": "Hyprland 配置"
+    }
+]
