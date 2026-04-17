@@ -1,0 +1,247 @@
+/* Import matugen-generated colors */
+@import url("colors.css");
+
+/* Color aliases — mapped from Material You tokens */
+@define-color bg @surface_container;
+@define-color fg @on_surface;
+@define-color fg_dim @outline;
+@define-color fg_white @on_background;
+@define-color ws_active @primary_container;
+@define-color danger @error;
+
+/* General */
+* {
+    font-family: "Fira Sans Semibold", "Font Awesome 7 Free", "Font Awesome 7 Brands", "FiraCode Nerd Font", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    border: none;
+    border-radius: 0px;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* ============ Shared pill style for right-side modules ============ */
+#pulseaudio,
+#bluetooth,
+#bluetooth.on,
+#bluetooth.connected,
+#battery,
+#custom-ip,
+#custom-updates,
+#network,
+#hardware {
+    background-color: @bg;
+    color: @fg;
+    border-radius: 15px;
+    padding: 4px 12px;
+    margin: 6px 4px;
+}
+
+/* ============ Left: Weather ============ */
+#custom-weather {
+    background: transparent;
+    color: @fg_white;
+    padding: 4px 4px 4px 0px;
+    margin: 6px 0px;
+    font-size: 15px;
+}
+
+/* ============ Right: Updates ============ */
+#custom-updates.has-updates {
+    color: @primary;
+}
+
+#custom-updates.up-to-date {
+    color: @fg_dim;
+}
+
+/* ============ Left: Quotes ============ */
+#custom-quotes {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif;
+    font-size: 15px;
+    background-color: @bg;
+    color: @fg_white;
+    border-radius: 15px;
+    padding: 4px 12px;
+    margin: 6px 4px;
+}
+
+/* ============ Left: Clock ============ */
+#clock {
+    background-color: @bg;
+    color: @fg;
+    border-radius: 15px;
+    padding: 4px 12px;
+    margin: 6px 8px 6px 12px;
+}
+
+/* ============ Left: Window title ============ */
+#window {
+    background: rgba(80, 120, 180, 0.25);
+    color: @fg_white;
+    border-radius: 12px;
+    padding: 4px 12px;
+    margin: 6px 8px;
+    font-weight: normal;
+}
+
+window#waybar.empty #window {
+    background-color: transparent;
+}
+
+/* ============ Center: Workspaces ============ */
+#workspaces {
+    margin: 4px 0px;
+    padding: 0px;
+    border-radius: 15px;
+}
+
+#workspaces button {
+    padding: 2px 8px;
+    margin: 2px 3px;
+    border-radius: 15px;
+    color: @fg_white;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+#workspaces button.active {
+    color: @fg;
+    background: @ws_active;
+    min-width: 40px;
+}
+
+#workspaces button:hover {
+    color: @fg;
+    background: @ws_active;
+}
+
+/* ============ Right: Hardware group (combined pill) ============ */
+#hardware {
+    padding: 4px 8px;
+}
+
+#disk, #memory, #cpu, #language {
+    color: @fg;
+    padding: 0px 6px;
+}
+
+/* ============ Right: Brightness ============ */
+#custom-brightness {
+    background-color: @bg;
+    color: @fg;
+    border-radius: 15px;
+    padding: 4px 12px;
+    margin: 6px 4px;
+}
+
+#custom-brightness.low {
+    color: @fg_dim;
+}
+
+/* ============ Right: Bluetooth off state ============ */
+#bluetooth.off {
+    background-color: transparent;
+    padding: 0px;
+    margin: 0px;
+}
+
+/* ============ Right: Pulseaudio muted ============ */
+#pulseaudio.muted {
+    color: @fg_dim;
+}
+
+/* ============ Right: Network states ============ */
+#network.disconnected {
+    background-color: @danger;
+    color: @fg_white;
+}
+
+/* ============ Right: Battery states ============ */
+#battery.charging, #battery.plugged {
+    color: @fg;
+}
+
+@keyframes blink {
+    to {
+        background-color: @bg;
+        color: @fg;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background-color: @danger;
+    color: @fg_white;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* ============ Right: Icon-only modules ============ */
+#custom-notification,
+#custom-exit {
+    color: @fg_white;
+    padding: 4px 8px;
+    margin: 6px 4px;
+}
+
+#custom-exit {
+    margin-right: 12px;
+}
+
+/* ============ Tray ============ */
+#tray {
+    margin: 6px 4px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: @danger;
+}
+
+/* ============ Left: SPlayer cover ============ */
+#image-splayer-cover {
+    margin: 6px 2px 6px 8px;
+    border-radius: 4px;
+}
+
+/* ============ Left: SPlayer lyrics ============ */
+#custom-splayer-lyrics {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    background: transparent;
+    color: @fg_white;
+    padding: 4px 8px;
+    margin: 6px 4px;
+}
+
+#custom-splayer-lyrics.idle {
+    padding: 0;
+    margin: 0;
+}
+
+/* ============ Tooltips ============ */
+/* tooltip.background {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+} */
+
+tooltip {
+    background-color: rgba(26, 17, 15, 0.95);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+tooltip label {
+    color: @fg;
+}

@@ -1,0 +1,264 @@
+{
+    "layer": "top",
+    "margin-bottom": 0,
+    "margin-left": 0,
+    "margin-right": 0,
+    "spacing": 0,
+
+    "modules-left": [
+        "clock",
+        "custom/weather",
+        "custom/quotes",
+        "hyprland/window",
+        "image#splayer-cover",
+        "custom/splayer-lyrics"
+    ],
+    "modules-center": [
+        "hyprland/workspaces"
+    ],
+    "modules-right": [
+        "custom/updates",
+        "custom/brightness",
+        "pulseaudio",
+        "bluetooth",
+        "battery",
+        "custom/ip",
+        "network",
+        "group/hardware",
+        "tray",
+        "custom/notification",
+        "custom/exit"
+    ],
+
+    // Workspaces
+    "hyprland/workspaces": {
+        "on-click": "activate",
+        "active-only": false,
+        "all-outputs": true,
+        "format": "{name}",
+        "persistent-workspaces": {
+            "*": 5
+        }
+    },
+
+    // Hyprland Window
+    "hyprland/window": {
+        "rewrite": {
+            "(.*) - Brave": "$1",
+            "(.*) - Chromium": "$1"
+        },
+        "separate-outputs": true
+    },
+
+    // Weather
+    "custom/weather": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/weather.sh",
+        "interval": 900,
+        "tooltip": true
+    },
+
+    // Quotes
+    "custom/quotes": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/quotes.sh",
+        "interval": 600,
+        "tooltip": true
+    },
+
+    // Package Updates
+    "custom/updates": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'>\uf49e</span> {}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/updates.sh",
+        "interval": 3600,
+        "on-click": "~/.config/waybar/updates.sh > /dev/null 2>&1; pkill -SIGRTMIN+8 waybar",
+        "on-click-right": "kitty -e bash -c 'yay -Syu; echo \"\\nDone. Press any key...\"; read -n1'",
+        "signal": 8,
+        "tooltip": true
+    },
+
+    // Brightness (external monitor via ddcutil)
+    "custom/brightness": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/brightness.sh get",
+        "interval": 30,
+        "on-scroll-up": "~/.config/waybar/brightness.sh up",
+        "on-scroll-down": "~/.config/waybar/brightness.sh down",
+        "on-click": "~/.config/waybar/brightness.sh set 100",
+        "on-click-right": "~/.config/waybar/brightness.sh set 50",
+        "on-click-middle": "~/.config/waybar/brightness.sh set 30",
+        "tooltip": true
+    },
+
+    // Clock
+    "clock": {
+        "format": "{:%m-%d %H:%M %a}",
+        "tooltip": false
+    },
+
+    // Notification
+    "custom/notification": {
+        "tooltip-format": "Notifications",
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "none": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "dnd-notification": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "dnd-none": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "inhibited-notification": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "inhibited-none": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "dnd-inhibited-notification": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "dnd-inhibited-none": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>"
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+
+    // Power Menu
+    "custom/exit": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+        "on-click": "wlogout",
+        "on-click-right": "hyprlock",
+        "tooltip-format": "Left: Power menu / Right: Lock"
+    },
+
+    // CPU
+    "cpu": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {usage}%",
+        "on-click": "kitty -e htop"
+    },
+
+    // Memory
+    "memory": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {}%",
+        "on-click": "kitty -e htop"
+    },
+
+    // Disk
+    "disk": {
+        "interval": 30,
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {percentage_used}%",
+        "path": "/",
+        "on-click": "kitty -e htop"
+    },
+
+    "hyprland/language": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {short}"
+    },
+
+    // Hardware group - no drawer, always visible
+    "group/hardware": {
+        "orientation": "inherit",
+        "modules": [
+            "disk",
+            "cpu",
+            "memory",
+            "hyprland/language"
+        ]
+    },
+
+    // IP Address
+    "custom/ip": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'>\uf0ac</span> {}",
+        "exec": "ip -4 addr show | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' | grep -v '127.0.0.1' | head -1 || echo 'N/A'",
+        "interval": 30,
+        "tooltip": false
+    },
+
+    // Network
+    "network": {
+        "interval": 1,
+        "format": "{ifname}",
+        "format-wifi": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {bandwidthDownBytes} <span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>  {bandwidthUpBytes} <span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+        "format-ethernet": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {bandwidthDownBytes} <span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>  {bandwidthUpBytes} <span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+        "format-disconnected": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> Disconnected",
+        "tooltip-format-wifi": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
+        "tooltip-format-ethernet": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {ifname}\n{ipaddr}/{cidr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "max-length": 60,
+        "on-click": "nm-connection-editor"
+    },
+
+    // Battery
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {capacity}%",
+        "format-plugged": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {capacity}%",
+        "format-alt": "{icon} {time}",
+        "format-icons": ["<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>", "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>", "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>", "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>", "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>"]
+    },
+
+    // Pulseaudio
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "{volume}% <span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {icon} {format_source}",
+        "format-bluetooth-muted": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {icon} {format_source}",
+        "format-muted": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {format_source}",
+        "format-source": "{volume}% <span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+        "format-source-muted": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+        "format-icons": {
+            "headphone": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "hands-free": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "headset": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "phone": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "portable": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "car": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+            "default": ["<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>", "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>", "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>"]
+        },
+        "on-click": "pavucontrol"
+    },
+
+    // Bluetooth
+    "bluetooth": {
+        "format-disabled": "",
+        "format-off": "",
+        "interval": 30,
+        "on-click": "rofi-bluetooth",
+        "format-no-controller": "",
+        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
+        "format-connected": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {device_battery_percentage}%",
+        "format-connected-battery": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_battery_percentage}%",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_battery_percentage}%"
+    },
+
+    // Tray
+    "tray": {
+        "spacing": 10
+    },
+
+    // SPlayer Cover
+    "image#splayer-cover": {
+        "path": "/tmp/waybar-splayer-cover.png",
+        "size": 24,
+        "interval": 5,
+        "signal": 8,
+        "tooltip": false
+    },
+
+    // SPlayer Lyrics
+    "custom/splayer-lyrics": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "/home/mhpsy/.local/bin/splayer-waybar",
+        "on-click": "/home/mhpsy/.local/bin/splayer-ctl toggle",
+        "on-scroll-up": "/home/mhpsy/.local/bin/splayer-ctl next",
+        "on-scroll-down": "/home/mhpsy/.local/bin/splayer-ctl prev",
+        "tooltip": true,
+        "max-length": 50
+    }
+}
