@@ -1,0 +1,5 @@
+patch:
+  switches/@next:
+    name: ascii_punct
+    reset: 1
+    states: ["中文标点", "英文标点"]
