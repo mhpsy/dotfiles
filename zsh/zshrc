@@ -1,210 +1,145 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# -----------------------------------------------------
+# Powerlevel10k instant prompt (must stay near top)
+# -----------------------------------------------------
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-export PATH="$HOME/.local/bin:$PATH"
-[[ -d "$HOME/.cache/.bun/bin" ]] && export PATH="$HOME/.cache/.bun/bin:$PATH"
-[[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
+# -----------------------------------------------------
+# PATH
+# -----------------------------------------------------
+typeset -U path  # dedup
+path=(
+  "$HOME/.local/bin"
+  "$HOME/.cargo/bin"
+  "$HOME/.cache/.bun/bin"
+  "$HOME/.local/share/pnpm"
+  $path
+)
+# Drop nonexistent dirs silently
+path=(${^path}(N-/))
+export PATH
 
-# Path to your Oh My Zsh installation.
+# -----------------------------------------------------
+# Environment
+# -----------------------------------------------------
+export EDITOR='nvim'
+export VISUAL='nvim'
 export ZSH="$HOME/.oh-my-zsh"
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export IDF_PATH="$HOME/esp/v5.5.2/esp-idf"
+export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# -----------------------------------------------------
+# Oh My Zsh
+# -----------------------------------------------------
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(
-	git
-	z 
-  	sudo 
-  	zsh-autosuggestions 
-  	zsh-syntax-highlighting
+  git
+  sudo
+  z
+  archlinux
+  web-search
+  copyfile
+  copybuffer
+  dirhistory
+  zsh-autosuggestions
+  fast-syntax-highlighting
 )
 
-source $ZSH/oh-my-zsh.sh
+source "$ZSH/oh-my-zsh.sh"
 
-# User configuration
+# -----------------------------------------------------
+# History
+# -----------------------------------------------------
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt append_history share_history hist_ignore_dups hist_ignore_space
 
-# export MANPATH="/usr/local/man:$MANPATH"
+# -----------------------------------------------------
+# fzf (Ctrl+R fuzzy history, Ctrl+T file, Alt+C cd)
+# -----------------------------------------------------
+command -v fzf >/dev/null && source <(fzf --zsh)
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
-
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# -----------------------------------------------------
+# Tool activations
+# -----------------------------------------------------
 [[ -x "$HOME/.local/bin/mise" ]] && eval "$("$HOME/.local/bin/mise" activate zsh)"
+[[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
-export EDITOR='vim'
-export VISUAL='vim'
-
-# alias "."="cd .."
-# alias ".."="cd ../.."
-
-_mise_go_bin="$HOME/.local/share/mise/installs/go/1.25.6/bin"
-[[ -d "$_mise_go_bin" ]] && export PATH="$PATH:$_mise_go_bin"
-unset _mise_go_bin
-
-# 让 ls 变成 lsd
+# -----------------------------------------------------
+# Aliases — listing
+# -----------------------------------------------------
 alias ls='lsd'
 alias ll='lsd -l'
 alias la='lsd -a'
 alias lt='lsd --tree'
 
-
-alias cls='clear'
+# -----------------------------------------------------
+# Aliases — general
+# -----------------------------------------------------
 alias c='clear'
+alias cls='clear'
+alias ff='fastfetch'
+alias v='$EDITOR'
+alias vim='$EDITOR'
+alias wifi='nmtui'
+alias lock='hyprlock'
 alias claudeD='claude --dangerously-skip-permissions'
+alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
 
-alias get_pio='source ~/.platformio/penv/bin/activate'
-
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	command yazi "$@" --cwd-file="$tmp"
-	IFS= read -r -d '' cwd < "$tmp"
-	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
-	rm -f -- "$tmp"
-}
-
-# OpenClaw Completion
-[[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
-
-export IDF_PATH=/home/mhpsy/esp/v5.5.2/esp-idf
-alias get_idf='. $IDF_PATH/export.sh'  
-
-# tmux
+# -----------------------------------------------------
+# Aliases — tmux
+# -----------------------------------------------------
 alias tmuxin='tmux attach -t'
 alias tmuxkill='tmux kill-session -t'
 
+# -----------------------------------------------------
+# Aliases — clipboard (wayland)
+# -----------------------------------------------------
 alias cpwd='printf %s "$PWD" | wl-copy'
 alias pp='wl-paste'
 
-p2f() {
-    # 1. 定义存储的主目录
-    local base_dir="/tmp/wl-paste"
-    mkdir -p "$base_dir"
+# -----------------------------------------------------
+# Aliases — project navigation / dev environments
+# -----------------------------------------------------
+alias cproject='cd ~/code/project'
+alias ctemp='cd ~/code/temp'
+alias get_pio='source ~/.platformio/penv/bin/activate'
+alias get_idf='. $IDF_PATH/export.sh'
 
-    # 2. 获取当前时间戳作为文件名
-    local timestamp=$(date +%Y-%m-%d_%H-%M-%S)
-    local filepath="$base_dir/$timestamp"
+# -----------------------------------------------------
+# Functions
+# -----------------------------------------------------
 
-    # 3. 智能判断剪贴板内容类型
-    # 优先检查是否为图像
-    if wl-paste --list-types | grep -q "image/png"; then
-        wl-paste --type image/png > "${filepath}.png"
-        echo "🎨 已作为图片保存: ${filepath}.png"
-    
-    # 其次检查是否为普通文本
-    elif wl-paste --list-types | grep -q "text/plain"; then
-        wl-paste --type text/plain > "${filepath}.txt"
-        echo "📄 已作为文本保存: ${filepath}.txt"
-    
-    # 如果是其他未知格式
-    else
-        wl-paste > "${filepath}.bin"
-        echo "📦 已保存为原始二进制数据: ${filepath}.bin"
-    fi
+# yazi: cd into the directory yazi leaves you in
+y() {
+  local tmp cwd
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  command yazi "$@" --cwd-file="$tmp"
+  IFS= read -r -d '' cwd <"$tmp"
+  [[ "$cwd" != "$PWD" && -d "$cwd" ]] && builtin cd -- "$cwd"
+  rm -f -- "$tmp"
 }
 
-
-alias ff="fastfetch"
-
-
-# pnpm
-export PNPM_HOME="/home/mhpsy/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-alias cproject="cd ~/code/project"
-alias ctemp="cd ~/code/temp"
-export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
+# p2f: save wl-paste clipboard to /tmp/wl-paste/ with timestamped filename
+p2f() {
+  local base="/tmp/wl-paste"
+  mkdir -p "$base"
+  local file="$base/$(date +%Y-%m-%d_%H-%M-%S)"
+  local types
+  types=$(wl-paste --list-types 2>/dev/null)
+  if grep -q "image/png" <<<"$types"; then
+    wl-paste --type image/png >"${file}.png"
+    echo "🎨 image saved: ${file}.png"
+  elif grep -q "text/plain" <<<"$types"; then
+    wl-paste --type text/plain >"${file}.txt"
+    echo "📄 text saved: ${file}.txt"
+  else
+    wl-paste >"${file}.bin"
+    echo "📦 binary saved: ${file}.bin"
+  fi
+}
