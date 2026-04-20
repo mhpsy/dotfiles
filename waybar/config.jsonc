@@ -19,6 +19,7 @@
     "modules-right": [
         "custom/updates",
         "custom/caffeine",
+        "custom/screen-off",
         "custom/brightness",
         "pulseaudio",
         "bluetooth",
@@ -92,6 +93,14 @@
         "tooltip": true
     },
 
+    // Screen off — blank display via DPMS (mouse/key wakes it)
+    "custom/screen-off": {
+        "format": "<span font_family='Font Awesome 7 Free' weight='900'></span>",
+        "on-click": "sleep 0.3 && hyprctl dispatch dpms off",
+        "on-click-right": "hyprlock & sleep 0.3 && hyprctl dispatch dpms off",
+        "tooltip-format": "Left: Screen off\nRight: Lock + screen off"
+    },
+
     // Brightness (external monitor via ddcutil)
     "custom/brightness": {
         "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {}",
@@ -137,7 +146,7 @@
     // Power Menu
     "custom/exit": {
         "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
-        "on-click": "wlogout",
+        "on-click": "cd ~/.config/wlogout && wlogout",
         "on-click-right": "hyprlock",
         "tooltip-format": "Left: Power menu / Right: Lock"
     },
