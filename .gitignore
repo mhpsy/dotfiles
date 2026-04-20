@@ -5,3 +5,9 @@
 id_rsa
 id_ed25519
 wlogout/colors.css
+
+# Rime 运行时产物（用户词库、时间戳），每次打字都会变
+rime/rime_ice.userdb/
+rime/user.yaml
+rime/sync/*/rime_ice.userdb.txt
+rime/sync/*/user.yaml
