@@ -11,3 +11,10 @@ rime/rime_ice.userdb/
 rime/user.yaml
 rime/sync/*/rime_ice.userdb.txt
 rime/sync/*/user.yaml
+
+# Rime 编译产物（启动时会根据 *.custom.yaml 重新生成）
+rime/build/
+
+# matugen 从壁纸生成的配色（换壁纸就变）
+hypr/colors.conf
+kitty/colors-matugen.conf
