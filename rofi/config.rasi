@@ -24,18 +24,18 @@ configuration {
 
 // Main
 window {
-    height:                      35em;
-    width:                       56em;
+    height:                      100%;
+    width:                       100%;
     transparency:                "real";
-    fullscreen:                  false;
+    fullscreen:                  true;
     enabled:                     true;
     cursor:                      "default";
     spacing:                     0em;
-    padding:                     0em;
-    border:                      1px;
-    border-color:                @outline-variant;
-    border-radius:               12px;
-    background-color:            @surface-container-low;
+    padding:                     25% 28%;
+    border:                      0px;
+    border-radius:               0px;
+    background-color:            rgba(0, 0, 0, 38%);
+    children:                    [ "mainbox" ];
 }
 
 mainbox {
@@ -44,13 +44,16 @@ mainbox {
     padding:                     0em;
     orientation:                 horizontal;
     children:                    [ "sidebar", "contentbox" ];
-    background-color:            transparent;
+    border:                      1px;
+    border-color:                @outline-variant;
+    border-radius:               12px;
+    background-color:            rgba(35, 25, 23, 72%);
 }
 
 // Left sidebar with mode-switcher icons
 sidebar {
     padding:                     1em 0.5em;
-    background-color:            @surface-container;
+    background-color:            rgba(39, 29, 27, 82%);
     orientation:                 vertical;
     children:                    [ "mode-switcher" ];
     border-radius:               10px 0 0 10px;
@@ -96,7 +99,7 @@ inputbar {
     margin:                      1em 1em 0.5em 1em;
     children:                    [ "textbox-prompt-colon", "entry" ];
     border-radius:               2em;
-    background-color:            @surface-container-high;
+    background-color:            rgba(50, 40, 37, 72%);
 }
 
 textbox-prompt-colon {
@@ -149,7 +152,7 @@ element {
 }
 
 element selected.normal {
-    background-color:            @surface-container-highest;
+    background-color:            rgba(61, 50, 48, 82%);
     text-color:                  @primary-fixed-dim;
     border-radius:               1.5em;
 }

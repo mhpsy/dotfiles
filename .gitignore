@@ -4,7 +4,6 @@
 *_private.*
 id_rsa
 id_ed25519
-wlogout/colors.css
 
 # Rime 运行时产物（用户词库、时间戳），每次打字都会变
 rime/rime_ice.userdb/
@@ -18,3 +17,6 @@ rime/build/
 # matugen 从壁纸生成的配色（换壁纸就变）
 hypr/colors.conf
 kitty/colors-matugen.conf
+rofi/colors.rasi
+waybar/colors.css
+wlogout/colors.css
