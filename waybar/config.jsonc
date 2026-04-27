@@ -14,7 +14,8 @@
         "custom/splayer-lyrics"
     ],
     "modules-center": [
-        "hyprland/workspaces"
+        "hyprland/workspaces",
+        "custom/drawer-indicator"
     ],
     "modules-right": [
         "custom/updates",
@@ -41,6 +42,15 @@
         "persistent-workspaces": {
             "*": 5
         }
+    },
+
+    // Special workspace indicator
+    "custom/drawer-indicator": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/special-workspace.sh",
+        "interval": 1,
+        "tooltip": true
     },
 
     // Hyprland Window
