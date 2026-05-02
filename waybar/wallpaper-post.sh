@@ -11,6 +11,11 @@ if [ -z "$WALLPAPER" ]; then
 fi
 
 if [ -f "$WALLPAPER" ]; then
-    matugen image "$WALLPAPER" --prefer=saturation 2>/dev/null
+    # --prefer is matugen >= 2.5 only; older versions reject it
+    prefer_arg=()
+    if matugen image --help 2>&1 | grep -q -- '--prefer'; then
+        prefer_arg=(--prefer=saturation)
+    fi
+    matugen image "$WALLPAPER" "${prefer_arg[@]}"
     ~/.config/waybar/launch.sh
 fi
