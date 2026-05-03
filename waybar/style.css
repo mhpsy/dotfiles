@@ -11,7 +11,7 @@
 
 /* General */
 * {
-    font-family: "Fira Sans Semibold", "Font Awesome 7 Free", "Font Awesome 7 Brands", "FiraCode Nerd Font", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Fira Sans Semibold", "Font Awesome 7 Free", "Font Awesome 7 Brands", "FiraCode Nerd Font", "LXGW WenKai", Roboto, Helvetica, Arial, sans-serif;
     font-size: 14px;
     border: none;
     border-radius: 0px;
@@ -20,6 +20,7 @@
 
 window#waybar {
     background-color: rgba(0, 0, 0, 0.2);
+    min-height: 36px;
 }
 
 /* ============ Shared pill style for right-side modules ============ */
