@@ -75,7 +75,28 @@ window#waybar {
     color: @fg;
     border-radius: 15px;
     padding: 4px 12px;
-    margin: 6px 8px 6px 12px;
+    margin: 6px 4px 6px 12px;
+}
+
+/* ============ Left: Date ============ */
+#custom-date {
+    background-color: @bg;
+    color: @fg;
+    border-radius: 15px;
+    padding: 4px 12px;
+    margin: 6px 8px 6px 4px;
+}
+
+/* ============ Right: Reboot pending ============ */
+#custom-reboot.pending {
+    color: @primary;
+    padding: 4px 8px;
+    margin: 6px 4px;
+}
+
+#custom-reboot.ok {
+    padding: 0;
+    margin: 0;
 }
 
 /* ============ Left: Window title ============ */

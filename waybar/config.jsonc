@@ -7,6 +7,7 @@
 
     "modules-left": [
         "clock",
+        "custom/date",
         "custom/sp-entertainment",
         "custom/sp-drawer",
         "custom/sp-chat",
@@ -21,6 +22,7 @@
     ],
     "modules-right": [
         "custom/updates",
+        "custom/reboot",
         "custom/caffeine",
         "custom/screen-off",
         "custom/brightness",
@@ -146,8 +148,26 @@
 
     // Clock
     "clock": {
-        "format": "{:%m-%d %H:%M %a}",
+        "format": "{:%H:%M}",
         "tooltip": false
+    },
+
+    // Date (separate from clock for clarity)
+    "custom/date": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/date.sh",
+        "interval": 60,
+        "tooltip": true
+    },
+
+    // Reboot pending — shown when running kernel's modules dir is gone
+    "custom/reboot": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/reboot.sh",
+        "interval": 300,
+        "tooltip": true
     },
 
     // Notification
