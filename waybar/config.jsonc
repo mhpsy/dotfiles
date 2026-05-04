@@ -7,9 +7,9 @@
 
     "modules-left": [
         "clock",
+        "custom/sp-entertainment",
         "custom/sp-drawer",
         "custom/sp-chat",
-        "custom/sp-entertainment",
         "custom/weather",
         "custom/quotes",
         "hyprland/window",
