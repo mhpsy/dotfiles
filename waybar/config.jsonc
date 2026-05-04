@@ -7,6 +7,9 @@
 
     "modules-left": [
         "clock",
+        "custom/sp-drawer",
+        "custom/sp-chat",
+        "custom/sp-entertainment",
         "custom/weather",
         "custom/quotes",
         "hyprland/window",
@@ -14,8 +17,7 @@
         "custom/splayer-lyrics"
     ],
     "modules-center": [
-        "hyprland/workspaces",
-        "custom/drawer-indicator"
+        "hyprland/workspaces"
     ],
     "modules-right": [
         "custom/updates",
@@ -44,12 +46,29 @@
         }
     },
 
-    // Special workspace indicator
-    "custom/drawer-indicator": {
+    // Special workspace toggle buttons (event-driven via socket2)
+    "custom/sp-drawer": {
         "format": "{}",
         "return-type": "json",
-        "exec": "~/.config/waybar/special-workspace.sh",
-        "interval": 1,
+        "exec": "~/.config/waybar/special-workspace.sh drawer",
+        "on-click": "hyprctl dispatch togglespecialworkspace drawer",
+        "restart-interval": 5,
+        "tooltip": true
+    },
+    "custom/sp-chat": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/special-workspace.sh chat",
+        "on-click": "hyprctl dispatch togglespecialworkspace chat",
+        "restart-interval": 5,
+        "tooltip": true
+    },
+    "custom/sp-entertainment": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "~/.config/waybar/special-workspace.sh entertainment",
+        "on-click": "hyprctl dispatch togglespecialworkspace entertainment",
+        "restart-interval": 5,
         "tooltip": true
     },
 
