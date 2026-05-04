@@ -118,8 +118,7 @@ source $ZSH/oh-my-zsh.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-eval "$(/home/mhpsy/.local/bin/mise activate zsh)"
-eval "$(/home/mhpsy/.local/bin/mise activate zsh)"
+eval "$(mise activate zsh)"
 
 export EDITOR='vim'
 export VISUAL='vim'
@@ -139,6 +138,7 @@ alias lt='lsd --tree'
 alias cls='clear'
 alias c='clear'
 alias claudeD='claude --dangerously-skip-permissions'
+alias wifi='nmtui'
 
 alias get_pio='source ~/.platformio/penv/bin/activate'
 
@@ -149,9 +149,6 @@ function y() {
 	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
 	rm -f -- "$tmp"
 }
-
-# OpenClaw Completion
-source "/home/mhpsy/.openclaw/completions/openclaw.zsh"
 
 export IDF_PATH=/home/mhpsy/esp/v5.5.2/esp-idf
 alias get_idf='. $IDF_PATH/export.sh'  
@@ -205,3 +202,21 @@ esac
 alias cproject="cd ~/code/project"
 alias ctemp="cd ~/code/temp"
 export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
+
+alias ldocker="lazydocker"
+
+need-reboot() {
+    local running="$(uname -r)"
+    local installed="$(pacman -Q linux 2>/dev/null | awk '{print $2}')"
+    echo "Running kernel:   $running"
+    echo "Installed kernel: $installed"
+    if [[ "$running" != *"$installed"* ]]; then
+        echo "⚠️  内核已更新,建议重启"
+    else
+        echo "✅ 内核未变,无需重启"
+    fi
+
+    echo ""
+    echo "正在使用已删除库文件的进程:"
+    sudo lsof +c 0 2>/dev/null | grep -w DEL | awk '{print $1}' | sort -u
+}
