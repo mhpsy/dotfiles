@@ -18,7 +18,16 @@ case "$1" in
         wl-copy < "$FILEPATH"
         notify-send -a "Screenshot" -i camera-photo-symbolic "Screenshot saved" "$FILEPATH"
         ;;
+    --edit)
+        # Select area, open in satty for annotation; Ctrl+S saves to file, Ctrl+C copies
+        region=$(slurp -b "#00000080" -c "#888888ff" -w 1) || exit 0
+        grim -g "$region" - | satty \
+            --filename - \
+            --output-filename "$FILEPATH" \
+            --early-exit \
+            --copy-command wl-copy
+        ;;
     *)
-        echo "Usage: $0 --copy | --full"
+        echo "Usage: $0 --copy | --full | --edit"
         ;;
 esac
