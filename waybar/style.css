@@ -36,8 +36,8 @@ window#waybar {
     background-color: @bg;
     color: @fg;
     border-radius: 15px;
-    padding: 4px 12px;
-    margin: 6px 4px;
+    padding: 4px 8px;
+    margin: 6px 2px;
 }
 
 /* ============ Left: Weather ============ */
@@ -65,8 +65,8 @@ window#waybar {
     background-color: @bg;
     color: @fg_white;
     border-radius: 15px;
-    padding: 4px 12px;
-    margin: 6px 4px;
+    padding: 4px 8px;
+    margin: 6px 2px;
 }
 
 /* ============ Left: Clock ============ */
@@ -74,8 +74,8 @@ window#waybar {
     background-color: @bg;
     color: @fg;
     border-radius: 15px;
-    padding: 4px 12px;
-    margin: 6px 4px 6px 12px;
+    padding: 4px 8px;
+    margin: 6px 2px 6px 12px;
 }
 
 /* ============ Left: Date ============ */
@@ -83,15 +83,15 @@ window#waybar {
     background-color: @bg;
     color: @fg;
     border-radius: 15px;
-    padding: 4px 12px;
-    margin: 6px 8px 6px 4px;
+    padding: 4px 8px;
+    margin: 6px 4px 6px 2px;
 }
 
 /* ============ Right: Reboot pending ============ */
 #custom-reboot.pending {
     color: @primary;
-    padding: 4px 8px;
-    margin: 6px 4px;
+    padding: 4px 6px;
+    margin: 6px 2px;
 }
 
 #custom-reboot.ok {
@@ -144,9 +144,9 @@ window#waybar.empty #window {
 #custom-sp-drawer,
 #custom-sp-chat,
 #custom-sp-entertainment {
-    min-width: 70px;
-    padding: 4px 10px;
-    margin: 6px 3px;
+    min-width: 64px;
+    padding: 4px 6px;
+    margin: 6px 2px;
     border-radius: 15px;
     font-weight: bold;
     background-color: @bg;

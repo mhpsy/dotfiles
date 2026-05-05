@@ -32,13 +32,16 @@ set_brightness() {
     fi
 }
 
+# Raw FA-7 codepoint for fa-sun (U+F185); CSS font stack falls back to FA.
+ICON=$'\uf108'
+
 output_json() {
     local val class="brightness"
     val=$(get_brightness)
     (( val <= 20 )) && class="low"
     (( val >= 80 )) && class="high"
-    printf '{"text":"%d%%","tooltip":"Brightness: %d%%\\nScroll to adjust","class":"%s","percentage":%d}\n' \
-        "$val" "$val" "$class" "$val"
+    printf '{"text":"%s","tooltip":"Brightness: %d%%\\nScroll to adjust","class":"%s","percentage":%d}\n' \
+        "$ICON" "$val" "$class" "$val"
 }
 
 case "${1:-get}" in

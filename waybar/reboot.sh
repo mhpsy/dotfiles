@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-icon=$''  # fa-rotate-right
+icon=$''  # FA 7 codepoint U+F2F1 (renders as red pin in current font stack)
 running="$(uname -r)"
 
 if [[ -d "/usr/lib/modules/$running" ]]; then

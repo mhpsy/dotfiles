@@ -134,7 +134,7 @@
 
     // Brightness (external monitor via ddcutil)
     "custom/brightness": {
-        "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {}",
+        "format": "{}",
         "return-type": "json",
         "exec": "~/.config/waybar/brightness.sh get",
         "interval": 30,
@@ -253,7 +253,7 @@
         "tooltip-format-wifi": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
         "tooltip-format-ethernet": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {ifname}\n{ipaddr}/{cidr}",
         "tooltip-format-disconnected": "Disconnected",
-        "max-length": 60,
+        "max-length": 300,
         "on-click": "nm-connection-editor"
     },
 
