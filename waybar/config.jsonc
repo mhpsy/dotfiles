@@ -295,7 +295,7 @@
         "format-disabled": "",
         "format-off": "",
         "interval": 30,
-        "on-click": "rofi-bluetooth",
+        "on-click": "ghostty -e bluetuith",
         "format-no-controller": "",
         "format": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span>",
         "format-connected": "<span font_family='Font Awesome 7 Free' weight='900' size='11264'></span> {device_battery_percentage}%",
