@@ -2,6 +2,10 @@
 # Called by waypaper post_command after wallpaper change
 # Usage: wallpaper-post.sh <wallpaper_path>
 
+# waypaper subprocesses inherit a minimal PATH (no ~/.local/bin),
+# so matugen / cargo bins must be added explicitly.
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+
 WALLPAPER="$1"
 
 if [ -z "$WALLPAPER" ]; then
