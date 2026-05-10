@@ -220,3 +220,21 @@ need-reboot() {
     echo "正在使用已删除库文件的进程:"
     sudo lsof +c 0 2>/dev/null | grep -w DEL | awk '{print $1}' | sort -u
 }
+
+claude-ds() {
+    local env_file="$HOME/.config/secrets/deepseek.env"
+    if [[ ! -r "$env_file" ]]; then
+        print -u2 "claude-ds: missing $env_file (must define ANTHROPIC_AUTH_TOKEN)"
+        return 1
+    fi
+    # shellcheck disable=SC1090
+    set -a; source "$env_file"; set +a
+    export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+    export ANTHROPIC_MODEL=deepseek-v4-pro
+    export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro
+    export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash
+    export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash
+    export CLAUDE_CODE_EFFORT_LEVEL=max
+    claude --dangerously-skip-permissions
+}
