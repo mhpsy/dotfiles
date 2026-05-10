@@ -1,22 +1,36 @@
 #!/usr/bin/env bash
+#
+# (Re)launch waybar.
+#
+# Use this for COLD START (e.g. hypr exec-once) or a manual full restart.
+# For colour/style refresh after a wallpaper change, prefer an in-place
+# reload via `pkill -SIGUSR2 waybar` (set up as a matugen post_hook):
+# it is lighter and avoids kill+respawn flicker.
+#
+# An earlier flock-based dedupe was removed: long-lived waybar children
+# (special-workspace.sh, socat) inherited the lock fd and held it
+# forever, blocking subsequent legitimate restarts.
 
-# Ensure user-local bins (rofi-bluetooth, splayer-ctl, etc.) are in PATH.
-# Hyprland's exec-once launches this without a login shell, so ~/.local/bin
-# would otherwise be missing from waybar's env.
+# Hypr's exec-once launches without a login shell, so user-local bins
+# (rofi-bluetooth, splayer-ctl, ...) need an explicit PATH entry.
 export PATH="$HOME/.local/bin:$PATH"
 
-LOCK_FILE="/tmp/waybar-launch.lock"
+# Terminate any running instance, then poll until it's really gone
+# (waybar typically exits within ~200ms of SIGTERM).
+killall -q waybar
+for _ in {1..40}; do
+    pgrep -x waybar >/dev/null || break
+    sleep 0.05
+done
 
-# Prevent duplicate launches (e.g. exec-once race with uwsm session init)
-exec 9>"$LOCK_FILE"
-if ! flock -n 9; then
-    exit 0
-fi
+# Best-effort: load StatusNotifierWatcher so tray icons appear.
+dbus-send --session --print-reply \
+    --dest=org.kde.kded6 /kded \
+    org.kde.kded6.loadModule string:statusnotifierwatcher \
+    >/dev/null 2>&1
 
-killall waybar 2>/dev/null
-sleep 1
-dbus-send --session --print-reply --dest=org.kde.kded6 /kded org.kde.kded6.loadModule string:statusnotifierwatcher > /dev/null 2>&1
-waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/style.css &
-
-# Hold the lock until waybar is up, then release
-sleep 2
+# Detach via setsid so waybar survives caller exit and inherits no
+# unwanted file descriptors.
+setsid -f waybar \
+    -c "$HOME/.config/waybar/config.jsonc" \
+    -s "$HOME/.config/waybar/style.css"
