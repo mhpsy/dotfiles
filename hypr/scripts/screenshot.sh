@@ -5,12 +5,13 @@ mkdir -p "$SAVE_DIR"
 FILENAME="screenshot_$(date +%Y%m%d_%H%M%S).png"
 FILEPATH="$SAVE_DIR/$FILENAME"
 
+# Keep the original slurp styling when grimblast invokes slurp
+export SLURP_ARGS='-b #00000080 -c #888888ff -w 1'
+
 case "$1" in
     --copy)
-        # Select area, copy to clipboard only
-        region=$(slurp -b "#00000080" -c "#888888ff" -w 1) || exit 0
-        grim -g "$region" - | wl-copy
-        notify-send -a "Screenshot" -i camera-photo-symbolic "Copied to clipboard"
+        # Freeze the screen (preserves hover/tooltips), then select area → clipboard
+        grimblast --notify --freeze copy area
         ;;
     --full)
         # Full screen, save to file and copy to clipboard
@@ -19,13 +20,11 @@ case "$1" in
         notify-send -a "Screenshot" -i camera-photo-symbolic "Screenshot saved" "$FILEPATH"
         ;;
     --edit)
-        # Select area, open in satty for annotation; Ctrl+S saves to file, Ctrl+C copies
-        region=$(slurp -b "#00000080" -c "#888888ff" -w 1) || exit 0
-        grim -g "$region" - | satty \
-            --filename - \
-            --output-filename "$FILEPATH" \
-            --early-exit \
-            --copy-command wl-copy
+        # Freeze + select area, then annotate in satty
+        TMP="$(mktemp --suffix=.png)"
+        trap 'rm -f "$TMP"' EXIT
+        GRIMBLAST_EDITOR="satty --output-filename $FILEPATH --early-exit --copy-command wl-copy --filename" \
+            grimblast --freeze edit area "$TMP"
         ;;
     *)
         echo "Usage: $0 --copy | --full | --edit"
