@@ -238,3 +238,17 @@ claude-ds() {
     export CLAUDE_CODE_EFFORT_LEVEL=max
     claude --dangerously-skip-permissions
 }
+
+alias vim="nvim"
+
+# Bracketed-paste guard for zsh-autosuggestions.
+# Problem: after Ctrl+Shift+V the cursor sits at end-of-line. The default
+# ZSH_AUTOSUGGEST_ACCEPT_WIDGETS contains forward-char, so the very next
+# Right Arrow accepts the gray suggestion instead of just moving the
+# cursor, appending stale history to the pasted command.
+# Fix: route bracketed-paste through bracketed-paste-magic and clear the
+# autosuggestion at paste-end, so a Right Arrow right after a paste is a
+# no-op (nothing to accept) rather than a silent command-mangling action.
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
