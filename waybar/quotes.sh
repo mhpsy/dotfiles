@@ -33,12 +33,13 @@ sel=${IDX[$pos]}
 word=$(jq -r ".words[$sel].word"    "$WORDLIST_FILE")
 mean=$(jq -r ".words[$sel].meaning" "$WORDLIST_FILE")
 
-# tooltip：今日全部 take 个词
+# tooltip：今日全部 take 个词（用真实换行符，jq --arg 会正确编码为 JSON \n）
+nl=$'\n'
 tip="今日单词"
 for i in "${IDX[@]}"; do
   w=$(jq -r ".words[$i].word"    "$WORDLIST_FILE")
   m=$(jq -r ".words[$i].meaning" "$WORDLIST_FILE")
-  tip="$tip\n$w  $m"
+  tip="$tip$nl$w  $m"
 done
 
 # 用 jq 组装输出，安全转义

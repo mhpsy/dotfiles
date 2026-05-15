@@ -307,18 +307,24 @@ window#waybar.empty #window {
 }
 
 /* ============ Tooltips ============ */
-/* tooltip.background {
+/* Breeze 主题给 tooltip 节点画了 1px 边框 + 4px padding + 近方角，
+   用相同选择器 + !important 决定性盖掉（含 Breeze 用到的 CSD/decoration 节点），
+   可见的圆角框只画在内部 label 上。 */
+tooltip,
+tooltip.background,
+tooltip.window-frame.csd,
+tooltip decoration {
     background-color: transparent;
     border: none;
+    border-radius: 0;
     box-shadow: none;
-} */
-
-tooltip {
-    background-color: alpha(@surface, 0.95);
-    border-radius: 12px;
-    padding: 8px;
+    padding: 0;
+    margin: 0;
 }
 
 tooltip label {
+    background-color: alpha(@surface, 0.95);
     color: @fg;
+    border-radius: 12px;
+    padding: 8px;
 }
