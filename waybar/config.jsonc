@@ -97,7 +97,7 @@
         "format": "{}",
         "return-type": "json",
         "exec": "~/.config/waybar/quotes.sh",
-        "interval": 600,
+        "interval": 10,
         "tooltip": true
     },
 
