@@ -55,4 +55,36 @@ libsel=$(
 qtext=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=30 bash "$SCRIPT" | jq -r '.text')
 chk "$libsel" "$qtext" "lib-matches-quotes-text"
 
+# === Task2: words-cache 写缓存 + 幂等 ===
+CACHE_DIR="$(mktemp -d)"
+trap 'rm -f "$FIX"; rm -rf "$CACHE_DIR"' EXIT
+CF="$CACHE_DIR/words.json"
+CALLS="$CACHE_DIR/calls"
+: > "$CALLS"
+STUB="$CACHE_DIR/stub.sh"
+cat > "$STUB" <<'STUBEOF'
+#!/usr/bin/env bash
+# 测试用 fetch stub：记录调用次数，回 dictionaryapi.dev 形状的 JSON
+echo "$1" >> "$CALLS_FILE"
+printf '[{"phonetic":"/p-%s/","phonetics":[{"text":"/p-%s/","audio":"https://x/%s-us.mp3"}],"meanings":[{"definitions":[{"definition":"def-%s","example":"ex-%s one"},{"definition":"d2","example":"ex-%s two"}]}]}]' "$1" "$1" "$1" "$1" "$1" "$1"
+STUBEOF
+chmod +x "$STUB"
+CACHE="$HOME/.config/waybar/words-cache.sh"
+
+CALLS_FILE="$CALLS" WORDS_CACHE_FILE="$CF" WORDS_FETCH_CMD="$STUB" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 bash "$CACHE"
+echo "$CF exists" ; [ -s "$CF" ] && r=0 || r=1; chk "$r" "0" "cache-file-written"
+jq -e '.seed=="20260515" and (.words|length)==10' "$CF" >/dev/null 2>&1; chk "$?" "0" "cache-seed-and-10-words"
+n1=$(wc -l < "$CALLS")
+# 第二次跑：缓存已今日且齐全 → 不应再调 fetch（幂等）
+CALLS_FILE="$CALLS" WORDS_CACHE_FILE="$CF" WORDS_FETCH_CMD="$STUB" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 bash "$CACHE"
+n2=$(wc -l < "$CALLS")
+chk "$n1" "$n2" "cache-idempotent-no-refetch"
+# 任取一个今日词，断言字段齐全
+fw=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 \
+  bash -c '. "$0"; wl_select; printf "%s" "$WL_WORD"' "$HOME/.config/waybar/words-lib.sh")
+got=$(jq -r --arg w "$fw" '.words[$w] | "\(.phonetic)|\(.audio)|\(.examples|length)"' "$CF")
+chk "$got" "/p-$fw/|https://x/$fw-us.mp3|2" "cache-entry-fields"
+
 exit $fail
