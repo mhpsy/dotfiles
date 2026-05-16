@@ -87,4 +87,21 @@ fw=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 \
 got=$(jq -r --arg w "$fw" '.words[$w] | "\(.phonetic)|\(.audio)|\(.examples|length)"' "$CF")
 chk "$got" "/p-$fw/|https://x/$fw-us.mp3|2" "cache-entry-fields"
 
+# === Task3: quotes.sh tooltip 富信息块 ===
+# 复用 Task2 的 $CF（已含今日 10 词富信息）。当前词：
+cw=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 \
+  bash -c '. "$0"; wl_select; printf "%s" "$WL_WORD"' "$HOME/.config/waybar/words-lib.sh")
+ttip=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="$CF" WORDLIST_FILE="$FIX" \
+  WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT" | jq -r '.tooltip')
+case "$ttip" in
+  "▶ $cw  /p-$cw/"*"例: ex-$cw one"*"今日单词"*) chk "0" "0" "tooltip-rich-block" ;;
+  *) echo "got tooltip: $ttip"; chk "1" "0" "tooltip-rich-block" ;;
+esac
+# 无缓存降级：tooltip 仍是合法 JSON、不含「例:」、不报错
+out=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="/nonexistent/none.json" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT")
+echo "$out" | jq -e '.text and .tooltip' >/dev/null 2>&1; chk "$?" "0" "tooltip-degrade-valid"
+echo "$out" | jq -r '.tooltip' | grep -q '例:' && chk "1" "0" "tooltip-degrade-no-example" \
+  || chk "0" "0" "tooltip-degrade-no-example"
+
 exit $fail
