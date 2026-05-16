@@ -10,7 +10,7 @@ wl_select   # 设 WL_IDX/WL_SEL/WL_WORD/WL_MEANING；前置失败则已空输出
 # 记录当前显示词，供 on-click 精确朗读（避免点击跨轮换边界取到不同词）
 mkdir -p "$(dirname "$WORDS_STATE_FILE")" 2>/dev/null
 if _sf_tmp=$(mktemp "${WORDS_STATE_FILE}.XXXXXX" 2>/dev/null); then
-  printf '%s\t%s' "$WL_WORD" "$WL_MEANING" > "$_sf_tmp" && mv -f "$_sf_tmp" "$WORDS_STATE_FILE"
+  printf '%s\t%s' "$WL_WORD" "$WL_MEANING" > "$_sf_tmp" && mv -f "$_sf_tmp" "$WORDS_STATE_FILE" || rm -f "$_sf_tmp"
 fi
 
 # 后台懒触发预取：缓存缺失或非今日 seed（WORDS_NO_PREFETCH=1 跳过）
