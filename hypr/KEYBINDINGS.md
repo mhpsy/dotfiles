@@ -240,7 +240,6 @@ monitor = , preferred, auto, 1
 ├── hyprland.conf          # 主配置（source 各子配置）
 ├── colors.conf            # Matugen 生成的颜色主题
 ├── hyprlock.conf          # 锁屏配置
-├── hyprpaper.conf         # 壁纸配置（未使用，已切换 swww）
 ├── wallpapers/            # 壁纸文件夹
 │   └── wallhaven-w51676.png
 ├── scripts/               # 脚本
