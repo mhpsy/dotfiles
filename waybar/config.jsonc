@@ -98,7 +98,8 @@
         "return-type": "json",
         "exec": "~/.config/waybar/quotes.sh",
         "interval": 10,
-        "tooltip": true
+        "tooltip": true,
+        "on-click": "~/.config/waybar/speak-word.sh"
     },
 
     // Package Updates
