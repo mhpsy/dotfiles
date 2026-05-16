@@ -3,7 +3,9 @@
 set -u
 SCRIPT="$HOME/.config/waybar/quotes.sh"
 FIX="$(mktemp)"
-trap 'rm -f "$FIX"' EXIT
+STATE_TMP="$(mktemp)"
+export WORDS_STATE_FILE="$STATE_TMP"
+trap 'rm -f "$FIX" "$STATE_TMP"' EXIT
 
 cat > "$FIX" <<'JSON'
 {"words":[
@@ -57,7 +59,7 @@ chk "$libsel" "$qtext" "lib-matches-quotes-text"
 
 # === Task2: words-cache 写缓存 + 幂等 ===
 CACHE_DIR="$(mktemp -d)"
-trap 'rm -f "$FIX"; rm -rf "$CACHE_DIR"' EXIT
+trap 'rm -f "$FIX" "$STATE_TMP"; rm -rf "$CACHE_DIR"' EXIT
 CF="$CACHE_DIR/words.json"
 CALLS="$CACHE_DIR/calls"
 : > "$CALLS"
@@ -106,19 +108,32 @@ echo "$out" | jq -r '.tooltip' | grep -q '例:' && chk "1" "0" "tooltip-degrade-
 
 # === Task4: speak-word.sh 解析 + dry-run ===
 SPEAK="$HOME/.config/waybar/speak-word.sh"
-# 当前词须与 quotes.sh .text 第一段一致（防漂移，验收 #8）
-qfirst=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="$CF" WORDLIST_FILE="$FIX" \
-  WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SCRIPT" | jq -r '.text' | awk '{print $1}')
-dr=$(WORDS_DRY_RUN=1 WORDS_CACHE_FILE="$CF" WORDLIST_FILE="$FIX" \
-  WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SPEAK")
+SF="$CACHE_DIR/curword"
+# quotes.sh 在该 seed/epoch 渲染并写下当前词
+qfirst=$(WORDS_NO_PREFETCH=1 WORDS_STATE_FILE="$SF" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SCRIPT" \
+  | jq -r '.text' | awk '{print $1}')
+# speak-word 读状态文件 → 必与 quotes 渲染的词一致（防漂移，验收 #8）
+dr=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="$SF" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SPEAK")
 sw=$(printf '%s\n' "$dr" | sed -n 's/^WORD=//p')
 chk "$sw" "$qfirst" "speak-word-matches-quotes"
 src=$(printf '%s\n' "$dr" | sed -n 's/^AUDIO_SRC=//p')
-chk "$src" "cache" "speak-audio-src-cache"   # $CF 里有 audio
+chk "$src" "cache" "speak-audio-src-cache"
 printf '%s\n' "$dr" | sed -n 's/^NOTIFY_BODY=//p' | grep -q "例: ex-$sw one" \
   && chk "0" "0" "speak-notify-has-example" || chk "1" "0" "speak-notify-has-example"
-# 无缓存 → 走 gtts 兜底，且不报错
-dr2=$(WORDS_DRY_RUN=1 WORDS_CACHE_FILE="/nonexistent/none.json" WORDLIST_FILE="$FIX" \
+# 防漂移核心：点击发生在另一个 10s 桶(EPOCH=80)，仍念 quotes 渲染时(EPOCH=10)写下的词
+SF2="$CACHE_DIR/curword2"
+rword=$(WORDS_NO_PREFETCH=1 WORDS_STATE_FILE="$SF2" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=10 bash "$SCRIPT" \
+  | jq -r '.text' | awk '{print $1}')
+dword=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="$SF2" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=80 bash "$SPEAK" \
+  | sed -n 's/^WORD=//p')
+chk "$dword" "$rword" "speak-reads-rendered-word-not-click-epoch"
+# 无缓存且无状态文件 → 走 gtts 兜底，且不报错
+dr2=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="/nonexistent/sf.none" \
+  WORDS_CACHE_FILE="/nonexistent/none.json" WORDLIST_FILE="$FIX" \
   WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SPEAK")
 src2=$(printf '%s\n' "$dr2" | sed -n 's/^AUDIO_SRC=//p')
 chk "$src2" "gtts" "speak-audio-src-gtts-fallback"

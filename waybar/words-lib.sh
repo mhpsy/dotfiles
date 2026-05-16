@@ -8,6 +8,7 @@ SEED="${WORDS_SEED:-$(date +%Y%m%d)}"
 EPOCH="${WORDS_EPOCH:-$(date +%s)}"
 WORDS_CACHE_FILE="${WORDS_CACHE_FILE:-$HOME/.cache/waybar/words.json}"
 WORDS_LOCK_FILE="${WORDS_LOCK_FILE:-$HOME/.cache/waybar/words.lock}"
+WORDS_STATE_FILE="${WORDS_STATE_FILE:-$HOME/.cache/waybar/current-word}"
 DAILY=10
 ROTATE=10   # 秒/词
 

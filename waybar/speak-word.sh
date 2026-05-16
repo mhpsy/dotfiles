@@ -7,8 +7,17 @@ WL_QUIET=1
 
 PIDF="/tmp/waybar-word-mpv.pid"
 
-wl_select   # 当前词 = quotes.sh 当下显示的同一个
-W="${WL_WORD:-}"
+# 优先读 quotes.sh 写下的"当前显示词"，确保朗读的就是 bar 上那个；
+# 状态文件缺失时回落到确定性选词。
+W=""; MEANING=""
+if [ -r "$WORDS_STATE_FILE" ]; then
+  IFS=$'\t' read -r W MEANING < "$WORDS_STATE_FILE" || true
+fi
+if [ -z "$W" ]; then
+  wl_select
+  W="${WL_WORD:-}"
+  MEANING="${WL_MEANING:-}"
+fi
 [ -n "$W" ] || exit 0
 
 ph=""; ex=""; au=""
@@ -28,7 +37,7 @@ fi
 
 title="$W"
 [ -n "$ph" ] && title="$W  $ph"
-body="$WL_MEANING"
+body="$MEANING"
 [ -n "$ex" ] && body="$body"$'\n\n'"例: $ex"
 
 if [ -n "${WORDS_DRY_RUN:-}" ]; then
@@ -42,7 +51,7 @@ fi
 # 仅杀本脚本上次的 mpv（按 pid 文件 + comm 校验，不动用户其它 mpv）
 if [ -r "$PIDF" ]; then
   old=$(cat "$PIDF" 2>/dev/null)
-  if [ -n "$old" ] && [ "$(cat /proc/"$old"/comm 2>/dev/null)" = "mpv" ]; then
+  if [ -n "$old" ] && tr '\0' ' ' < /proc/"$old"/cmdline 2>/dev/null | grep -q 'waybar-word-tts'; then
     kill "$old" 2>/dev/null
   fi
 fi
@@ -52,6 +61,6 @@ if command -v notify-send >/dev/null 2>&1; then
 fi
 
 if command -v mpv >/dev/null 2>&1; then
-  mpv --no-video --no-terminal --really-quiet "$url" >/dev/null 2>&1 &
+  mpv --no-video --no-terminal --really-quiet --force-media-title=waybar-word-tts "$url" >/dev/null 2>&1 &
   echo $! > "$PIDF"
 fi
