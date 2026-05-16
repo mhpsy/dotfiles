@@ -46,4 +46,13 @@ out=$(WORDLIST_FILE="/nonexistent/xx.json" WORDS_SEED=20260515 WORDS_EPOCH=0 bas
 cls=$(echo "$out" | jq -r '.class // ""' 2>/dev/null)
 chk "$cls" "empty" "missing-file-empty-class"
 
+# === Task1: words-lib 与 quotes.sh 选词一致 ===
+LIB="$HOME/.config/waybar/words-lib.sh"
+libsel=$(
+  WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=30 \
+  bash -c '. "$0"; wl_select; printf "%s %s" "$WL_WORD" "$WL_MEANING"' "$LIB" 2>/dev/null
+)
+qtext=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=30 bash "$SCRIPT" | jq -r '.text')
+chk "$libsel" "$qtext" "lib-matches-quotes-text"
+
 exit $fail
