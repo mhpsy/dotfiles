@@ -104,4 +104,23 @@ echo "$out" | jq -e '.text and .tooltip' >/dev/null 2>&1; chk "$?" "0" "tooltip-
 echo "$out" | jq -r '.tooltip' | grep -q '例:' && chk "1" "0" "tooltip-degrade-no-example" \
   || chk "0" "0" "tooltip-degrade-no-example"
 
+# === Task4: speak-word.sh 解析 + dry-run ===
+SPEAK="$HOME/.config/waybar/speak-word.sh"
+# 当前词须与 quotes.sh .text 第一段一致（防漂移，验收 #8）
+qfirst=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="$CF" WORDLIST_FILE="$FIX" \
+  WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SCRIPT" | jq -r '.text' | awk '{print $1}')
+dr=$(WORDS_DRY_RUN=1 WORDS_CACHE_FILE="$CF" WORDLIST_FILE="$FIX" \
+  WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SPEAK")
+sw=$(printf '%s\n' "$dr" | sed -n 's/^WORD=//p')
+chk "$sw" "$qfirst" "speak-word-matches-quotes"
+src=$(printf '%s\n' "$dr" | sed -n 's/^AUDIO_SRC=//p')
+chk "$src" "cache" "speak-audio-src-cache"   # $CF 里有 audio
+printf '%s\n' "$dr" | sed -n 's/^NOTIFY_BODY=//p' | grep -q "例: ex-$sw one" \
+  && chk "0" "0" "speak-notify-has-example" || chk "1" "0" "speak-notify-has-example"
+# 无缓存 → 走 gtts 兜底，且不报错
+dr2=$(WORDS_DRY_RUN=1 WORDS_CACHE_FILE="/nonexistent/none.json" WORDLIST_FILE="$FIX" \
+  WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SPEAK")
+src2=$(printf '%s\n' "$dr2" | sed -n 's/^AUDIO_SRC=//p')
+chk "$src2" "gtts" "speak-audio-src-gtts-fallback"
+
 exit $fail
