@@ -84,7 +84,7 @@ fi
 txt=$(echo "$out" | jq -r '.text')
 tip=$(echo "$out" | jq -r '.tooltip')
 
-assert_eq "$txt" "$(printf '')"  "text=clear-day glyph"
+assert_eq "$txt" "<span size='large'>$(printf '\uf185')</span> 26°C"  "text=icon span + temp"
 assert_contains "$tip" "深圳宝安"          "tooltip has city"
 assert_contains "$tip" "26°C"              "tooltip has current temp (rounded)"
 assert_contains "$tip" "体感 28°C"         "tooltip has feels-like"
