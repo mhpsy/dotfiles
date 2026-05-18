@@ -13,7 +13,7 @@
 .word { font-size: 21px; font-weight: 600; color: $on; }
 .chip {
   font-size: 12px; color: $tertiary;
-  background: rgba(222,188,223,0.10);
+  background: rgba($tertiary, 0.10);
   padding: 3px 7px; border-radius: 6px; margin-left: 6px;
 }
 .ph   { color: $primary; font-size: 13px; margin: 8px 0 0 0; }
@@ -32,6 +32,6 @@
 .listhdr { color: $outline; font-size: 11px; padding: 13px 19px 7px 19px; }
 .lst { padding: 0 10px 14px 10px; }
 .row { padding: 6px 9px; border-radius: 8px; font-size: 13px; }
-.row.cur { background: rgba(173,198,255,0.10); }
+.row.cur { background: rgba($primary, 0.10); }
 .rw { color: $primary; }
 .rm { color: $outline; }

@@ -1,7 +1,7 @@
 # Waybar 每日单词 — 灵动岛弹窗 设计文档
 
 日期：2026-05-18
-状态：已确认，待实现
+状态：已实现
 关联：扩展 [2026-05-15-waybar-daily-words-design.md](2026-05-15-waybar-daily-words-design.md)、
 [2026-05-16-waybar-word-tts-design.md](2026-05-16-waybar-word-tts-design.md)
 （本次有意推翻后者的「悬停 tooltip 展示」「点击 = 朗读 + notify-send」两项交互）
