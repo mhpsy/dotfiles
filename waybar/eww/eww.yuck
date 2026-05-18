@@ -26,7 +26,6 @@
 (defwidget card-ok []
   (box :class {"wcard cond-" + (weather.current.cond ?: "clouds")} :orientation "v" :space-evenly false
     (overlay
-      (box :class "amb")
       (box :orientation "v" :space-evenly false :class "wbody"
         (box :class "hero" :orientation "h" :space-evenly false
           (label :class "hero-ic" :text {weather.current.icon ?: ""})
@@ -52,7 +51,8 @@
         (box :class "hours" :orientation "h" :space-evenly true
           (hcell :i 0) (hcell :i 1) (hcell :i 2) (hcell :i 3) (hcell :i 4) (hcell :i 5))
         (label :class "sec" :halign "start" :text "未来三天")
-        (drow :i 0) (drow :i 1) (drow :i 2)))))
+        (drow :i 0) (drow :i 1) (drow :i 2))
+      (box :class "amb"))))
 
 (defwidget card-err []
   (box :class "wcard cond-clouds" :orientation "v" :space-evenly false
