@@ -63,13 +63,38 @@ pop=$(g '.daily.precipitation_probability_max[0]')
 psum=$(jq -r '.daily.precipitation_sum[0] // empty' "$CACHE" 2>/dev/null)
 if [ -n "$psum" ]; then psum=$(awk -v x="$psum" 'BEGIN{printf "%.1f", x}'); else psum="--"; fi
 
+hourly_json='[]'
+mapfile -t h_time < <(jq -r --argjson i "$hidx" '.hourly.time[$i:$i+6][]?'         "$CACHE" 2>/dev/null)
+mapfile -t h_temp < <(jq -r --argjson i "$hidx" '.hourly.temperature_2m[$i:$i+6][]?' "$CACHE" 2>/dev/null)
+mapfile -t h_code < <(jq -r --argjson i "$hidx" '.hourly.weather_code[$i:$i+6][]?'   "$CACHE" 2>/dev/null)
+for k in "${!h_time[@]}"; do
+    hh=$((10#${h_time[$k]:11:2}))
+    ht=$(r "${h_temp[$k]:-}")
+    hi=$(wmo_icon "${h_code[$k]:-x}" "$is_day")
+    hourly_json=$(jq -c --arg t "${hh}时" --arg i "$hi" --arg d "$ht" \
+        '. + [{time:$t, icon:$i, temp:$d}]' <<<"$hourly_json")
+done
+
+labels=(今天 明天 后天)
+daily_json='[]'
+for i in 0 1 2; do
+    dc=$(jq -r ".daily.weather_code[$i] // \"x\""           "$CACHE" 2>/dev/null)
+    dmax=$(r "$(jq -r ".daily.temperature_2m_max[$i] // \"--\"" "$CACHE" 2>/dev/null)")
+    dmin=$(r "$(jq -r ".daily.temperature_2m_min[$i] // \"--\"" "$CACHE" 2>/dev/null)")
+    di=$(wmo_icon "$dc" 1)
+    dd=$(wmo_text "$dc")
+    daily_json=$(jq -c --arg l "${labels[$i]}" --arg i "$di" --arg mn "$dmin" --arg mx "$dmax" --arg d "$dd" \
+        '. + [{label:$l, icon:$i, min:$mn, max:$mx, desc:$d}]' <<<"$daily_json")
+done
+
 jq -cn \
   --arg city "$CITY" --arg icon "$icon" --arg temp "$temp" --arg desc "$desc" --arg feel "$feel" \
   --arg hum "$hum" --arg wdir "$wdir" --arg wspd "$wspd" --arg pres "$pres" --arg vis "$vis" \
   --arg wdeg "$wdeg" --arg uv "$uv" --arg sr "$sr" --arg ss "$ss" --arg pop "$pop" --arg psum "$psum" \
-  --arg cond "$cond" '
+  --arg cond "$cond" --argjson hourly "$hourly_json" --argjson daily "$daily_json" '
 { ok:true, city:$city,
   current:{ icon:$icon, temp:$temp, desc:$desc, feel:$feel, humidity:$hum,
             wind_dir:$wdir, wind_speed:$wspd, pressure:$pres, visibility:$vis,
             wind_deg:$wdeg, uv:$uv, sunrise:$sr, sunset:$ss, pop:$pop, precip:$psum,
-            cond:$cond } }'
+            cond:$cond },
+  hourly:$hourly, daily:$daily }'

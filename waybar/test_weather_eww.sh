@@ -67,5 +67,17 @@ assert_eq "$(echo "$out" | jq -r '.current.pop')"        "30"   "current.pop"
 assert_eq "$(echo "$out" | jq -r '.current.precip')"     "0.2"  "current.precip"
 assert_eq "$(echo "$out" | jq -r '.current.icon')" "$(printf '\xef\x86\x85')" "current.icon clear-day glyph"
 
+assert_eq "$(echo "$out" | jq -r '.hourly | length')"        "6"     "hourly has 6"
+assert_eq "$(echo "$out" | jq -r '.hourly[0].temp')"         "26"    "hourly[0].temp"
+assert_eq "$(echo "$out" | jq -r '.hourly[3].temp')"         "26"    "hourly[3].temp"
+assert_eq "$(echo "$out" | jq -r '.hourly[0].icon')" "$(printf '\xef\x86\x85')" "hourly[0] clear glyph"
+assert_eq "$(echo "$out" | jq -r '.hourly[0].time' | grep -c 时)" "1" "hourly time has 时"
+assert_eq "$(echo "$out" | jq -r '.daily | length')"         "3"     "daily has 3"
+assert_eq "$(echo "$out" | jq -r '.daily[0].label')"         "今天"  "daily[0].label"
+assert_eq "$(echo "$out" | jq -r '.daily[2].label')"         "后天"  "daily[2].label"
+assert_eq "$(echo "$out" | jq -r '.daily[0].max')"           "28"    "daily[0].max rounded"
+assert_eq "$(echo "$out" | jq -r '.daily[0].min')"           "22"    "daily[0].min rounded"
+assert_eq "$(echo "$out" | jq -r '.daily[2].desc')"          "小雨"  "daily[2].desc (code 61)"
+
 rm -f "$CACHE"
 exit $fail
