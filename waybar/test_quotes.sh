@@ -163,4 +163,29 @@ chk "$(echo "$midpos" | jq -c '.words[0]')" '{"word":"abstract","pos":["adj.","n
 chk "$(echo "$midpos" | jq -c '.words[1]')" '{"word":"slash","pos":["v.","n."],"meaning":"前进；进步"}' "pos-slash"
 chk "$(echo "$midpos" | jq -c '.words[2]')" '{"word":"amp","pos":["v.","n."],"meaning":"记录"}' "pos-amp-clean"
 
+# === Task6: words-lib WL_POS / wl_pos_at ===
+LIB="$HOME/.config/waybar/words-lib.sh"
+WLP="$CACHE_DIR/wl_pos.json"
+cat > "$WLP" <<'JSON'
+{"words":[
+{"word":"alpha","pos":["v."],"meaning":"放弃"},
+{"word":"beta","pos":["v.","n."],"meaning":"记录"},
+{"word":"gamma","pos":[],"meaning":"无词性"}
+]}
+JSON
+# 取 idx=0 的 pos（确定性 helper，不依赖选词）
+p0=$(WL_QUIET=1 WORDLIST_FILE="$WLP" bash -c '. "$0"; wl_pos_at 0' "$LIB")
+chk "$p0" "v." "lib-pos-at-single"
+p1=$(WL_QUIET=1 WORDLIST_FILE="$WLP" bash -c '. "$0"; wl_pos_at 1' "$LIB")
+chk "$p1" "v. & n." "lib-pos-at-compound"
+p2=$(WL_QUIET=1 WORDLIST_FILE="$WLP" bash -c '. "$0"; wl_pos_at 2' "$LIB")
+chk "$p2" "" "lib-pos-at-empty"
+# wl_select 设 WL_POS
+ws=$(WL_QUIET=1 WORDLIST_FILE="$WLP" WORDS_SEED=20260518 WORDS_EPOCH=0 \
+  bash -c '. "$0"; wl_select; printf "%s|%s|%s" "$WL_WORD" "$WL_POS" "$WL_MEANING"' "$LIB")
+echo "$ws" | grep -qE '^[a-z]+\|([a-z]+\.( & [a-z]+\.)*)?\|.+$'; chk "$?" "0" "lib-wl-pos-set"
+# 旧无 pos 字段的 fixture：wl_pos_at 返回空、不报错
+op=$(WL_QUIET=1 WORDLIST_FILE="$FIX" bash -c '. "$0"; wl_pos_at 0' "$LIB" 2>/dev/null)
+chk "$op" "" "lib-pos-missing-field-empty"
+
 exit $fail
