@@ -33,4 +33,43 @@ if [ ! -f "$CACHE" ]; then
     exit 0
 fi
 
-jq -cn --arg c "$CITY" '{ok:true, city:$c}'
+g() { jq -r "$1 // \"--\"" "$CACHE" 2>/dev/null; }
+
+is_day=$(g '.current.is_day'); [ "$is_day" = "--" ] && is_day=1
+cur_code=$(g '.current.weather_code')
+temp=$(r "$(g '.current.temperature_2m')")
+feel=$(r "$(g '.current.apparent_temperature')")
+hum=$(g '.current.relative_humidity_2m')
+pres=$(r "$(g '.current.pressure_msl')")
+wspd=$(r "$(g '.current.wind_speed_10m')")
+wdeg_raw=$(g '.current.wind_direction_10m'); [ "$wdeg_raw" = "--" ] && wdeg_raw=0
+wdeg=$(r "$wdeg_raw")
+icon=$(wmo_icon "$cur_code" "$is_day")
+desc=$(wmo_text "$cur_code")
+wdir=$(wind_dir_cn "$wdeg_raw")
+cond=$(wmo_cond "$cur_code")
+
+now_key=$(date +%Y-%m-%dT%H:00)
+hidx=$(jq -r --arg t "$now_key" '(.hourly.time | index($t)) // 0' "$CACHE" 2>/dev/null)
+[ -z "$hidx" ] || [ "$hidx" = "null" ] && hidx=0
+vis_m=$(jq -r --argjson i "$hidx" '.hourly.visibility[$i] // empty' "$CACHE" 2>/dev/null)
+if [ -n "$vis_m" ]; then vis=$(awk -v m="$vis_m" 'BEGIN{printf "%.1f", m/1000}'); else vis="--"; fi
+
+sr=$(g '.daily.sunrise[0]'); ss=$(g '.daily.sunset[0]')
+[ "$sr" != "--" ] && sr="${sr:11:5}"
+[ "$ss" != "--" ] && ss="${ss:11:5}"
+uv=$(r "$(g '.daily.uv_index_max[0]')")
+pop=$(g '.daily.precipitation_probability_max[0]')
+psum=$(jq -r '.daily.precipitation_sum[0] // empty' "$CACHE" 2>/dev/null)
+if [ -n "$psum" ]; then psum=$(awk -v x="$psum" 'BEGIN{printf "%.1f", x}'); else psum="--"; fi
+
+jq -cn \
+  --arg city "$CITY" --arg icon "$icon" --arg temp "$temp" --arg desc "$desc" --arg feel "$feel" \
+  --arg hum "$hum" --arg wdir "$wdir" --arg wspd "$wspd" --arg pres "$pres" --arg vis "$vis" \
+  --arg wdeg "$wdeg" --arg uv "$uv" --arg sr "$sr" --arg ss "$ss" --arg pop "$pop" --arg psum "$psum" \
+  --arg cond "$cond" '
+{ ok:true, city:$city,
+  current:{ icon:$icon, temp:$temp, desc:$desc, feel:$feel, humidity:$hum,
+            wind_dir:$wdir, wind_speed:$wspd, pressure:$pres, visibility:$vis,
+            wind_deg:$wdeg, uv:$uv, sunrise:$sr, sunset:$ss, pop:$pop, precip:$psum,
+            cond:$cond } }'
