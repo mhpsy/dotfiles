@@ -10,5 +10,6 @@ if jq -e '.words[0] | has("pos")' "$WL" >/dev/null 2>&1; then
 fi
 cp -f "$WL" "$WL.bak"
 tmp=$(mktemp "${WL}.XXXXXX")
+trap 'rm -f "$tmp"' EXIT
 jq -f "$DIR/wordlist-pos.jq" "$WL" > "$tmp" && mv -f "$tmp" "$WL"
 echo "rewritten: $WL (backup: $WL.bak)"
