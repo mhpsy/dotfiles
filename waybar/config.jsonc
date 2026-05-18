@@ -8,10 +8,10 @@
     "modules-left": [
         "clock",
         "custom/date",
+        "custom/weather",
         "custom/sp-entertainment",
         "custom/sp-drawer",
         "custom/sp-chat",
-        "custom/weather",
         "custom/quotes",
         "hyprland/window",
         "image#splayer-cover",

@@ -217,7 +217,7 @@ tooltip+=$'\n'"${hourly_line}"
 tooltip+=$'\n'"${sep}"
 tooltip+="${forecast}"
 
-# bar 文字:放大的图标(pango size='large' ≈ 1.2x)+ 当前温度
-bar_text="<span size='large'>${icon}</span> ${cur_temp}°C"
+# bar 文字:图标 + 当前温度(常规大小)
+bar_text="${icon} ${cur_temp}°C"
 
 jq -cn --arg x "$bar_text" --arg t "$tooltip" '{text:$x, tooltip:$t}'
