@@ -1,0 +1,37 @@
+;; 每日单词灵动岛。窗口常驻打开；word_reveal 翻转触发 revealer 动画。
+(defvar word_reveal false)
+
+(defpoll WP :interval "5s" :initial "{}" `~/.config/waybar/word-popup.sh`)
+
+(defwidget poschips [pos]
+  (box :class "chips" :space-evenly false :spacing 6 :visible {arraylength(pos) > 0}
+    (for p in pos (label :class "chip" :text p))))
+
+(defwidget wordcard []
+  (box :class "card" :orientation "v" :space-evenly false
+    (box :class "pad" :orientation "v" :space-evenly false
+      (box :class "wrow" :space-evenly false :spacing 10
+        (label :class "word" :text {WP.current?.word ?: ""})
+        (poschips :pos {WP.current?.pos ?: "[]"}))
+      (label :class "ph" :halign "start" :visible {(WP.current?.phonetic ?: "") != ""}
+             :text {WP.current?.phonetic ?: ""})
+      (label :class "mean" :halign "start" :wrap true :text {WP.current?.meaning ?: ""})
+      (label :class "ex" :halign "start" :wrap true
+             :visible {(WP.current?.example ?: "") != ""}
+             :text {WP.current?.example ?: ""})
+      (button :class "spk" :halign "start"
+              :onclick "~/.config/waybar/word-speak.sh &" "🔊  朗读单词"))
+    (box :class "divider")
+    (label :class "listhdr" :halign "start" :text "今日单词 · 10")
+    (box :class "lst" :orientation "v" :space-evenly false
+      (for it in {WP.today ?: "[]"}
+        (box :class {it.current ? "row cur" : "row"} :space-evenly false
+          (label :class "rw" :halign "start" :hexpand true :text {it.word})
+          (label :class "rm" :halign "end" :text {it.meaning}))))))
+
+(defwindow daily-word
+  :stacking "overlay"
+  :focusable false
+  :geometry (geometry :x "520px" :y "0px" :anchor "top left" :width "360px")
+  (revealer :transition "slidedown" :duration "400ms" :reveal word_reveal
+    (eventbox :onclick "" (wordcard))))
