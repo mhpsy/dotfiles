@@ -1,7 +1,7 @@
 (defvar wisland_open false)
 
 (defpoll weather :interval "900s"
-                 :initial '{"ok":false,"city":"深圳宝安","msg":"加载中…"}'
+                 :initial '{"ok":false,"city":"深圳宝安","msg":"加载中…","current":{"icon":"","temp":"--","desc":"--","feel":"--","humidity":"--","wind_dir":"--","wind_speed":"--","pressure":"--","visibility":"--","wind_deg":"--","uv":"--","sunrise":"--","sunset":"--","pop":"--","precip":"--","cond":"clouds"},"hourly":[{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"}],"daily":[{"label":"今天","icon":"","min":"--","max":"--","desc":"--"},{"label":"明天","icon":"","min":"--","max":"--","desc":"--"},{"label":"后天","icon":"","min":"--","max":"--","desc":"--"}]}'
   "$HOME/.config/waybar/weather-eww.sh")
 
 (defwidget chip [k v]
@@ -24,7 +24,7 @@
       :text {(weather.daily[i].min ?: "--") + "° ~ " + (weather.daily[i].max ?: "--") + "°C  " + (weather.daily[i].desc ?: "")})))
 
 (defwidget card-ok []
-  (box :class "wcard cond-${weather.current.cond ?: "clouds"}" :orientation "v" :space-evenly false
+  (box :class {"wcard cond-" + (weather.current.cond ?: "clouds")} :orientation "v" :space-evenly false
     (overlay
       (box :class "amb")
       (box :orientation "v" :space-evenly false :class "wbody"
@@ -65,7 +65,7 @@
   :stacking "overlay"
   :focusable false
   :exclusive false
-  (eventbox :onhoverlost "bash -c 'eww --config $HOME/.config/waybar/eww update wisland_open=false; sleep 0.45; eww --config $HOME/.config/waybar/eww close weather-island'"
+  (eventbox :onhoverlost "eww --config $HOME/.config/waybar/eww update wisland_open=false; sleep 0.45; eww --config $HOME/.config/waybar/eww close weather-island"
     (revealer :transition "slidedown" :duration "420ms" :reveal wisland_open
       (box :class "island-wrap"
         (eventbox :visible {weather.ok ?: false} (card-ok))

@@ -29,7 +29,7 @@ if [ "${WEATHER_EWW_LIB_ONLY:-}" = "1" ]; then
 fi
 
 if [ ! -f "$CACHE" ]; then
-    jq -cn --arg c "$CITY" '{ok:false, city:$c, msg:"天气数据不可用"}'
+    jq -cn --arg c "$CITY" '{ok:false,city:$c,msg:"天气数据不可用",current:{icon:"",temp:"--",desc:"--",feel:"--",humidity:"--",wind_dir:"--",wind_speed:"--",pressure:"--",visibility:"--",wind_deg:"--",uv:"--",sunrise:"--",sunset:"--",pop:"--",precip:"--",cond:"clouds"},hourly:[{time:"--",icon:"",temp:"--"},{time:"--",icon:"",temp:"--"},{time:"--",icon:"",temp:"--"},{time:"--",icon:"",temp:"--"},{time:"--",icon:"",temp:"--"},{time:"--",icon:"",temp:"--"}],daily:[{label:"今天",icon:"",min:"--",max:"--",desc:"--"},{label:"明天",icon:"",min:"--",max:"--",desc:"--"},{label:"后天",icon:"",min:"--",max:"--",desc:"--"}]}'
     exit 0
 fi
 
