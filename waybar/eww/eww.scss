@@ -9,7 +9,7 @@
   padding: 20px 22px;
   margin: 4px;
   color: #ffffff;
-  box-shadow: 0 18px 46px rgba(0,0,0,0.6); /* GTK3/GtkBox 可能忽略,纯视觉锦上添花 */
+  box-shadow: 0 18px 46px rgba(0,0,0,0.6); /* may be ignored by GTK3/GtkBox; decorative only */
 }
 .wbody { min-width: 420px; }
 
@@ -20,7 +20,7 @@
 .hero-desc { font-size: 14px; color: #cdd3ff; }
 .hero-feel { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; }
 
-/* 九宫格 */
+/* stats grid */
 .grid { margin-top: 14px; }
 .grid > box { margin: 4px 0; }
 .chip {
@@ -35,19 +35,19 @@
 
 .sec { font-size: 11px; color: rgba(255,255,255,0.4); margin: 16px 0 8px 0; }
 
-/* 逐时 */
+/* hourly */
 .hcell { background-color: rgba(255,255,255,0.05); border-radius: 12px; padding: 8px 0; margin: 0 3px; }
 .h-t { font-size: 10px; color: rgba(255,255,255,0.5); }
 .h-i { font-size: 17px; margin: 3px 0; }
 .h-d { font-size: 13px; font-weight: 600; }
 
-/* 三天 */
+/* 3-day forecast */
 .drow { background-color: rgba(255,255,255,0.05); border-radius: 12px; padding: 9px 14px; margin-bottom: 7px; }
 .d-i { font-size: 19px; margin-right: 10px; }
 .d-l { font-size: 14px; }
 .d-r { font-size: 13px; color: rgba(255,255,255,0.7); }
 
-/* 氛围层:GTK3 仅动画 opacity —— 故全部用 opacity 呼吸/脉冲实现,确保真的会动 */
+/* ambient layer: GTK3 only animates opacity; all effects use opacity pulses so they actually animate */
 .amb { border-radius: 26px; background-repeat: no-repeat; min-width: 1px; min-height: 1px; }
 
 .cond-clear .amb {
