@@ -34,4 +34,4 @@
   :focusable false
   :geometry (geometry :x "520px" :y "0px" :anchor "top left" :width "360px")
   (revealer :transition "slidedown" :duration "400ms" :reveal word_reveal
-    (eventbox :onclick "" (wordcard))))
+    (wordcard)))

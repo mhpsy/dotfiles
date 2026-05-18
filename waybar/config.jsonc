@@ -98,8 +98,8 @@
         "return-type": "json",
         "exec": "~/.config/waybar/quotes.sh",
         "interval": 10,
-        "tooltip": true,
-        "on-click": "~/.config/waybar/speak-word.sh"
+        "tooltip": false,
+        "on-click": "~/.config/waybar/word-island-toggle.sh"
     },
 
     // Package Updates
