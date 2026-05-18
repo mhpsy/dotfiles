@@ -42,6 +42,8 @@ window#waybar {
 
 /* ============ Left: Weather ============ */
 #custom-weather {
+    /* 文楷渲染温度数字;天气图标(Nerd Font 私用区)由后面字体兜底 */
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", "Font Awesome 7 Free", "FiraCode Nerd Font", sans-serif;
     background-color: @bg;
     color: @fg_white;
     border-radius: 15px;
@@ -77,12 +79,13 @@ window#waybar {
     border-radius: 15px;
     padding: 4px 8px;
     margin: 6px 2px 6px 12px;
-    /* 等宽字体:每位数字同宽,秒数跳动时模块宽度不再抖动 */
-    font-family: "FiraCode Nerd Font", monospace;
+    /* 等宽字体:每位数字同宽,秒数跳动时模块宽度不抖动 */
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* ============ Left: Date ============ */
 #custom-date {
+    font-family: "LXGW WenKai Screen", "LXGW WenKai", sans-serif;
     background-color: @bg;
     color: @fg;
     border-radius: 15px;
