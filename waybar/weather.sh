@@ -67,38 +67,38 @@ wmo_icon() {
     case "$code" in
         0)
             if [ "$day" = "1" ]; then
-                printf ''   # clear day (nf-weather-day_sunny)
+                printf '\uf185'   # clear day (nf-fa-sun_o)
             else
-                printf ''   # clear night (nf-weather-night_clear)
+                printf '\uf186'   # clear night (nf-fa-moon_o)
             fi
             ;;
         1|2)
             if [ "$day" = "1" ]; then
-                printf ''   # partly cloudy day (nf-weather-day_cloudy)
+                printf '\uf6c4'   # partly cloudy day (nf-weather-day_cloudy)
             else
-                printf ''   # partly cloudy night (nf-weather-night_partly_cloudy)
+                printf '\uf6c3'   # partly cloudy night (nf-weather-night_cloudy)
             fi
             ;;
         3)
-            printf ''       # overcast / cloud (nf-weather-cloud)
+            printf '\uf0c2'       # overcast / cloud (nf-fa-cloud)
             ;;
         45|48)
-            printf ''       # fog (nf-weather-fog)
+            printf '\uf75f'       # fog (nf-weather-fog)
             ;;
         51|53|55|56|57|61|80)
-            printf ''       # light rain / drizzle (nf-weather-rain)
+            printf '\uf73d'       # light rain / drizzle (nf-weather-rain)
             ;;
         63|65|66|67|81|82)
-            printf ''       # heavy rain (nf-weather-rain_wind)
+            printf '\uf740'       # heavy rain (nf-weather-showers)
             ;;
         71|73|75|77|85|86)
-            printf ''       # snow (nf-weather-snow)
+            printf '\uf2dc'       # snow (nf-fa-snowflake_o)
             ;;
         95|96|99)
-            printf ''       # thunder (nf-weather-thunderstorm)
+            printf '\uf76c'       # thunder (nf-weather-thunderstorm)
             ;;
         *)
-            printf ''       # default cloud fallback (nf-fa-cloud)
+            printf '\uf0c2'       # default cloud fallback (nf-fa-cloud)
             ;;
     esac
 }
