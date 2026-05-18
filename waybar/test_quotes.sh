@@ -233,4 +233,22 @@ chk "$(echo "$pj2" | jq -r '.current.phonetic')" "" "popup-degrade-phonetic-empt
 chk "$(echo "$pj2" | jq -r '.current.example')" "" "popup-degrade-example-empty"
 echo "$pj2" | jq -e '.today|length==10' >/dev/null 2>&1; chk "$?" "0" "popup-degrade-still-10"
 
+# === Task9: word-speak.sh 仅朗读、不通知 ===
+WSPK="$HOME/.config/waybar/word-speak.sh"
+SF3="$CACHE_DIR/curw3"
+rw=$(WORDS_NO_PREFETCH=1 WORDS_STATE_FILE="$SF3" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SCRIPT" \
+  | jq -r '.text' | awk '{print $1}')
+dr=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="$SF3" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$WSPK")
+chk "$(printf '%s\n' "$dr" | sed -n 's/^WORD=//p')" "$rw" "speak2-word-matches"
+chk "$(printf '%s\n' "$dr" | sed -n 's/^AUDIO_SRC=//p')" "cache" "speak2-src-cache"
+printf '%s\n' "$dr" | grep -q '^NOTIFY' && chk "1" "0" "speak2-no-notify" \
+  || chk "0" "0" "speak2-no-notify"
+# 无缓存无状态 → gtts 兜底，不报错
+dr2=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="/nonexistent/x" \
+  WORDS_CACHE_FILE="/nonexistent/n.json" WORDLIST_FILE="$WLQ" \
+  WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$WSPK")
+chk "$(printf '%s\n' "$dr2" | sed -n 's/^AUDIO_SRC=//p')" "gtts" "speak2-gtts-fallback"
+
 exit $fail
