@@ -1,165 +1,1144 @@
 {
   "words": [
-    { "word": "abandon", "meaning": "v. 放弃；抛弃" },
-    { "word": "ability", "meaning": "n. 能力；才能" },
-    { "word": "absolute", "meaning": "adj. 绝对的；完全的" },
-    { "word": "abstract", "meaning": "adj. 抽象的 n. 摘要" },
-    { "word": "academic", "meaning": "adj. 学术的 n. 学者" },
-    { "word": "accelerate", "meaning": "v. 加速；促进" },
-    { "word": "accommodate", "meaning": "v. 容纳；适应" },
-    { "word": "accomplish", "meaning": "v. 完成；实现" },
-    { "word": "accurate", "meaning": "adj. 准确的；精确的" },
-    { "word": "achieve", "meaning": "v. 达到；实现" },
-    { "word": "acknowledge", "meaning": "v. 承认；感谢" },
-    { "word": "acquire", "meaning": "v. 获得；学到" },
-    { "word": "adapt", "meaning": "v. 适应；改编" },
-    { "word": "adequate", "meaning": "adj. 足够的；适当的" },
-    { "word": "admire", "meaning": "v. 钦佩；赞美" },
-    { "word": "adopt", "meaning": "v. 采用；收养" },
-    { "word": "advance", "meaning": "v./n. 前进；进步" },
-    { "word": "advantage", "meaning": "n. 优势；好处" },
-    { "word": "affect", "meaning": "v. 影响；感动" },
-    { "word": "aggressive", "meaning": "adj. 侵略性的；积极进取的" },
-    { "word": "allocate", "meaning": "v. 分配；拨给" },
-    { "word": "alternative", "meaning": "n./adj. 替代方案；可供选择的" },
-    { "word": "ambiguous", "meaning": "adj. 模糊的；有歧义的" },
-    { "word": "analyze", "meaning": "v. 分析；解析" },
-    { "word": "anticipate", "meaning": "v. 预期；期望" },
-    { "word": "apparent", "meaning": "adj. 明显的；表面上的" },
-    { "word": "appreciate", "meaning": "v. 感激；欣赏" },
-    { "word": "appropriate", "meaning": "adj. 适当的；合适的" },
-    { "word": "approximately", "meaning": "adv. 大约；近似地" },
-    { "word": "argue", "meaning": "v. 争论；主张" },
-    { "word": "aspect", "meaning": "n. 方面；外貌" },
-    { "word": "assess", "meaning": "v. 评估；评定" },
-    { "word": "assume", "meaning": "v. 假设；承担" },
-    { "word": "attach", "meaning": "v. 附上；依附" },
-    { "word": "attitude", "meaning": "n. 态度；姿势" },
-    { "word": "attribute", "meaning": "v. 归因于 n. 属性" },
-    { "word": "available", "meaning": "adj. 可用的；可得到的" },
-    { "word": "aware", "meaning": "adj. 意识到的；知道的" },
-    { "word": "barrier", "meaning": "n. 障碍；壁垒" },
-    { "word": "benefit", "meaning": "n. 益处 v. 受益" },
-    { "word": "burden", "meaning": "n. 负担 v. 使负重" },
-    { "word": "capable", "meaning": "adj. 有能力的；有才干的" },
-    { "word": "challenge", "meaning": "n./v. 挑战；质疑" },
-    { "word": "circumstance", "meaning": "n. 情况；环境" },
-    { "word": "collaborate", "meaning": "v. 合作；协作" },
-    { "word": "collapse", "meaning": "v./n. 崩溃；倒塌" },
-    { "word": "commitment", "meaning": "n. 承诺；投入" },
-    { "word": "communicate", "meaning": "v. 交流；传达" },
-    { "word": "complex", "meaning": "adj. 复杂的 n. 综合体" },
-    { "word": "concept", "meaning": "n. 概念；观念" },
-    { "word": "conclude", "meaning": "v. 得出结论；结束" },
-    { "word": "conflict", "meaning": "n./v. 冲突；矛盾" },
-    { "word": "consequence", "meaning": "n. 结果；后果" },
-    { "word": "considerable", "meaning": "adj. 相当大的；值得考虑的" },
-    { "word": "consistent", "meaning": "adj. 一致的；始终如一的" },
-    { "word": "contribute", "meaning": "v. 贡献；促成" },
-    { "word": "controversial", "meaning": "adj. 有争议的" },
-    { "word": "convenient", "meaning": "adj. 方便的；便利的" },
-    { "word": "cope", "meaning": "v. 应对；处理" },
-    { "word": "crucial", "meaning": "adj. 至关重要的" },
-    { "word": "cultivate", "meaning": "v. 培养；耕种" },
-    { "word": "decline", "meaning": "v./n. 下降；拒绝" },
-    { "word": "define", "meaning": "v. 定义；规定" },
-    { "word": "demonstrate", "meaning": "v. 证明；示范" },
-    { "word": "depend", "meaning": "v. 依赖；取决于" },
-    { "word": "derive", "meaning": "v. 获得；源自" },
-    { "word": "determine", "meaning": "v. 决定；查明" },
-    { "word": "develop", "meaning": "v. 发展；开发" },
-    { "word": "diverse", "meaning": "adj. 多样的；不同的" },
-    { "word": "dominance", "meaning": "n. 支配；优势" },
-    { "word": "dynamic", "meaning": "adj. 动态的；有活力的" },
-    { "word": "economic", "meaning": "adj. 经济的；经济学的" },
-    { "word": "effective", "meaning": "adj. 有效的；生效的" },
-    { "word": "eliminate", "meaning": "v. 消除；排除" },
-    { "word": "emerge", "meaning": "v. 出现；浮现" },
-    { "word": "emphasis", "meaning": "n. 强调；重点" },
-    { "word": "enhance", "meaning": "v. 增强；提高" },
-    { "word": "ensure", "meaning": "v. 确保；保证" },
-    { "word": "establish", "meaning": "v. 建立；确立" },
-    { "word": "evaluate", "meaning": "v. 评估；评价" },
-    { "word": "evolve", "meaning": "v. 演变；进化" },
-    { "word": "examine", "meaning": "v. 检查；审视" },
-    { "word": "expand", "meaning": "v. 扩大；扩展" },
-    { "word": "explicit", "meaning": "adj. 明确的；清楚的" },
-    { "word": "expose", "meaning": "v. 暴露；揭露" },
-    { "word": "facilitate", "meaning": "v. 促进；使容易" },
-    { "word": "flexible", "meaning": "adj. 灵活的；可弯曲的" },
-    { "word": "focus", "meaning": "v./n. 集中；焦点" },
-    { "word": "fundamental", "meaning": "adj. 基本的 n. 基础" },
-    { "word": "generate", "meaning": "v. 产生；引起" },
-    { "word": "global", "meaning": "adj. 全球的；全局的" },
-    { "word": "guarantee", "meaning": "v./n. 保证；担保" },
-    { "word": "highlight", "meaning": "v. 强调；突出 n. 亮点" },
-    { "word": "hypothesis", "meaning": "n. 假设；假说" },
-    { "word": "identify", "meaning": "v. 识别；确认" },
-    { "word": "illustrate", "meaning": "v. 说明；举例" },
-    { "word": "implement", "meaning": "v. 实施；执行" },
-    { "word": "imply", "meaning": "v. 暗示；意味着" },
-    { "word": "indicate", "meaning": "v. 表明；指示" },
-    { "word": "individual", "meaning": "adj. 个人的 n. 个体" },
-    { "word": "influence", "meaning": "n./v. 影响；作用" },
-    { "word": "initiative", "meaning": "n. 主动性；倡议" },
-    { "word": "innovative", "meaning": "adj. 创新的；革新的" },
-    { "word": "integrate", "meaning": "v. 整合；融入" },
-    { "word": "interpret", "meaning": "v. 解释；口译" },
-    { "word": "investigate", "meaning": "v. 调查；研究" },
-    { "word": "justify", "meaning": "v. 证明合理；辩护" },
-    { "word": "maintain", "meaning": "v. 维持；保持" },
-    { "word": "manifest", "meaning": "v. 表明；显现 adj. 明显的" },
-    { "word": "methodology", "meaning": "n. 方法论；方法体系" },
-    { "word": "minimize", "meaning": "v. 最小化；减小" },
-    { "word": "modify", "meaning": "v. 修改；调整" },
-    { "word": "monitor", "meaning": "v. 监控 n. 监视器" },
-    { "word": "motivate", "meaning": "v. 激励；激发" },
-    { "word": "mutual", "meaning": "adj. 相互的；共同的" },
-    { "word": "negotiate", "meaning": "v. 谈判；协商" },
-    { "word": "objective", "meaning": "n. 目标 adj. 客观的" },
-    { "word": "obtain", "meaning": "v. 获得；得到" },
-    { "word": "obvious", "meaning": "adj. 明显的；显然的" },
-    { "word": "outcome", "meaning": "n. 结果；成果" },
-    { "word": "overcome", "meaning": "v. 克服；战胜" },
-    { "word": "perceive", "meaning": "v. 感知；认为" },
-    { "word": "perspective", "meaning": "n. 观点；视角" },
-    { "word": "phenomenon", "meaning": "n. 现象；非凡的人" },
-    { "word": "potential", "meaning": "n./adj. 潜力；潜在的" },
-    { "word": "precise", "meaning": "adj. 精确的；准确的" },
-    { "word": "predict", "meaning": "v. 预测；预言" },
-    { "word": "primary", "meaning": "adj. 主要的；初级的" },
-    { "word": "principle", "meaning": "n. 原则；原理" },
-    { "word": "priority", "meaning": "n. 优先权；重要性" },
-    { "word": "process", "meaning": "n./v. 过程；处理" },
-    { "word": "promote", "meaning": "v. 促进；晋升" },
-    { "word": "propose", "meaning": "v. 提议；建议" },
-    { "word": "pursue", "meaning": "v. 追求；从事" },
-    { "word": "qualify", "meaning": "v. 使具备资格；限定" },
-    { "word": "recognize", "meaning": "v. 认出；承认" },
-    { "word": "reform", "meaning": "v./n. 改革；改良" },
-    { "word": "regulate", "meaning": "v. 调节；规范" },
-    { "word": "relevant", "meaning": "adj. 相关的；有意义的" },
-    { "word": "rely", "meaning": "v. 依赖；信任" },
-    { "word": "resolve", "meaning": "v. 解决；决定" },
-    { "word": "reveal", "meaning": "v. 揭示；透露" },
-    { "word": "significant", "meaning": "adj. 重要的；显著的" },
-    { "word": "stimulate", "meaning": "v. 刺激；促进" },
-    { "word": "strategy", "meaning": "n. 策略；战略" },
-    { "word": "substitute", "meaning": "v. 替代 n. 替代品" },
-    { "word": "sufficient", "meaning": "adj. 足够的；充分的" },
-    { "word": "support", "meaning": "v./n. 支持；支撑" },
-    { "word": "sustain", "meaning": "v. 维持；支撑" },
-    { "word": "tendency", "meaning": "n. 趋势；倾向" },
-    { "word": "transform", "meaning": "v. 转变；改造" },
-    { "word": "typical", "meaning": "adj. 典型的；有代表性的" },
-    { "word": "ultimate", "meaning": "adj. 最终的；根本的" },
-    { "word": "uniform", "meaning": "adj. 统一的 n. 制服" },
-    { "word": "utilize", "meaning": "v. 利用；使用" },
-    { "word": "valid", "meaning": "adj. 有效的；合理的" },
-    { "word": "vast", "meaning": "adj. 广阔的；大量的" },
-    { "word": "verify", "meaning": "v. 核实；证明" },
-    { "word": "vital", "meaning": "adj. 至关重要的；生命的" },
-    { "word": "vulnerable", "meaning": "adj. 脆弱的；易受伤的" },
-    { "word": "widespread", "meaning": "adj. 广泛的；普遍的" }
+    {
+      "word": "abandon",
+      "pos": [
+        "v."
+      ],
+      "meaning": "放弃；抛弃"
+    },
+    {
+      "word": "ability",
+      "pos": [
+        "n."
+      ],
+      "meaning": "能力；才能"
+    },
+    {
+      "word": "absolute",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "绝对的；完全的"
+    },
+    {
+      "word": "abstract",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "抽象的 n. 摘要"
+    },
+    {
+      "word": "academic",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "学术的 n. 学者"
+    },
+    {
+      "word": "accelerate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "加速；促进"
+    },
+    {
+      "word": "accommodate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "容纳；适应"
+    },
+    {
+      "word": "accomplish",
+      "pos": [
+        "v."
+      ],
+      "meaning": "完成；实现"
+    },
+    {
+      "word": "accurate",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "准确的；精确的"
+    },
+    {
+      "word": "achieve",
+      "pos": [
+        "v."
+      ],
+      "meaning": "达到；实现"
+    },
+    {
+      "word": "acknowledge",
+      "pos": [
+        "v."
+      ],
+      "meaning": "承认；感谢"
+    },
+    {
+      "word": "acquire",
+      "pos": [
+        "v."
+      ],
+      "meaning": "获得；学到"
+    },
+    {
+      "word": "adapt",
+      "pos": [
+        "v."
+      ],
+      "meaning": "适应；改编"
+    },
+    {
+      "word": "adequate",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "足够的；适当的"
+    },
+    {
+      "word": "admire",
+      "pos": [
+        "v."
+      ],
+      "meaning": "钦佩；赞美"
+    },
+    {
+      "word": "adopt",
+      "pos": [
+        "v."
+      ],
+      "meaning": "采用；收养"
+    },
+    {
+      "word": "advance",
+      "pos": [
+        "v.",
+        "n."
+      ],
+      "meaning": "前进；进步"
+    },
+    {
+      "word": "advantage",
+      "pos": [
+        "n."
+      ],
+      "meaning": "优势；好处"
+    },
+    {
+      "word": "affect",
+      "pos": [
+        "v."
+      ],
+      "meaning": "影响；感动"
+    },
+    {
+      "word": "aggressive",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "侵略性的；积极进取的"
+    },
+    {
+      "word": "allocate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "分配；拨给"
+    },
+    {
+      "word": "alternative",
+      "pos": [
+        "n.",
+        "adj."
+      ],
+      "meaning": "替代方案；可供选择的"
+    },
+    {
+      "word": "ambiguous",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "模糊的；有歧义的"
+    },
+    {
+      "word": "analyze",
+      "pos": [
+        "v."
+      ],
+      "meaning": "分析；解析"
+    },
+    {
+      "word": "anticipate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "预期；期望"
+    },
+    {
+      "word": "apparent",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "明显的；表面上的"
+    },
+    {
+      "word": "appreciate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "感激；欣赏"
+    },
+    {
+      "word": "appropriate",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "适当的；合适的"
+    },
+    {
+      "word": "approximately",
+      "pos": [
+        "adv."
+      ],
+      "meaning": "大约；近似地"
+    },
+    {
+      "word": "argue",
+      "pos": [
+        "v."
+      ],
+      "meaning": "争论；主张"
+    },
+    {
+      "word": "aspect",
+      "pos": [
+        "n."
+      ],
+      "meaning": "方面；外貌"
+    },
+    {
+      "word": "assess",
+      "pos": [
+        "v."
+      ],
+      "meaning": "评估；评定"
+    },
+    {
+      "word": "assume",
+      "pos": [
+        "v."
+      ],
+      "meaning": "假设；承担"
+    },
+    {
+      "word": "attach",
+      "pos": [
+        "v."
+      ],
+      "meaning": "附上；依附"
+    },
+    {
+      "word": "attitude",
+      "pos": [
+        "n."
+      ],
+      "meaning": "态度；姿势"
+    },
+    {
+      "word": "attribute",
+      "pos": [
+        "v."
+      ],
+      "meaning": "归因于 n. 属性"
+    },
+    {
+      "word": "available",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "可用的；可得到的"
+    },
+    {
+      "word": "aware",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "意识到的；知道的"
+    },
+    {
+      "word": "barrier",
+      "pos": [
+        "n."
+      ],
+      "meaning": "障碍；壁垒"
+    },
+    {
+      "word": "benefit",
+      "pos": [
+        "n."
+      ],
+      "meaning": "益处 v. 受益"
+    },
+    {
+      "word": "burden",
+      "pos": [
+        "n."
+      ],
+      "meaning": "负担 v. 使负重"
+    },
+    {
+      "word": "capable",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "有能力的；有才干的"
+    },
+    {
+      "word": "challenge",
+      "pos": [
+        "n.",
+        "v."
+      ],
+      "meaning": "挑战；质疑"
+    },
+    {
+      "word": "circumstance",
+      "pos": [
+        "n."
+      ],
+      "meaning": "情况；环境"
+    },
+    {
+      "word": "collaborate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "合作；协作"
+    },
+    {
+      "word": "collapse",
+      "pos": [
+        "v.",
+        "n."
+      ],
+      "meaning": "崩溃；倒塌"
+    },
+    {
+      "word": "commitment",
+      "pos": [
+        "n."
+      ],
+      "meaning": "承诺；投入"
+    },
+    {
+      "word": "communicate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "交流；传达"
+    },
+    {
+      "word": "complex",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "复杂的 n. 综合体"
+    },
+    {
+      "word": "concept",
+      "pos": [
+        "n."
+      ],
+      "meaning": "概念；观念"
+    },
+    {
+      "word": "conclude",
+      "pos": [
+        "v."
+      ],
+      "meaning": "得出结论；结束"
+    },
+    {
+      "word": "conflict",
+      "pos": [
+        "n.",
+        "v."
+      ],
+      "meaning": "冲突；矛盾"
+    },
+    {
+      "word": "consequence",
+      "pos": [
+        "n."
+      ],
+      "meaning": "结果；后果"
+    },
+    {
+      "word": "considerable",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "相当大的；值得考虑的"
+    },
+    {
+      "word": "consistent",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "一致的；始终如一的"
+    },
+    {
+      "word": "contribute",
+      "pos": [
+        "v."
+      ],
+      "meaning": "贡献；促成"
+    },
+    {
+      "word": "controversial",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "有争议的"
+    },
+    {
+      "word": "convenient",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "方便的；便利的"
+    },
+    {
+      "word": "cope",
+      "pos": [
+        "v."
+      ],
+      "meaning": "应对；处理"
+    },
+    {
+      "word": "crucial",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "至关重要的"
+    },
+    {
+      "word": "cultivate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "培养；耕种"
+    },
+    {
+      "word": "decline",
+      "pos": [
+        "v.",
+        "n."
+      ],
+      "meaning": "下降；拒绝"
+    },
+    {
+      "word": "define",
+      "pos": [
+        "v."
+      ],
+      "meaning": "定义；规定"
+    },
+    {
+      "word": "demonstrate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "证明；示范"
+    },
+    {
+      "word": "depend",
+      "pos": [
+        "v."
+      ],
+      "meaning": "依赖；取决于"
+    },
+    {
+      "word": "derive",
+      "pos": [
+        "v."
+      ],
+      "meaning": "获得；源自"
+    },
+    {
+      "word": "determine",
+      "pos": [
+        "v."
+      ],
+      "meaning": "决定；查明"
+    },
+    {
+      "word": "develop",
+      "pos": [
+        "v."
+      ],
+      "meaning": "发展；开发"
+    },
+    {
+      "word": "diverse",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "多样的；不同的"
+    },
+    {
+      "word": "dominance",
+      "pos": [
+        "n."
+      ],
+      "meaning": "支配；优势"
+    },
+    {
+      "word": "dynamic",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "动态的；有活力的"
+    },
+    {
+      "word": "economic",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "经济的；经济学的"
+    },
+    {
+      "word": "effective",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "有效的；生效的"
+    },
+    {
+      "word": "eliminate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "消除；排除"
+    },
+    {
+      "word": "emerge",
+      "pos": [
+        "v."
+      ],
+      "meaning": "出现；浮现"
+    },
+    {
+      "word": "emphasis",
+      "pos": [
+        "n."
+      ],
+      "meaning": "强调；重点"
+    },
+    {
+      "word": "enhance",
+      "pos": [
+        "v."
+      ],
+      "meaning": "增强；提高"
+    },
+    {
+      "word": "ensure",
+      "pos": [
+        "v."
+      ],
+      "meaning": "确保；保证"
+    },
+    {
+      "word": "establish",
+      "pos": [
+        "v."
+      ],
+      "meaning": "建立；确立"
+    },
+    {
+      "word": "evaluate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "评估；评价"
+    },
+    {
+      "word": "evolve",
+      "pos": [
+        "v."
+      ],
+      "meaning": "演变；进化"
+    },
+    {
+      "word": "examine",
+      "pos": [
+        "v."
+      ],
+      "meaning": "检查；审视"
+    },
+    {
+      "word": "expand",
+      "pos": [
+        "v."
+      ],
+      "meaning": "扩大；扩展"
+    },
+    {
+      "word": "explicit",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "明确的；清楚的"
+    },
+    {
+      "word": "expose",
+      "pos": [
+        "v."
+      ],
+      "meaning": "暴露；揭露"
+    },
+    {
+      "word": "facilitate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "促进；使容易"
+    },
+    {
+      "word": "flexible",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "灵活的；可弯曲的"
+    },
+    {
+      "word": "focus",
+      "pos": [
+        "v.",
+        "n."
+      ],
+      "meaning": "集中；焦点"
+    },
+    {
+      "word": "fundamental",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "基本的 n. 基础"
+    },
+    {
+      "word": "generate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "产生；引起"
+    },
+    {
+      "word": "global",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "全球的；全局的"
+    },
+    {
+      "word": "guarantee",
+      "pos": [
+        "v.",
+        "n."
+      ],
+      "meaning": "保证；担保"
+    },
+    {
+      "word": "highlight",
+      "pos": [
+        "v."
+      ],
+      "meaning": "强调；突出 n. 亮点"
+    },
+    {
+      "word": "hypothesis",
+      "pos": [
+        "n."
+      ],
+      "meaning": "假设；假说"
+    },
+    {
+      "word": "identify",
+      "pos": [
+        "v."
+      ],
+      "meaning": "识别；确认"
+    },
+    {
+      "word": "illustrate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "说明；举例"
+    },
+    {
+      "word": "implement",
+      "pos": [
+        "v."
+      ],
+      "meaning": "实施；执行"
+    },
+    {
+      "word": "imply",
+      "pos": [
+        "v."
+      ],
+      "meaning": "暗示；意味着"
+    },
+    {
+      "word": "indicate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "表明；指示"
+    },
+    {
+      "word": "individual",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "个人的 n. 个体"
+    },
+    {
+      "word": "influence",
+      "pos": [
+        "n.",
+        "v."
+      ],
+      "meaning": "影响；作用"
+    },
+    {
+      "word": "initiative",
+      "pos": [
+        "n."
+      ],
+      "meaning": "主动性；倡议"
+    },
+    {
+      "word": "innovative",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "创新的；革新的"
+    },
+    {
+      "word": "integrate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "整合；融入"
+    },
+    {
+      "word": "interpret",
+      "pos": [
+        "v."
+      ],
+      "meaning": "解释；口译"
+    },
+    {
+      "word": "investigate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "调查；研究"
+    },
+    {
+      "word": "justify",
+      "pos": [
+        "v."
+      ],
+      "meaning": "证明合理；辩护"
+    },
+    {
+      "word": "maintain",
+      "pos": [
+        "v."
+      ],
+      "meaning": "维持；保持"
+    },
+    {
+      "word": "manifest",
+      "pos": [
+        "v."
+      ],
+      "meaning": "表明；显现 adj. 明显的"
+    },
+    {
+      "word": "methodology",
+      "pos": [
+        "n."
+      ],
+      "meaning": "方法论；方法体系"
+    },
+    {
+      "word": "minimize",
+      "pos": [
+        "v."
+      ],
+      "meaning": "最小化；减小"
+    },
+    {
+      "word": "modify",
+      "pos": [
+        "v."
+      ],
+      "meaning": "修改；调整"
+    },
+    {
+      "word": "monitor",
+      "pos": [
+        "v."
+      ],
+      "meaning": "监控 n. 监视器"
+    },
+    {
+      "word": "motivate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "激励；激发"
+    },
+    {
+      "word": "mutual",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "相互的；共同的"
+    },
+    {
+      "word": "negotiate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "谈判；协商"
+    },
+    {
+      "word": "objective",
+      "pos": [
+        "n."
+      ],
+      "meaning": "目标 adj. 客观的"
+    },
+    {
+      "word": "obtain",
+      "pos": [
+        "v."
+      ],
+      "meaning": "获得；得到"
+    },
+    {
+      "word": "obvious",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "明显的；显然的"
+    },
+    {
+      "word": "outcome",
+      "pos": [
+        "n."
+      ],
+      "meaning": "结果；成果"
+    },
+    {
+      "word": "overcome",
+      "pos": [
+        "v."
+      ],
+      "meaning": "克服；战胜"
+    },
+    {
+      "word": "perceive",
+      "pos": [
+        "v."
+      ],
+      "meaning": "感知；认为"
+    },
+    {
+      "word": "perspective",
+      "pos": [
+        "n."
+      ],
+      "meaning": "观点；视角"
+    },
+    {
+      "word": "phenomenon",
+      "pos": [
+        "n."
+      ],
+      "meaning": "现象；非凡的人"
+    },
+    {
+      "word": "potential",
+      "pos": [
+        "n.",
+        "adj."
+      ],
+      "meaning": "潜力；潜在的"
+    },
+    {
+      "word": "precise",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "精确的；准确的"
+    },
+    {
+      "word": "predict",
+      "pos": [
+        "v."
+      ],
+      "meaning": "预测；预言"
+    },
+    {
+      "word": "primary",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "主要的；初级的"
+    },
+    {
+      "word": "principle",
+      "pos": [
+        "n."
+      ],
+      "meaning": "原则；原理"
+    },
+    {
+      "word": "priority",
+      "pos": [
+        "n."
+      ],
+      "meaning": "优先权；重要性"
+    },
+    {
+      "word": "process",
+      "pos": [
+        "n.",
+        "v."
+      ],
+      "meaning": "过程；处理"
+    },
+    {
+      "word": "promote",
+      "pos": [
+        "v."
+      ],
+      "meaning": "促进；晋升"
+    },
+    {
+      "word": "propose",
+      "pos": [
+        "v."
+      ],
+      "meaning": "提议；建议"
+    },
+    {
+      "word": "pursue",
+      "pos": [
+        "v."
+      ],
+      "meaning": "追求；从事"
+    },
+    {
+      "word": "qualify",
+      "pos": [
+        "v."
+      ],
+      "meaning": "使具备资格；限定"
+    },
+    {
+      "word": "recognize",
+      "pos": [
+        "v."
+      ],
+      "meaning": "认出；承认"
+    },
+    {
+      "word": "reform",
+      "pos": [
+        "v.",
+        "n."
+      ],
+      "meaning": "改革；改良"
+    },
+    {
+      "word": "regulate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "调节；规范"
+    },
+    {
+      "word": "relevant",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "相关的；有意义的"
+    },
+    {
+      "word": "rely",
+      "pos": [
+        "v."
+      ],
+      "meaning": "依赖；信任"
+    },
+    {
+      "word": "resolve",
+      "pos": [
+        "v."
+      ],
+      "meaning": "解决；决定"
+    },
+    {
+      "word": "reveal",
+      "pos": [
+        "v."
+      ],
+      "meaning": "揭示；透露"
+    },
+    {
+      "word": "significant",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "重要的；显著的"
+    },
+    {
+      "word": "stimulate",
+      "pos": [
+        "v."
+      ],
+      "meaning": "刺激；促进"
+    },
+    {
+      "word": "strategy",
+      "pos": [
+        "n."
+      ],
+      "meaning": "策略；战略"
+    },
+    {
+      "word": "substitute",
+      "pos": [
+        "v."
+      ],
+      "meaning": "替代 n. 替代品"
+    },
+    {
+      "word": "sufficient",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "足够的；充分的"
+    },
+    {
+      "word": "support",
+      "pos": [
+        "v.",
+        "n."
+      ],
+      "meaning": "支持；支撑"
+    },
+    {
+      "word": "sustain",
+      "pos": [
+        "v."
+      ],
+      "meaning": "维持；支撑"
+    },
+    {
+      "word": "tendency",
+      "pos": [
+        "n."
+      ],
+      "meaning": "趋势；倾向"
+    },
+    {
+      "word": "transform",
+      "pos": [
+        "v."
+      ],
+      "meaning": "转变；改造"
+    },
+    {
+      "word": "typical",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "典型的；有代表性的"
+    },
+    {
+      "word": "ultimate",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "最终的；根本的"
+    },
+    {
+      "word": "uniform",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "统一的 n. 制服"
+    },
+    {
+      "word": "utilize",
+      "pos": [
+        "v."
+      ],
+      "meaning": "利用；使用"
+    },
+    {
+      "word": "valid",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "有效的；合理的"
+    },
+    {
+      "word": "vast",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "广阔的；大量的"
+    },
+    {
+      "word": "verify",
+      "pos": [
+        "v."
+      ],
+      "meaning": "核实；证明"
+    },
+    {
+      "word": "vital",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "至关重要的；生命的"
+    },
+    {
+      "word": "vulnerable",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "脆弱的；易受伤的"
+    },
+    {
+      "word": "widespread",
+      "pos": [
+        "adj."
+      ],
+      "meaning": "广泛的；普遍的"
+    }
   ]
 }

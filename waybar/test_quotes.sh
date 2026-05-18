@@ -138,4 +138,25 @@ dr2=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="/nonexistent/sf.none" \
 src2=$(printf '%s\n' "$dr2" | sed -n 's/^AUDIO_SRC=//p')
 chk "$src2" "gtts" "speak-audio-src-gtts-fallback"
 
+# === Task5: wordlist 词性拆分 jq 过滤器 ===
+POSJQ="$HOME/.config/waybar/wordlist-pos.jq"
+WLIN="$CACHE_DIR/wl_in.json"
+cat > "$WLIN" <<'JSON'
+{"words":[
+{"word":"abandon","meaning":"v. 放弃；抛弃"},
+{"word":"ability","meaning":"n. 能力；才能"},
+{"word":"quick","meaning":"adj. 快的"},
+{"word":"well","meaning":"adv. 好地"},
+{"word":"record","meaning":"v. & n. 记录"},
+{"word":"plain","meaning":"无前缀的释义"}
+]}
+JSON
+wlout=$(jq -f "$POSJQ" "$WLIN")
+chk "$(echo "$wlout" | jq -c '.words[0]')" '{"word":"abandon","pos":["v."],"meaning":"放弃；抛弃"}' "pos-verb"
+chk "$(echo "$wlout" | jq -c '.words[1].pos')" '["n."]' "pos-noun"
+chk "$(echo "$wlout" | jq -c '.words[3].pos')" '["adv."]' "pos-adv"
+chk "$(echo "$wlout" | jq -c '.words[4]')" '{"word":"record","pos":["v.","n."],"meaning":"记录"}' "pos-compound"
+chk "$(echo "$wlout" | jq -c '.words[5]')" '{"word":"plain","pos":[],"meaning":"无前缀的释义"}' "pos-none"
+chk "$(echo "$wlout" | jq '.words|length')" "6" "pos-count-preserved"
+
 exit $fail
