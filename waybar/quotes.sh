@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Waybar 每日单词：日期种子确定性抽 10，每 10 秒轮换。
-# 选词见 words-lib.sh；tooltip 顶部用 ~/.cache/waybar/words.json 富信息。
+# 选词见 words-lib.sh；仅输出 bar text（词 词性 释义），富信息弹窗见 eww。
 set -u
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$DIR/words-lib.sh"
 
-wl_select   # 设 WL_IDX/WL_SEL/WL_WORD/WL_MEANING；前置失败则已空输出退出
+wl_select   # 设 WL_IDX/WL_SEL/WL_WORD/WL_POS/WL_MEANING；前置失败则已空输出退出
 
 # 记录当前显示词，供 on-click 精确朗读（避免点击跨轮换边界取到不同词）
 mkdir -p "$(dirname "$WORDS_STATE_FILE")" 2>/dev/null
@@ -20,13 +20,6 @@ cache_seed=""
 if [ -z "${WORDS_NO_PREFETCH:-}" ] && [ "$cache_seed" != "$SEED" ]; then
   mkdir -p "$(dirname "$WORDS_LOCK_FILE")" 2>/dev/null
   setsid flock -n "$WORDS_LOCK_FILE" "$DIR/words-cache.sh" >/dev/null 2>&1 &
-fi
-
-# 当前词富信息（缓存就绪时）
-ph=""; ex=""
-if [ -r "$WORDS_CACHE_FILE" ]; then
-  ph=$(jq -r --arg w "$WL_WORD" '.words[$w].phonetic // ""' "$WORDS_CACHE_FILE" 2>/dev/null)
-  ex=$(jq -r --arg w "$WL_WORD" '.words[$w].examples[0] // ""' "$WORDS_CACHE_FILE" 2>/dev/null)
 fi
 
 # bar text：词 + 词性 + 释义，拼回旧视觉（空词性不留双空格）
