@@ -212,4 +212,25 @@ echo "$out" | jq -e '.text' >/dev/null 2>&1; chk "$?" "0" "quotes-still-valid-js
 echo "$out" | jq -r '.tooltip // ""' | grep -q '今日单词' \
   && chk "1" "0" "quotes-no-tooltip-block" || chk "0" "0" "quotes-no-tooltip-block"
 
+# === Task8: word-popup.sh 输出弹窗 JSON ===
+POP="$HOME/.config/waybar/word-popup.sh"
+# 复用 Task2 的 $CF（今日 10 词富信息），词库用带 pos 的 $WLQ
+pj=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="$CF" WORDLIST_FILE="$WLQ" \
+  WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$POP")
+echo "$pj" | jq -e '.current and .today' >/dev/null 2>&1; chk "$?" "0" "popup-valid-json"
+chk "$(echo "$pj" | jq '.today|length')" "10" "popup-today-10"
+chk "$(echo "$pj" | jq '[.today[]|select(.current)]|length')" "1" "popup-one-current"
+# current.word 必等于 quotes.sh 同 seed/epoch 渲染的词
+qw=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=0 \
+  bash "$SCRIPT" | jq -r '.text' | awk '{print $1}')
+chk "$(echo "$pj" | jq -r '.current.word')" "$qw" "popup-current-matches-quotes"
+# pos 是数组
+echo "$pj" | jq -e '.current.pos|type=="array"' >/dev/null 2>&1; chk "$?" "0" "popup-pos-array"
+# 缓存缺失 → phonetic/example 为空字符串、仍合法
+pj2=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="/nonexistent/n.json" WORDLIST_FILE="$WLQ" \
+  WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$POP")
+chk "$(echo "$pj2" | jq -r '.current.phonetic')" "" "popup-degrade-phonetic-empty"
+chk "$(echo "$pj2" | jq -r '.current.example')" "" "popup-degrade-example-empty"
+echo "$pj2" | jq -e '.today|length==10' >/dev/null 2>&1; chk "$?" "0" "popup-degrade-still-10"
+
 exit $fail
