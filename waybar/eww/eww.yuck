@@ -61,7 +61,7 @@
 
 (defwindow weather-island
   :monitor 0
-  :geometry (geometry :x "150px" :y "38px" :width "0px" :height "0px" :anchor "top left")
+  :geometry (geometry :x "150px" :y "42px" :anchor "top left" :width "480px" :height "620px")
   :stacking "overlay"
   :focusable false
   :exclusive false
