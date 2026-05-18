@@ -65,7 +65,7 @@
   :stacking "overlay"
   :focusable false
   :exclusive false
-  (eventbox :onhoverlost "eww --config $HOME/.config/waybar/eww update wisland_open=false; sleep 0.45; eww --config $HOME/.config/waybar/eww close weather-island"
+  (eventbox :onhoverlost "eww --config $HOME/.config/waybar/eww update wisland_open=false"
     (revealer :transition "slidedown" :duration "420ms" :reveal wisland_open
       (box :class "island-wrap"
         (eventbox :visible {weather.ok ?: false} (card-ok))

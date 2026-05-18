@@ -89,7 +89,8 @@
         "return-type": "json",
         "exec": "~/.config/waybar/weather.sh",
         "interval": 900,
-        "tooltip": true
+        "tooltip": false,
+        "on-click": "~/.config/waybar/weather-island-toggle.sh"
     },
 
     // Quotes
