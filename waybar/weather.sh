@@ -116,3 +116,105 @@ wind_dir_cn() {
 if [ "${WEATHER_LIB_ONLY:-}" = "1" ]; then
     return 0 2>/dev/null || exit 0
 fi
+
+# ---- fetch (only if cache stale/missing; atomic write, failure won't poison good cache) ----
+need_fetch=1
+if [ -f "$CACHE" ] && [ $(( $(date +%s) - $(stat -c %Y "$CACHE") )) -le "$CACHE_AGE" ]; then
+    need_fetch=0
+fi
+if [ "$need_fetch" = "1" ]; then
+    tmp=$(mktemp /tmp/waybar-openmeteo.XXXXXX)
+    if curl -sf --compressed --connect-timeout 10 "$API" -o "$tmp" 2>/dev/null \
+       && jq -e '.current.temperature_2m != null' "$tmp" >/dev/null 2>&1; then
+        mv -f "$tmp" "$CACHE"
+    else
+        rm -f "$tmp"
+    fi
+fi
+
+if [ ! -f "$CACHE" ]; then
+    echo '{"text":"","tooltip":"Weather unavailable"}'
+    exit 0
+fi
+
+# ---- scalars; missing -> "--" ----
+g() { jq -r "$1 // \"--\"" "$CACHE" 2>/dev/null; }
+
+is_day=$(g '.current.is_day')
+[ "$is_day" = "--" ] && is_day=1
+cur_code=$(g '.current.weather_code')
+cur_temp=$(r "$(g '.current.temperature_2m')")
+cur_feel=$(r "$(g '.current.apparent_temperature')")
+cur_hum=$(g '.current.relative_humidity_2m')
+cur_pres=$(r "$(g '.current.pressure_msl')")
+cur_wspd=$(r "$(g '.current.wind_speed_10m')")
+cur_wdeg_raw=$(g '.current.wind_direction_10m')
+cur_wdeg=$(r "$cur_wdeg_raw")
+[ "$cur_wdeg_raw" = "--" ] && cur_wdeg_raw=0
+
+icon=$(wmo_icon "$cur_code" "$is_day")
+desc=$(wmo_text "$cur_code")
+wdir=$(wind_dir_cn "$cur_wdeg_raw")
+
+# current hour -> hourly index (fallback 0)
+now_key=$(date +%Y-%m-%dT%H:00)
+hidx=$(jq -r --arg t "$now_key" '(.hourly.time | index($t)) // 0' "$CACHE" 2>/dev/null)
+[ -z "$hidx" ] || [ "$hidx" = "null" ] && hidx=0
+
+vis_m=$(jq -r --argjson i "$hidx" '.hourly.visibility[$i] // empty' "$CACHE" 2>/dev/null)
+if [ -n "$vis_m" ]; then
+    vis_km=$(awk -v m="$vis_m" 'BEGIN{ printf "%.1f", m/1000 }')
+else
+    vis_km="--"
+fi
+
+sr=$(g '.daily.sunrise[0]')
+ss=$(g '.daily.sunset[0]')
+[ "$sr" != "--" ] && sr="${sr:11:5}"
+[ "$ss" != "--" ] && ss="${ss:11:5}"
+uv=$(r "$(g '.daily.uv_index_max[0]')")
+pop=$(g '.daily.precipitation_probability_max[0]')
+psum=$(jq -r '.daily.precipitation_sum[0] // empty' "$CACHE" 2>/dev/null)
+if [ -n "$psum" ]; then
+    psum=$(awk -v x="$psum" 'BEGIN{ printf "%.1f", x }')
+else
+    psum="--"
+fi
+
+# hourly next 6 hours
+mapfile -t h_time < <(jq -r --argjson i "$hidx" '.hourly.time[$i:$i+6][]?'         "$CACHE" 2>/dev/null)
+mapfile -t h_temp < <(jq -r --argjson i "$hidx" '.hourly.temperature_2m[$i:$i+6][]?' "$CACHE" 2>/dev/null)
+mapfile -t h_code < <(jq -r --argjson i "$hidx" '.hourly.weather_code[$i:$i+6][]?'   "$CACHE" 2>/dev/null)
+hourly_line="逐时 "
+for k in "${!h_time[@]}"; do
+    hh="${h_time[$k]:11:2}"
+    hh=$((10#${hh:-0}))
+    ht=$(r "${h_temp[$k]:-}")
+    hi=$(wmo_icon "${h_code[$k]:-x}" "$is_day")
+    hourly_line+=" ${hh}时 ${ht}°${hi} "
+done
+
+# 3-day forecast
+days=(今天 明天 后天)
+forecast=""
+for i in 0 1 2; do
+    d_code=$(jq -r ".daily.weather_code[$i] // \"x\""        "$CACHE" 2>/dev/null)
+    d_max=$(r "$(jq -r ".daily.temperature_2m_max[$i] // \"--\"" "$CACHE" 2>/dev/null)")
+    d_min=$(r "$(jq -r ".daily.temperature_2m_min[$i] // \"--\"" "$CACHE" 2>/dev/null)")
+    d_icon=$(wmo_icon "$d_code" 1)
+    d_desc=$(wmo_text "$d_code")
+    forecast+=$'\n'"${d_icon}  ${days[$i]}  ${d_min}° ~ ${d_max}°C  ${d_desc}"
+done
+
+# ---- assemble tooltip (real newlines, jq encodes to valid JSON) ----
+sep="─────────────────────"
+tooltip="<b>${CITY}  ${cur_temp}°C  ${desc}</b>"
+tooltip+=$'\n'"体感 ${cur_feel}°C  |  湿度 ${cur_hum}%  |  ${wdir} ${cur_wspd} km/h"
+tooltip+=$'\n'"气压 ${cur_pres} hPa  |  能见度 ${vis_km} km  |  风向 ${cur_wdeg}°"
+tooltip+=$'\n'"日出 ${sr}  ·  日落 ${ss}  |  UV ${uv}  降水 ${pop}% (${psum}mm)"
+tooltip+=$'\n'"${sep}"
+tooltip+=$'\n'"${hourly_line}"
+tooltip+=$'\n'"${sep}"
+tooltip+="${forecast}"
+
+jq -cn --arg x "$icon" --arg t "$tooltip" '{text:$x, tooltip:$t}'
