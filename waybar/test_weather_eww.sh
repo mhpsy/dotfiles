@@ -8,6 +8,19 @@ assert_eq() { # $1=actual $2=expected $3=label
     else printf 'FAIL  %s\n        got=[%s]\n        exp=[%s]\n' "$3" "$1" "$2"; fail=1; fi
 }
 
+# ---- 单元:纯函数 ----
+WEATHER_EWW_LIB_ONLY=1 source "$SCRIPT"
+assert_eq "$(wmo_cond 0)"   "clear"   "cond 0 clear"
+assert_eq "$(wmo_cond 2)"   "clear"   "cond 2 clear"
+assert_eq "$(wmo_cond 3)"   "clouds"  "cond 3 clouds"
+assert_eq "$(wmo_cond 48)"  "fog"     "cond 48 fog"
+assert_eq "$(wmo_cond 61)"  "rain"    "cond 61 rain"
+assert_eq "$(wmo_cond 82)"  "rain"    "cond 82 rain"
+assert_eq "$(wmo_cond 75)"  "snow"    "cond 75 snow"
+assert_eq "$(wmo_cond 95)"  "thunder" "cond 95 thunder"
+assert_eq "$(wmo_cond 999)" "clouds"  "cond unknown fallback"
+echo "--- unit section end ---"
+
 # ---- 夹具:离线渲染(LIB_ONLY 模式下 weather-eww.sh 不联网;touch 仅与 test_weather.sh 保持一致) ----
 CACHE="/tmp/waybar-openmeteo.json"
 mapfile -t T < <(for o in 0 1 2 3 4 5; do date -d "+$o hour" +%Y-%m-%dT%H:00; done)
