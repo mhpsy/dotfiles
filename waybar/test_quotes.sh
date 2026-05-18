@@ -158,5 +158,9 @@ chk "$(echo "$wlout" | jq -c '.words[3].pos')" '["adv."]' "pos-adv"
 chk "$(echo "$wlout" | jq -c '.words[4]')" '{"word":"record","pos":["v.","n."],"meaning":"记录"}' "pos-compound"
 chk "$(echo "$wlout" | jq -c '.words[5]')" '{"word":"plain","pos":[],"meaning":"无前缀的释义"}' "pos-none"
 chk "$(echo "$wlout" | jq '.words|length')" "6" "pos-count-preserved"
+midpos=$(jq -nc '{words:[{word:"abstract","meaning":"adj. 抽象的 n. 摘要"},{word:"slash","meaning":"v./n. 前进；进步"},{word:"amp","meaning":"v. & n. 记录"}]}' | jq -f "$POSJQ")
+chk "$(echo "$midpos" | jq -c '.words[0]')" '{"word":"abstract","pos":["adj.","n."],"meaning":"抽象的；摘要"}' "pos-mid-token"
+chk "$(echo "$midpos" | jq -c '.words[1]')" '{"word":"slash","pos":["v.","n."],"meaning":"前进；进步"}' "pos-slash"
+chk "$(echo "$midpos" | jq -c '.words[2]')" '{"word":"amp","pos":["v.","n."],"meaning":"记录"}' "pos-amp-clean"
 
 exit $fail

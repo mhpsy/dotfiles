@@ -24,16 +24,18 @@
     {
       "word": "abstract",
       "pos": [
-        "adj."
+        "adj.",
+        "n."
       ],
-      "meaning": "抽象的 n. 摘要"
+      "meaning": "抽象的；摘要"
     },
     {
       "word": "academic",
       "pos": [
-        "adj."
+        "adj.",
+        "n."
       ],
-      "meaning": "学术的 n. 学者"
+      "meaning": "学术的；学者"
     },
     {
       "word": "accelerate",
@@ -250,9 +252,10 @@
     {
       "word": "attribute",
       "pos": [
-        "v."
+        "v.",
+        "n."
       ],
-      "meaning": "归因于 n. 属性"
+      "meaning": "归因于；属性"
     },
     {
       "word": "available",
@@ -278,16 +281,18 @@
     {
       "word": "benefit",
       "pos": [
-        "n."
+        "n.",
+        "v."
       ],
-      "meaning": "益处 v. 受益"
+      "meaning": "益处；受益"
     },
     {
       "word": "burden",
       "pos": [
-        "n."
+        "n.",
+        "v."
       ],
-      "meaning": "负担 v. 使负重"
+      "meaning": "负担；使负重"
     },
     {
       "word": "capable",
@@ -343,9 +348,10 @@
     {
       "word": "complex",
       "pos": [
-        "adj."
+        "adj.",
+        "n."
       ],
-      "meaning": "复杂的 n. 综合体"
+      "meaning": "复杂的；综合体"
     },
     {
       "word": "concept",
@@ -626,9 +632,10 @@
     {
       "word": "fundamental",
       "pos": [
-        "adj."
+        "adj.",
+        "n."
       ],
-      "meaning": "基本的 n. 基础"
+      "meaning": "基本的；基础"
     },
     {
       "word": "generate",
@@ -655,9 +662,10 @@
     {
       "word": "highlight",
       "pos": [
-        "v."
+        "v.",
+        "n."
       ],
-      "meaning": "强调；突出 n. 亮点"
+      "meaning": "强调；突出；亮点"
     },
     {
       "word": "hypothesis",
@@ -704,9 +712,10 @@
     {
       "word": "individual",
       "pos": [
-        "adj."
+        "adj.",
+        "n."
       ],
-      "meaning": "个人的 n. 个体"
+      "meaning": "个人的；个体"
     },
     {
       "word": "influence",
@@ -768,9 +777,10 @@
     {
       "word": "manifest",
       "pos": [
-        "v."
+        "v.",
+        "adj."
       ],
-      "meaning": "表明；显现 adj. 明显的"
+      "meaning": "表明；显现；明显的"
     },
     {
       "word": "methodology",
@@ -796,9 +806,10 @@
     {
       "word": "monitor",
       "pos": [
-        "v."
+        "v.",
+        "n."
       ],
-      "meaning": "监控 n. 监视器"
+      "meaning": "监控；监视器"
     },
     {
       "word": "motivate",
@@ -824,9 +835,10 @@
     {
       "word": "objective",
       "pos": [
-        "n."
+        "n.",
+        "adj."
       ],
-      "meaning": "目标 adj. 客观的"
+      "meaning": "目标；客观的"
     },
     {
       "word": "obtain",
@@ -1030,9 +1042,10 @@
     {
       "word": "substitute",
       "pos": [
-        "v."
+        "v.",
+        "n."
       ],
-      "meaning": "替代 n. 替代品"
+      "meaning": "替代；替代品"
     },
     {
       "word": "sufficient",
@@ -1087,9 +1100,10 @@
     {
       "word": "uniform",
       "pos": [
-        "adj."
+        "adj.",
+        "n."
       ],
-      "meaning": "统一的 n. 制服"
+      "meaning": "统一的；制服"
     },
     {
       "word": "utilize",
