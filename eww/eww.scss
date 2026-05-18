@@ -1,0 +1,39 @@
+@import "colors";
+
+* { all: unset; font-family: "JetBrains Mono", "LXGW WenKai", sans-serif; }
+
+.card {
+  background: $sc;
+  border: 1px solid $out_var;
+  border-radius: 20px;
+  margin: 6px 0 0 0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.pad { padding: 17px 19px; }
+.wrow { }
+.word { font-size: 21px; font-weight: 600; color: $on; }
+.chips { }
+.chip {
+  font-size: 12px; color: $tertiary;
+  background: rgba(222,188,223,0.10);
+  padding: 3px 7px; border-radius: 6px; margin-left: 6px;
+}
+.ph   { color: $primary; font-size: 13px; margin: 8px 0 0 0; }
+.mean { color: $on_var; font-size: 15px; margin-top: 8px; }
+.ex   {
+  color: $outline; font-size: 13px; font-style: italic;
+  margin-top: 11px; padding-left: 10px;
+  border-left: 2px solid $sec_cont;
+}
+.spk {
+  background: $pri_cont; color: $on_pri_c;
+  border-radius: 9px; padding: 7px 13px; margin-top: 15px; font-size: 12px;
+}
+.spk:hover { background: lighten($pri_cont, 6%); }
+.divider { background: $out_var; min-height: 1px; margin: 15px 0 0 0; }
+.listhdr { color: $outline; font-size: 11px; padding: 13px 19px 7px 19px; }
+.lst { padding: 0 10px 14px 10px; }
+.row { padding: 6px 9px; border-radius: 8px; font-size: 13px; }
+.row.cur { background: rgba(173,198,255,0.10); }
+.rw { color: $primary; }
+.rm { color: $outline; }
