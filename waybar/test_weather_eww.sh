@@ -80,4 +80,12 @@ assert_eq "$(echo "$out" | jq -r '.daily[0].min')"           "22"    "daily[0].m
 assert_eq "$(echo "$out" | jq -r '.daily[2].desc')"          "小雨"  "daily[2].desc (code 61)"
 
 rm -f "$CACHE"
+
+# ---- 降级:无缓存 ----
+rm -f "$CACHE"
+dout=$(bash "$SCRIPT")
+assert_eq "$(echo "$dout" | jq -r '.ok')"   "false"        "degraded ok=false"
+assert_eq "$(echo "$dout" | jq -r '.city')" "深圳宝安"     "degraded keeps city"
+assert_eq "$(echo "$dout" | jq -r '.msg')"  "天气数据不可用" "degraded msg"
+
 exit $fail
