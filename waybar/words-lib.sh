@@ -38,7 +38,9 @@ wl_select(){
   WL_SEL=${WL_IDX[$pos]}
   WL_WORD=$(jq -r ".words[$WL_SEL].word"    "$WORDLIST_FILE")
   WL_MEANING=$(jq -r ".words[$WL_SEL].meaning" "$WORDLIST_FILE")
+  WL_POS=$(wl_pos_at "$WL_SEL")
 }
 
 wl_word_at(){ jq -r ".words[$1].word" "$WORDLIST_FILE"; }
 wl_meaning_at(){ jq -r ".words[$1].meaning" "$WORDLIST_FILE"; }
+wl_pos_at(){ jq -r ".words[$1].pos // [] | join(\" & \")" "$WORDLIST_FILE"; }
