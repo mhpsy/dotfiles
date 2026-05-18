@@ -24,7 +24,7 @@
       :text {(weather.daily[i].min ?: "--") + "° ~ " + (weather.daily[i].max ?: "--") + "°C  " + (weather.daily[i].desc ?: "")})))
 
 (defwidget card-ok []
-  (box :class {"wcard cond-" + (weather.current.cond ?: "clouds")} :orientation "v" :space-evenly false
+  (box :class {"wcard cond-" + (weather.current.cond ?: "clouds")} :orientation "v" :space-evenly false :valign "start" :vexpand false
     (overlay
       (box :orientation "v" :space-evenly false :class "wbody"
         (box :class "hero" :orientation "h" :space-evenly false
@@ -61,12 +61,12 @@
 
 (defwindow weather-island
   :monitor 0
-  :geometry (geometry :x "150px" :y "42px" :anchor "top left" :width "480px" :height "620px")
+  :geometry (geometry :x "80px" :y "0px" :anchor "top left" :width "480px" :height "660px")
   :stacking "overlay"
   :focusable false
   :exclusive false
   (eventbox :onhoverlost "eww --config $HOME/.config/waybar/eww update wisland_open=false"
-    (revealer :transition "slidedown" :duration "420ms" :reveal wisland_open
+    (revealer :transition "crossfade" :duration "300ms" :reveal wisland_open
       (box :class "island-wrap"
         (eventbox :visible {weather.ok ?: false} (card-ok))
         (eventbox :visible {!(weather.ok ?: false)} (card-err))))))
