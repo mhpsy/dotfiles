@@ -68,7 +68,7 @@ mapfile -t h_time < <(jq -r --argjson i "$hidx" '.hourly.time[$i:$i+6][]?'      
 mapfile -t h_temp < <(jq -r --argjson i "$hidx" '.hourly.temperature_2m[$i:$i+6][]?' "$CACHE" 2>/dev/null)
 mapfile -t h_code < <(jq -r --argjson i "$hidx" '.hourly.weather_code[$i:$i+6][]?'   "$CACHE" 2>/dev/null)
 for k in "${!h_time[@]}"; do
-    hh=$((10#${h_time[$k]:11:2}))
+    hh="${h_time[$k]:11:2}"; hh=$((10#${hh:-0}))
     ht=$(r "${h_temp[$k]:-}")
     hi=$(wmo_icon "${h_code[$k]:-x}" "$is_day")
     hourly_json=$(jq -c --arg t "${hh}时" --arg i "$hi" --arg d "$ht" \
