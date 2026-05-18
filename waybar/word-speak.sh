@@ -16,15 +16,12 @@ fi
 [ -n "$W" ] || exit 0
 
 au=""
-if [ -r "$WORDS_CACHE_FILE" ]; then
-  src="cache"
+[ -r "$WORDS_CACHE_FILE" ] && \
   au=$(jq -r --arg w "$W" '.words[$w].audio // ""' "$WORDS_CACHE_FILE" 2>/dev/null)
+if [ -n "$au" ]; then
+  src="cache"; url="$au"
 else
   src="gtts"
-fi
-if [ -n "$au" ]; then
-  url="$au"
-else
   url="https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=$W"
 fi
 

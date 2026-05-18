@@ -239,12 +239,19 @@ SF3="$CACHE_DIR/curw3"
 rw=$(WORDS_NO_PREFETCH=1 WORDS_STATE_FILE="$SF3" WORDS_CACHE_FILE="$CF" \
   WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$SCRIPT" \
   | jq -r '.text' | awk '{print $1}')
-dr=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="$SF3" WORDS_CACHE_FILE="$CF" \
+# 专门构造一份含当前词 audio 的缓存，确保命中 cache 分支
+SPKCACHE="$CACHE_DIR/spk_cache.json"
+jq -nc --arg w "$rw" '{seed:"x",words:{($w):{phonetic:"",audio:"https://x/\($w)-us.mp3",examples:[]}}}' > "$SPKCACHE"
+dr=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="$SF3" WORDS_CACHE_FILE="$SPKCACHE" \
   WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$WSPK")
 chk "$(printf '%s\n' "$dr" | sed -n 's/^WORD=//p')" "$rw" "speak2-word-matches"
 chk "$(printf '%s\n' "$dr" | sed -n 's/^AUDIO_SRC=//p')" "cache" "speak2-src-cache"
 printf '%s\n' "$dr" | grep -q '^NOTIFY' && chk "1" "0" "speak2-no-notify" \
   || chk "0" "0" "speak2-no-notify"
+# 缓存文件存在但该词不在其中 → 仍 gtts（src 反映"该词音频是否已缓存"）
+dr3=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="$SF3" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$WSPK")
+chk "$(printf '%s\n' "$dr3" | sed -n 's/^AUDIO_SRC=//p')" "gtts" "speak2-src-gtts-when-word-absent"
 # 无缓存无状态 → gtts 兜底，不报错
 dr2=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="/nonexistent/x" \
   WORDS_CACHE_FILE="/nonexistent/n.json" WORDLIST_FILE="$WLQ" \
