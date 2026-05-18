@@ -9,8 +9,11 @@ EPOCH="${WORDS_EPOCH:-$(date +%s)}"
 WORDS_CACHE_FILE="${WORDS_CACHE_FILE:-$HOME/.cache/waybar/words.json}"
 WORDS_LOCK_FILE="${WORDS_LOCK_FILE:-$HOME/.cache/waybar/words.lock}"
 WORDS_STATE_FILE="${WORDS_STATE_FILE:-$HOME/.cache/waybar/current-word}"
+# 手动选词覆盖：点列表里某词后写入 "SEED\t锚点epoch\t锚点pos"，
+# 之后从锚点起每 ROTATE 秒继续往后轮换（点击 = 重置 10 分钟计时）。
+WORDS_OVERRIDE_FILE="${WORDS_OVERRIDE_FILE:-$HOME/.cache/waybar/word-override}"
 DAILY=10
-ROTATE=10   # 秒/词
+ROTATE=600   # 秒/词（10 分钟自动切换）
 
 # waybar 空输出约定。WL_QUIET=1 时静默（供 on-click 脚本用）。
 wl_emit_empty(){
@@ -34,7 +37,22 @@ wl_select(){
   WL_TAKE=$DAILY
   [ "$WL_N" -lt "$DAILY" ] && WL_TAKE=$WL_N
   mapfile -t WL_IDX < <(shuf -i 0-$((WL_N-1)) -n "$WL_TAKE" --random-source=<(wl_rand_src))
-  local pos=$(( (EPOCH / ROTATE) % WL_TAKE ))
+  local pos=""
+  # 有当日有效手动覆盖：从锚点 pos 起按 ROTATE 继续轮换
+  if [ -r "$WORDS_OVERRIDE_FILE" ]; then
+    local o_seed="" o_epoch="" o_pos=""
+    IFS=$'\t' read -r o_seed o_epoch o_pos < "$WORDS_OVERRIDE_FILE" || true
+    if [ "$o_seed" = "$SEED" ] \
+       && [ -n "$o_epoch" ] && [ "$o_epoch" -ge 0 ] 2>/dev/null \
+       && [ -n "$o_pos" ] && [ "$o_pos" -ge 0 ] 2>/dev/null \
+       && [ "$o_pos" -lt "$WL_TAKE" ] 2>/dev/null; then
+      local elapsed=$(( EPOCH - o_epoch ))
+      [ "$elapsed" -lt 0 ] && elapsed=0
+      pos=$(( ( o_pos + elapsed / ROTATE ) % WL_TAKE ))
+    fi
+  fi
+  # 无覆盖（或跨天失效）：纯时间公式
+  [ -z "$pos" ] && pos=$(( (EPOCH / ROTATE) % WL_TAKE ))
   WL_SEL=${WL_IDX[$pos]}
   WL_WORD=$(jq -r ".words[$WL_SEL].word"    "$WORDLIST_FILE")
   WL_MEANING=$(jq -r ".words[$WL_SEL].meaning" "$WORDLIST_FILE")

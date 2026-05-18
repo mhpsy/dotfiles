@@ -6,13 +6,11 @@ WL_QUIET=1
 . "$DIR/words-lib.sh"
 PIDF="/tmp/waybar-word-mpv.pid"
 
-W=""
-if [ -r "$WORDS_STATE_FILE" ]; then
-  IFS=$'\t' read -r W _ < "$WORDS_STATE_FILE" || true
-fi
-if [ -z "$W" ]; then
-  wl_select; W="${WL_WORD:-}"
-fi
+# 直接用 wl_select 选词（与 word-popup.sh / 卡片同源，认手动 override）。
+# 不再读 ~/.cache/waybar/current-word：那文件靠 waybar 每 interval 秒跑
+# quotes.sh 才更新，手动切词后会滞后，导致念旧词。
+wl_select
+W="${WL_WORD:-}"
 [ -n "$W" ] || exit 0
 
 au=""

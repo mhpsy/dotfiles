@@ -98,7 +98,7 @@
         "format": "{}",
         "return-type": "json",
         "exec": "~/.config/waybar/quotes.sh",
-        "interval": 10,
+        "interval": 2,
         "tooltip": false,
         "on-click": "~/.config/waybar/word-island-toggle.sh"
     },
