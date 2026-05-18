@@ -8,7 +8,7 @@ assert_eq() { # $1=actual $2=expected $3=label
     else printf 'FAIL  %s\n        got=[%s]\n        exp=[%s]\n' "$3" "$1" "$2"; fail=1; fi
 }
 
-# ---- 夹具:离线渲染(mtime=now 让 weather.sh 缓存逻辑视为新鲜,不联网) ----
+# ---- 夹具:离线渲染(LIB_ONLY 模式下 weather-eww.sh 不联网;touch 仅与 test_weather.sh 保持一致) ----
 CACHE="/tmp/waybar-openmeteo.json"
 mapfile -t T < <(for o in 0 1 2 3 4 5; do date -d "+$o hour" +%Y-%m-%dT%H:00; done)
 fixture=$(jq -n \

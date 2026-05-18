@@ -7,7 +7,7 @@ SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CACHE="/tmp/waybar-openmeteo.json"
 CITY="深圳宝安"
 
-# 导入 weather.sh 纯函数(r / wmo_text / wmo_icon / wind_dir_cn),不跑其 main
+# 导入 weather.sh 纯函数供后续任务使用(r / wmo_text / wmo_icon / wind_dir_cn),不跑其 main
 WEATHER_LIB_ONLY=1 source "$SELF_DIR/weather.sh"
 
 # WMO code -> 氛围动效分类
