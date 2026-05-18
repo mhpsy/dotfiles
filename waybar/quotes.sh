@@ -29,15 +29,8 @@ if [ -r "$WORDS_CACHE_FILE" ]; then
   ex=$(jq -r --arg w "$WL_WORD" '.words[$w].examples[0] // ""' "$WORDS_CACHE_FILE" 2>/dev/null)
 fi
 
-nl=$'\n'
-head="▶ $WL_WORD"
-[ -n "$ph" ] && head="$head  $ph"
-block="$head$nl  $WL_MEANING"
-[ -n "$ex" ] && block="$block$nl  例: $ex"
-
-tip="$block$nl──────────$nl今日单词"
-for i in "${WL_IDX[@]}"; do
-  tip="$tip$nl$(wl_word_at "$i")  $(wl_meaning_at "$i")"
-done
-
-jq -nc --arg t "$WL_WORD $WL_MEANING" --arg tip "$tip" '{text:$t, tooltip:$tip}'
+# bar text：词 + 词性 + 释义，拼回旧视觉（空词性不留双空格）
+parts="$WL_WORD"
+[ -n "${WL_POS:-}" ] && parts="$parts $WL_POS"
+parts="$parts $WL_MEANING"
+jq -nc --arg t "$parts" '{text:$t}'

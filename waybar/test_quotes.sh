@@ -38,10 +38,12 @@ uniq=$(for e in 0 10 20 30 40 50 60 70 80 90; do
 done | sort -u | wc -l)
 [ "$uniq" -gt 1 ] && chk "0" "0" "rotation-varies" || chk "1" "0" "rotation-varies"
 
-# 4. 跨天：不同 seed → 今日 10 词集合应不同（tooltip 不同）
-t1=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT" | jq -r '.tooltip')
-t2=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260516 WORDS_EPOCH=0 bash "$SCRIPT" | jq -r '.tooltip')
-[ "$t1" != "$t2" ] && chk "0" "0" "cross-day-changes" || chk "1" "0" "cross-day-changes"
+# 4. 跨天：不同 seed → 今日 10 词集合（WL_IDX）应不同（tooltip 已移除，改测选词源头）
+s1=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 \
+  bash -c '. "$0"; wl_select; printf "%s," "${WL_IDX[@]}"' "$HOME/.config/waybar/words-lib.sh")
+s2=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260516 WORDS_EPOCH=0 \
+  bash -c '. "$0"; wl_select; printf "%s," "${WL_IDX[@]}"' "$HOME/.config/waybar/words-lib.sh")
+[ "$s1" != "$s2" ] && chk "0" "0" "cross-day-changes" || chk "1" "0" "cross-day-changes"
 
 # 5. 错误处理：文件不存在 → class empty 且不报错
 out=$(WORDLIST_FILE="/nonexistent/xx.json" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT")
@@ -88,23 +90,6 @@ fw=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 \
   bash -c '. "$0"; wl_select; printf "%s" "$WL_WORD"' "$HOME/.config/waybar/words-lib.sh")
 got=$(jq -r --arg w "$fw" '.words[$w] | "\(.phonetic)|\(.audio)|\(.examples|length)"' "$CF")
 chk "$got" "/p-$fw/|https://x/$fw-us.mp3|2" "cache-entry-fields"
-
-# === Task3: quotes.sh tooltip 富信息块 ===
-# 复用 Task2 的 $CF（已含今日 10 词富信息）。当前词：
-cw=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 \
-  bash -c '. "$0"; wl_select; printf "%s" "$WL_WORD"' "$HOME/.config/waybar/words-lib.sh")
-ttip=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="$CF" WORDLIST_FILE="$FIX" \
-  WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT" | jq -r '.tooltip')
-case "$ttip" in
-  "▶ $cw  /p-$cw/"*"例: ex-$cw one"*"今日单词"*) chk "0" "0" "tooltip-rich-block" ;;
-  *) echo "got tooltip: $ttip"; chk "1" "0" "tooltip-rich-block" ;;
-esac
-# 无缓存降级：tooltip 仍是合法 JSON、不含「例:」、不报错
-out=$(WORDS_NO_PREFETCH=1 WORDS_CACHE_FILE="/nonexistent/none.json" \
-  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT")
-echo "$out" | jq -e '.text and .tooltip' >/dev/null 2>&1; chk "$?" "0" "tooltip-degrade-valid"
-echo "$out" | jq -r '.tooltip' | grep -q '例:' && chk "1" "0" "tooltip-degrade-no-example" \
-  || chk "0" "0" "tooltip-degrade-no-example"
 
 # === Task4: speak-word.sh 解析 + dry-run ===
 SPEAK="$HOME/.config/waybar/speak-word.sh"
@@ -187,5 +172,44 @@ echo "$ws" | grep -qE '^[a-z]+\|([a-z]+\.( & [a-z]+\.)*)?\|.+$'; chk "$?" "0" "l
 # 旧无 pos 字段的 fixture：wl_pos_at 返回空、不报错
 op=$(WL_QUIET=1 WORDLIST_FILE="$FIX" bash -c '. "$0"; wl_pos_at 0' "$LIB" 2>/dev/null)
 chk "$op" "" "lib-pos-missing-field-empty"
+
+# === Task7: quotes.sh text 含词性、无 tooltip 富块 ===
+WLQ="$CACHE_DIR/wl_q.json"
+cat > "$WLQ" <<'JSON'
+{"words":[
+{"word":"k0","pos":["v."],"meaning":"放弃"},
+{"word":"k1","pos":["n."],"meaning":"能力"},
+{"word":"k2","pos":[],"meaning":"纯释义"},
+{"word":"k3","pos":["adj."],"meaning":"快的"},
+{"word":"k4","pos":["v."],"meaning":"动作"},
+{"word":"k5","pos":["n."],"meaning":"名词"},
+{"word":"k6","pos":["adv."],"meaning":"副词"},
+{"word":"k7","pos":["v."],"meaning":"做"},
+{"word":"k8","pos":["adj."],"meaning":"好的"},
+{"word":"k9","pos":["n."],"meaning":"东西"},
+{"word":"k10","pos":["v."],"meaning":"走"}
+]}
+JSON
+txt=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260518 WORDS_EPOCH=0 \
+  bash "$SCRIPT" | jq -r '.text')
+echo "$txt" | grep -qE '^k[0-9]+ ([a-z]+\. )?[^ ].*$'; chk "$?" "0" "quotes-text-shape"
+seen=0
+for e in 0 10 20 30 40 50 60 70 80 90 100; do
+  t=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260518 WORDS_EPOCH=$e \
+    bash "$SCRIPT" | jq -r '.text')
+  echo "$t" | grep -qE '^k[0-9]+ (v|n|adj|adv)\. ' && seen=1
+done
+chk "$seen" "1" "quotes-text-has-pos"
+hit=0
+for e in 0 10 20 30 40 50 60 70 80 90 100; do
+  t=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260518 WORDS_EPOCH=$e \
+    bash "$SCRIPT" | jq -r '.text')
+  [ "$t" = "k2 纯释义" ] && hit=1
+done
+chk "$hit" "1" "quotes-text-no-double-space"
+out=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260518 WORDS_EPOCH=0 bash "$SCRIPT")
+echo "$out" | jq -e '.text' >/dev/null 2>&1; chk "$?" "0" "quotes-still-valid-json"
+echo "$out" | jq -r '.tooltip // ""' | grep -q '今日单词' \
+  && chk "1" "0" "quotes-no-tooltip-block" || chk "0" "0" "quotes-no-tooltip-block"
 
 exit $fail
