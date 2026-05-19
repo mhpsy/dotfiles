@@ -235,7 +235,7 @@ Rectangle {
                     // never toggles `open`; today-list identity ignores the current
                     // flag so the Repeater is not rebuilt).
                     //
-                    // The 260ms lead-in is load-bearing: introTick fires on the SAME
+                    // The 210ms lead-in is load-bearing: introTick fires on the SAME
                     // instant win.open->true, while the card-level opacity Behavior
                     // (200ms) + scale spring are still mid-transition. Without the
                     // lead the per-row stagger plays *under* that global card fade and
@@ -252,7 +252,7 @@ Rectangle {
                     }
                     Timer {
                         id: rowInTimer
-                        interval: 260 + row.index * 66
+                        interval: 210 + row.index * 66
                         repeat: false
                         onTriggered: rowIn.start()
                     }

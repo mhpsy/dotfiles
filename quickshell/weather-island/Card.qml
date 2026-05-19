@@ -17,6 +17,28 @@ Rectangle {
     }
     clip: true
 
+    // ---- staggered entrance ------------------------------------------------
+    // shell.qml binds cardOpen to win.open; each open bumps introTick which
+    // restarts a single 0->1 driver. Sections derive opacity/offset from it
+    // (revO/revY) with per-slot phase => hero -> grid -> hourly -> 3-day
+    // cascade. The 200ms PauseAnimation lead clears the card-level opacity
+    // (200ms) + scale spring so the cascade always plays on a fully-opaque
+    // card (same lesson as word-island; never animate the Wayland surface).
+    property bool cardOpen: false
+    property int introTick: 0
+    onCardOpenChanged: if (cardOpen) introTick++
+    onIntroTickChanged: introPlay()
+    property real intro: 0
+    function revO(slot) { var t = (intro - slot * 0.18) / 0.46; return t < 0 ? 0 : (t > 1 ? 1 : t) }
+    function revY(slot) { return (1 - revO(slot)) * 24 }
+    function introPlay() { intro = 0; introAnim.restart() }
+    Component.onCompleted: introPlay()
+    SequentialAnimation {
+        id: introAnim
+        PauseAnimation { duration: 200 }
+        NumberAnimation { target: card; property: "intro"; from: 0; to: 1; duration: 700; easing.type: Easing.OutCubic }
+    }
+
     Ambient {
         anchors.fill: parent
         cond: (card.cur && card.cur.cond) ? card.cur.cond : "clouds"
@@ -34,6 +56,8 @@ Rectangle {
         // hero
         RowLayout {
             spacing: 16
+            opacity: card.revO(0)
+            transform: Translate { y: card.revY(0) }
             Text { text: card.cur.icon || ""; font.family: Theme.glyphFont; font.styleName: Theme.glyphStyle; font.pixelSize: 46; color: Theme.fg }
             ColumnLayout {
                 spacing: 0
@@ -50,6 +74,8 @@ Rectangle {
             columns: 3
             rowSpacing: 8; columnSpacing: 8
             Layout.fillWidth: true
+            opacity: card.revO(1)
+            transform: Translate { y: card.revY(1) }
             Repeater {
                 model: [
                     { k: "湿度",   v: (card.cur.humidity || "--") + "%" },
@@ -77,10 +103,16 @@ Rectangle {
             }
         }
 
-        Text { text: "逐时预报"; color: Theme.fgFaint; font.family: Theme.uiFont; font.pixelSize: 11 }
+        Text {
+            text: "逐时预报"; color: Theme.fgFaint; font.family: Theme.uiFont; font.pixelSize: 11
+            opacity: card.revO(2)
+            transform: Translate { y: card.revY(2) }
+        }
         RowLayout {
             spacing: 7
             Layout.fillWidth: true
+            opacity: card.revO(2)
+            transform: Translate { y: card.revY(2) }
             Repeater {
                 model: card.wx ? card.wx.hourly : []
                 delegate: Rectangle {
@@ -98,7 +130,11 @@ Rectangle {
             }
         }
 
-        Text { text: "未来三天"; color: Theme.fgFaint; font.family: Theme.uiFont; font.pixelSize: 11 }
+        Text {
+            text: "未来三天"; color: Theme.fgFaint; font.family: Theme.uiFont; font.pixelSize: 11
+            opacity: card.revO(3)
+            transform: Translate { y: card.revY(3) }
+        }
         Repeater {
             model: card.wx ? card.wx.daily : []
             delegate: Rectangle {
@@ -106,6 +142,8 @@ Rectangle {
                 implicitHeight: 40
                 radius: 12
                 color: Theme.chipBg
+                opacity: card.revO(3)
+                transform: Translate { y: card.revY(3) }
                 RowLayout {
                     anchors { fill: parent; leftMargin: 14; rightMargin: 14 }
                     spacing: 10

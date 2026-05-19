@@ -65,6 +65,7 @@ ShellRoot {
         Card {
             id: card
             wx: wx
+            cardOpen: win.open
             visible: opacity > 0.01
             opacity: win.open ? 1 : 0
             scale: win.open ? 1 : 0.96
