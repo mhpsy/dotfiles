@@ -34,7 +34,7 @@ Rectangle {
         // hero
         RowLayout {
             spacing: 16
-            Text { text: card.cur.icon || ""; font.family: Theme.glyphFont; font.pixelSize: 46; color: Theme.fg }
+            Text { text: card.cur.icon || ""; font.family: Theme.glyphFont; font.styleName: Theme.glyphStyle; font.pixelSize: 46; color: Theme.fg }
             ColumnLayout {
                 spacing: 0
                 Text { text: card.wx ? (card.wx.city || "--") : "--"; color: Theme.fgDim; font.family: Theme.uiFont; font.pixelSize: 12 }
@@ -91,7 +91,7 @@ Rectangle {
                     Column {
                         anchors.centerIn: parent; spacing: 3
                         Text { text: modelData.time || "--"; color: Theme.fgDim; font.family: Theme.uiFont; font.pixelSize: 10; anchors.horizontalCenter: parent.horizontalCenter }
-                        Text { text: modelData.icon || ""; color: Theme.fg; font.family: Theme.glyphFont; font.pixelSize: 17; anchors.horizontalCenter: parent.horizontalCenter }
+                        Text { text: modelData.icon || ""; color: Theme.fg; font.family: Theme.glyphFont; font.styleName: Theme.glyphStyle; font.pixelSize: 17; anchors.horizontalCenter: parent.horizontalCenter }
                         Text { text: (modelData.temp || "--") + "°"; color: Theme.fg; font.family: Theme.uiFont; font.pixelSize: 13; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter }
                     }
                 }
@@ -109,7 +109,7 @@ Rectangle {
                 RowLayout {
                     anchors { fill: parent; leftMargin: 14; rightMargin: 14 }
                     spacing: 10
-                    Text { text: modelData.icon || ""; color: Theme.fg; font.family: Theme.glyphFont; font.pixelSize: 19 }
+                    Text { text: modelData.icon || ""; color: Theme.fg; font.family: Theme.glyphFont; font.styleName: Theme.glyphStyle; font.pixelSize: 19 }
                     Text { text: modelData.label || "--"; color: Theme.fg; font.family: Theme.uiFont; font.pixelSize: 14 }
                     Item { Layout.fillWidth: true }
                     Text {

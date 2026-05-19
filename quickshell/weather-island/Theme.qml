@@ -4,7 +4,8 @@ import Quickshell
 
 Singleton {
     readonly property string uiFont: "Fira Sans"
-    readonly property string glyphFont: "Symbols Nerd Font"
+    readonly property string glyphFont: "Font Awesome 7 Free"
+    readonly property string glyphStyle: "Solid"
     // colors are #AARRGGBB (QML/Qt ARGB order — alpha first)
     readonly property color cardBg1: "#f7101016"
     readonly property color cardBg2: "#f70a0a0e"
