@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Io
 import "."
 
 Rectangle {
@@ -18,6 +19,9 @@ Rectangle {
         GradientStop { position: 1.0; color: Theme.cardBg2 }
     }
     clip: true
+
+    Process { id: pickProc; command: ["bash", "-c", "true"] }       // command set per-click below
+    Process { id: speakProc; command: ["bash", "-c", "~/.config/waybar/word-speak.sh"] }
 
     Rectangle {
         anchors.fill: parent
@@ -42,10 +46,20 @@ Rectangle {
                 Item { Layout.fillWidth: true }
                 Rectangle {
                     id: speakBtn
-                    // W3: add MouseArea here → Process word-speak.sh + words.refresh()
                     implicitWidth: 34; implicitHeight: 28; radius: 8
-                    color: Theme.chipBg
+                    color: speakMA.containsMouse ? Theme.stroke : Theme.chipBg
                     Text { anchors.centerIn: parent; text: ""; font.family: Theme.glyphFont; font.styleName: Theme.glyphStyle; font.pixelSize: 15; color: Theme.fg }
+                    MouseArea {
+                        id: speakMA
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            speakProc.running = false
+                            speakProc.running = true
+                            if (card.words) card.words.refresh()
+                        }
+                    }
                 }
             }
             Text { text: card.cur.phonetic || ""; color: Theme.fgDim; font.family: Theme.uiFont; font.pixelSize: 13 }
@@ -63,12 +77,24 @@ Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: 34
                 radius: 10
-                color: modelData.current ? Theme.chipBg : "transparent"
+                color: rowMA.containsMouse ? Theme.chipBg : (modelData.current ? Theme.chipBg : "transparent")
                 RowLayout {
                     anchors { fill: parent; leftMargin: 12; rightMargin: 12 }
                     spacing: 10
                     Text { text: modelData.word || "--"; color: modelData.current ? Theme.accent : Theme.fg; font.family: Theme.uiFont; font.pixelSize: 14; font.bold: modelData.current }
                     Text { text: modelData.meaning || ""; color: Theme.fgDim; font.family: Theme.uiFont; font.pixelSize: 12; Layout.fillWidth: true; elide: Text.ElideRight }
+                }
+                MouseArea {
+                    id: rowMA
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        pickProc.command = ["bash", "-c", "~/.config/waybar/word-pick.sh " + row.modelData.idx]
+                        pickProc.running = false
+                        pickProc.running = true
+                        if (card.words) card.words.refresh()
+                    }
                 }
             }
         }
