@@ -42,6 +42,7 @@ ShellRoot {
         WordCard {
             id: card
             words: words
+            cardOpen: win.open
             visible: opacity > 0.01
             opacity: win.open ? 1 : 0
             scale: win.open ? 1 : 0.96
