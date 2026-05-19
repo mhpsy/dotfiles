@@ -1,91 +1,76 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import "."
 
 ShellRoot {
     WlrLayershell {
         id: win
-        anchors {
-            top: true
-            left: true
-        }
-        margins.left: 120
-        margins.top: 3
+        anchors { top: true; left: true }
+        margins.left: 120          // approx x: card is a transient dropdown near the weather module; tunable
+        margins.top: 40            // bar height ~40 → card hangs just below the bar
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
         layer: WlrLayer.Overlay
         keyboardFocus: WlrKeyboardFocus.None
         namespace: "qs-weather-island"
 
-        // FIXED Wayland surface = the expanded bounding box. NEVER animated.
-        // Changes only when weather data updates card.implicitHeight (~15min),
-        // never during expand/collapse → zero per-frame surface reconfigure.
-        implicitWidth: Math.max(pill.implicitWidth, card.implicitWidth)
-        implicitHeight: pill.implicitHeight + 6 + card.implicitHeight
+        // FIXED Wayland surface = card bbox. NEVER animate / NEVER add a Behavior here.
+        // Only changes on weather-data refresh (card.implicitHeight, ~15min), never on
+        // open/close → zero per-frame surface reconfigure → jitter structurally impossible.
+        implicitWidth: card.implicitWidth
+        implicitHeight: card.implicitHeight
 
-        // State-driven mask (NOT spring-driven). Collapsed → input region is
-        // only the pill rect (rest of the big transparent surface passes
-        // clicks through = NO dead zone). Expanded → full stack interactive.
-        // Switches discretely on `expanded` (cheap set_input_region, no
-        // buffer/geometry reconfigure, no visual change).
-        mask: Region { item: win.expanded ? stack : pill }
+        // Input region: open → card rect (interactive); closed → null Region → the big
+        // transparent surface is 100% click-through (zero dead zone, zero footprint).
+        mask: Region { item: win.open ? card : null }
 
         WeatherData { id: wx }
-        property bool expanded: false
-        onExpandedChanged: if (!expanded) collapseTimer.stop()   // any collapse cancels a pending auto-collapse (covers manual + external)
 
-        Item {
-            id: stack
-            // FIXED content area = surface size. NO spring/Behavior here.
-            width: win.implicitWidth
-            height: win.implicitHeight
-            // auto-collapse only when expanded AND the pointer is off BOTH pill and card
-            function evalCollapse() {
-                if (win.expanded && !cardHover.hovered && !pillHover.hovered) collapseTimer.restart()
-                else collapseTimer.stop()
-            }
+        // Open/closed driven by /tmp/qs-weather-open (waybar on-click flips it via
+        // qs-weather-toggle.sh). MACHINE-VERIFIED FileView behavior on this build
+        // (Quickshell 0.3.0): reads are ASYNC. At onFileChanged the cached text() is
+        // still the OLD value; reload() kicks an async re-read and the fresh content
+        // arrives via onTextChanged / onLoaded. So: reload() on fileChanged, and read
+        // the value from onTextChanged/onLoaded (the plan's onFileChanged+text() guess
+        // would latch the stale value — confirmed via debug logging).
+        property bool open: false
+        function syncOpen() {
+            win.open = (stateFile.text() ? stateFile.text().trim() === "1" : false)
+        }
+        FileView {
+            id: stateFile
+            path: "/tmp/qs-weather-open"
+            watchChanges: true
+            onFileChanged: reload()      // async re-read; value lands in onTextChanged
+            onTextChanged: win.syncOpen()
+            onLoaded: win.syncOpen()
+        }
+        // Robustness net (MACHINE-VERIFIED): on this build, if the watched file does
+        // NOT exist at FileView load, watchChanges' inotify watch never attaches and
+        // later creation/edits are missed forever (daemon can outlive the toggle file,
+        // e.g. fresh boot before first click). A cheap periodic reload() on a tmpfs
+        // file re-reads and, once present, fires onTextChanged → syncOpen(). Effectively
+        // free; the watch path still gives instant updates when it works.
+        Timer {
+            interval: 400
+            running: true
+            repeat: true
+            onTriggered: stateFile.reload()
+        }
 
-            Pill {
-                id: pill
-                wx: wx
-                onToggle: win.expanded = !win.expanded
-            }
-
-            Card {
-                id: card
-                wx: wx
-                y: pill.implicitHeight + 6   // 6px gap between pill and card
-                width: implicitWidth
-                visible: opacity > 0.01
-                opacity: win.expanded ? 1 : 0
-                scale: win.expanded ? 1 : 0.96
-                transformOrigin: Item.Top
-                // Elastic reveal lives ONLY on the card (cosmetic, inside the
-                // fixed transparent surface — any overshoot is harmless clipped
-                // pixels, NO Wayland reconfigure). scale bounded ~0.96..~1.05
-                // so it cannot collapse anything through zero. Card has
-                // clip:true so scaled content stays in rounded bounds.
-                Behavior on opacity { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
-                Behavior on scale   { SpringAnimation { spring: 4.0; damping: 0.5; epsilon: 0.01 } }
-
-                HoverHandler { id: cardHover }
-            }
-
-            Timer {
-                id: collapseTimer
-                interval: 350   // 350ms grace before auto-collapse when pointer leaves
-                onTriggered: if (!cardHover.hovered && !pillHover.hovered) win.expanded = false
-            }
-            HoverHandler { id: pillHover; target: pill }
-            Connections {
-                target: cardHover
-                function onHoveredChanged() { stack.evalCollapse() }
-            }
-            Connections {
-                target: pillHover
-                function onHoveredChanged() { stack.evalCollapse() }
-            }
+        Card {
+            id: card
+            wx: wx
+            visible: opacity > 0.01
+            opacity: win.open ? 1 : 0
+            scale: win.open ? 1 : 0.96
+            transformOrigin: Item.Top
+            // Animation acts ONLY on the card (cosmetic, inside the fixed transparent
+            // surface; Card has clip:true). Never feeds back into surface size.
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on scale   { SpringAnimation { spring: 4.0; damping: 0.5; epsilon: 0.01 } }
         }
     }
 }
