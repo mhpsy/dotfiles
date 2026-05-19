@@ -42,8 +42,11 @@ window#waybar {
 
 /* ============ Left: Weather ============ */
 #custom-weather {
-    /* 文楷渲染温度数字;天气图标(Nerd Font 私用区)由后面字体兜底 */
-    font-family: "LXGW WenKai Screen", "LXGW WenKai", "Font Awesome 7 Free", "FiraCode Nerd Font", sans-serif;
+    /* 天气图标是 Font Awesome 5/6 私用区码位(仅 Solid 面有,故 font-weight:900),
+       必须让 FA7 Free 在 LXGW 之前命中:LXGW WenKai Screen 在 U+F6xx 有占位字形,
+       排在前面会抢渲染→图标变成一个点。温度数字 FA 无字形→逐字回落到文楷。 */
+    font-family: "Font Awesome 7 Free", "LXGW WenKai Screen", "LXGW WenKai", "FiraCode Nerd Font", sans-serif;
+    font-weight: 900;
     background-color: @bg;
     color: @fg_white;
     border-radius: 15px;
