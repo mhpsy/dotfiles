@@ -42,6 +42,7 @@ Rectangle {
                 Item { Layout.fillWidth: true }
                 Rectangle {
                     id: speakBtn
+                    // W3: add MouseArea here → Process word-speak.sh + words.refresh()
                     implicitWidth: 34; implicitHeight: 28; radius: 8
                     color: Theme.chipBg
                     Text { anchors.centerIn: parent; text: ""; font.family: Theme.glyphFont; font.styleName: Theme.glyphStyle; font.pixelSize: 15; color: Theme.fg }
