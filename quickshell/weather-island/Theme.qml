@@ -5,6 +5,7 @@ QtObject {
     // 字体:含 Nerd Font weather glyph;若缺字形为已知外观问题(非阻塞)
     readonly property string uiFont: "Fira Sans"
     readonly property string glyphFont: "Symbols Nerd Font"
+    // colors are #AARRGGBB (QML/Qt ARGB order — alpha first)
     readonly property color cardBg1: "#f7101016"
     readonly property color cardBg2: "#f70a0a0e"
     readonly property color stroke:  "#22ffffff"
