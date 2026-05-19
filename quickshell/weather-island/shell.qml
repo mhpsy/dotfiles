@@ -14,27 +14,18 @@ ShellRoot {
         margins.top: 0
         exclusiveZone: 0
         color: "transparent"
-        implicitWidth: box.width
-        implicitHeight: box.height
+        implicitWidth: box.implicitWidth
+        implicitHeight: box.implicitHeight
         layer: WlrLayer.Overlay
         keyboardFocus: WlrKeyboardFocus.None
         namespace: "qs-weather-island"
 
         WeatherData { id: wx }
-
-        Rectangle {
+        Column {
             id: box
-            width: 360; height: 70
-            radius: 16
-            color: "#cc101016"
-            Text {
-                anchors.centerIn: parent
-                color: Theme.accent; font.pixelSize: 16
-                text: wx.ok
-                      ? (wx.city + "  " + (wx.current.temp || "--") + "°  " + (wx.current.desc || "")
-                         + "  [h" + wx.hourly.length + " d" + wx.daily.length + "]")
-                      : ("loading… " + wx.lastError)
-            }
+            spacing: 8
+            Pill { wx: wx.ok ? ({current: wx.current}) : null; }
+            Card { wx: wx }
         }
     }
 }
