@@ -11,8 +11,8 @@ ShellRoot {
             left: true
         }
         margins.left: 120
-        margins.top: 0
-        exclusiveZone: 0
+        margins.top: 3
+        exclusionMode: ExclusionMode.Ignore
         color: "transparent"
         layer: WlrLayer.Overlay
         keyboardFocus: WlrKeyboardFocus.None
