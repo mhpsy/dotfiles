@@ -17,6 +17,13 @@ Rectangle {
     }
     clip: true
 
+    Ambient {
+        anchors.fill: parent
+        cond: (card.cur && card.cur.cond) ? card.cur.cond : "clouds"
+        opacity: 0.9
+        z: 0
+    }
+
     ColumnLayout {
         id: col
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 20 }
