@@ -42,11 +42,11 @@ window#waybar {
 
 /* ============ Left: Weather ============ */
 #custom-weather {
-    /* 天气图标是 Font Awesome 5/6 私用区码位(仅 Solid 面有,故 font-weight:900),
-       必须让 FA7 Free 在 LXGW 之前命中:LXGW WenKai Screen 在 U+F6xx 有占位字形,
-       排在前面会抢渲染→图标变成一个点。温度数字 FA 无字形→逐字回落到文楷。 */
-    font-family: "Font Awesome 7 Free", "LXGW WenKai Screen", "LXGW WenKai", "FiraCode Nerd Font", sans-serif;
-    font-weight: 900;
+    /* 天气图标是 Font Awesome 5/6 私用区码位(仅 Solid 面有该字形)。直接用
+       "Font Awesome 7 Free Solid" 族名命中 Solid 面(无需 font-weight:900,
+       避免把温度数字加粗变丑),且排在 LXGW 之前以免 LXGW 的 U+F6xx 占位字形抢渲染。
+       温度数字 FA 无字形→逐字回落到霞鹜文楷(LXGW WenKai Screen),正常字重。 */
+    font-family: "Font Awesome 7 Free Solid", "LXGW WenKai Screen", "LXGW WenKai", "FiraCode Nerd Font", sans-serif;
     background-color: @bg;
     color: @fg_white;
     border-radius: 15px;
