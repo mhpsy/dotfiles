@@ -217,7 +217,8 @@ tooltip+=$'\n'"${hourly_line}"
 tooltip+=$'\n'"${sep}"
 tooltip+="${forecast}"
 
-# bar 文字:图标 + 当前温度(常规大小)
-bar_text="${icon} ${cur_temp}°C"
+# bar 文字:图标(Pango span 强制 Font Awesome 7 Free Solid,因图标是 FA5/6 私用区码位,
+# 别的字体会抢渲染成点)+ 当前温度(温度走 #custom-weather 的 CSS 字体=霞鹜文楷)。
+bar_text="<span font_family='Font Awesome 7 Free' weight='900'>${icon}</span> ${cur_temp}°C"
 
 jq -cn --arg x "$bar_text" --arg t "$tooltip" '{text:$x, tooltip:$t}'
