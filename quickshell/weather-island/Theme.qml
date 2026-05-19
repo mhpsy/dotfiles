@@ -1,8 +1,8 @@
 pragma Singleton
 import QtQuick
+import Quickshell
 
-QtObject {
-    // 字体:含 Nerd Font weather glyph;若缺字形为已知外观问题(非阻塞)
+Singleton {
     readonly property string uiFont: "Fira Sans"
     readonly property string glyphFont: "Symbols Nerd Font"
     // colors are #AARRGGBB (QML/Qt ARGB order — alpha first)
