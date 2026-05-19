@@ -22,10 +22,12 @@ Rectangle {
         cond: (card.cur && card.cur.cond) ? card.cur.cond : "clouds"
         opacity: 0.9
         z: 0
+        visible: card.visible
     }
 
     ColumnLayout {
         id: col
+        z: 1  // keep content above Ambient (z:0)
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 20 }
         spacing: 12
 

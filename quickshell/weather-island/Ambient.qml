@@ -18,7 +18,7 @@ Item {
             GradientStop { position: 1.0; color: "#33ffc45a" }
         }
         SequentialAnimation on opacity {
-            running: amb.cond === "clear"; loops: Animation.Infinite
+            running: amb.visible && (amb.cond === "clear"); loops: Animation.Infinite
             NumberAnimation { from: 0.4; to: 1.0; duration: 2600; easing.type: Easing.InOutSine }
             NumberAnimation { from: 1.0; to: 0.4; duration: 2600; easing.type: Easing.InOutSine }
         }
@@ -37,7 +37,7 @@ Item {
             GradientStop { position: 1.0; color: "#00aab9e1" }
         }
         SequentialAnimation on x {
-            running: drift.visible; loops: Animation.Infinite
+            running: amb.visible && drift.visible; loops: Animation.Infinite
             NumberAnimation { from: -drift.width; to: amb.width; duration: 12000; easing.type: Easing.Linear }
         }
     }
@@ -49,7 +49,7 @@ Item {
     // z:0 with source-order placement (before ColumnLayout) keeps particles behind col content.
     ParticleSystem {
         id: psys
-        running: amb.cond === "rain" || amb.cond === "thunder"
+        running: amb.visible && (amb.cond === "rain" || amb.cond === "thunder")
         anchors.fill: parent
         ItemParticle {
             groups: ["d"]
@@ -74,7 +74,7 @@ Item {
     // snow: slow falling
     ParticleSystem {
         id: snow
-        running: amb.cond === "snow"
+        running: amb.visible && (amb.cond === "snow")
         anchors.fill: parent
         ItemParticle {
             groups: ["s"]
@@ -100,7 +100,7 @@ Item {
         visible: amb.cond === "thunder"; color: "#b4c8ff"
         opacity: 0
         SequentialAnimation on opacity {
-            running: amb.cond === "thunder"; loops: Animation.Infinite
+            running: amb.visible && (amb.cond === "thunder"); loops: Animation.Infinite
             NumberAnimation { to: 0.0; duration: 3600 }
             NumberAnimation { to: 0.5; duration: 60 }
             NumberAnimation { to: 0.0; duration: 90 }
