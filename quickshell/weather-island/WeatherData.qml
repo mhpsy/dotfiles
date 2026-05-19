@@ -11,7 +11,8 @@ Item {
     property var daily: []
     property string lastError: ""
 
-    function refresh() { proc.running = true }
+    // Public: trigger an immediate data fetch. No-ops if a run is already in flight.
+    function refresh() { if (!proc.running) proc.running = true }
 
     Process {
         id: proc
@@ -38,7 +39,7 @@ Item {
     }
 
     Timer {
-        interval: 900000
+        interval: 900000   // 15 min — matches CACHE_AGE (900s) in weather.sh
         running: true
         repeat: true
         triggeredOnStart: true
