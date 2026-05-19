@@ -97,7 +97,7 @@ Item {
     // thunder: occasional flash highlight
     Rectangle {
         anchors.fill: parent; radius: Theme.radius
-        visible: amb.cond === "thunder"; color: "#b4c8ff"
+        visible: amb.visible && amb.cond === "thunder"; color: "#b4c8ff"
         opacity: 0
         SequentialAnimation on opacity {
             running: amb.visible && (amb.cond === "thunder"); loops: Animation.Infinite
