@@ -81,20 +81,22 @@ Rectangle {
                 id: row
                 required property var modelData
                 required property int index
+                readonly property bool isCurrent: !!(card.cur && card.cur.word) && modelData.word === card.cur.word
                 Layout.fillWidth: true
                 implicitHeight: 34
                 radius: 10
-                color: rowMA.containsMouse ? Theme.chipBg : (modelData.current ? Theme.chipBg : "transparent")
+                color: rowMA.containsMouse ? Theme.chipBg : (row.isCurrent ? Theme.chipBg : "transparent")
 
                 // (A) staggered fade + slide-in entrance: each row starts 55ms after
-                // the previous. Fires once on delegate creation (W2 content-guard keeps
-                // delegates stable across the 1.5s poll, so this does NOT replay).
+                // the previous, after an 80ms lead-in. Fires once on delegate creation
+                // (today-list identity ignores the current flag, so the Repeater does NOT
+                // rebuild on pick → this does NOT replay on word-click).
                 opacity: 0
                 transform: Translate { id: rowT; y: 18 }
                 Component.onCompleted: rowInTimer.start()
                 Timer {
                     id: rowInTimer
-                    interval: row.index * 55
+                    interval: 80 + row.index * 55
                     repeat: false
                     onTriggered: rowIn.start()
                 }
@@ -111,11 +113,12 @@ Rectangle {
                     id: glow
                     z: -1
                     anchors.fill: parent
-                    visible: row.modelData.current
+                    visible: row.isCurrent
                     property real pulse: 0.35
                     SequentialAnimation on pulse {
-                        running: row.modelData.current && card.visible
+                        running: row.isCurrent && card.visible
                         loops: Animation.Infinite
+                        onRunningChanged: if (!running) glow.pulse = 0.35
                         NumberAnimation { from: 0.35; to: 1.0; duration: 1100; easing.type: Easing.InOutSine }
                         NumberAnimation { from: 1.0; to: 0.35; duration: 1100; easing.type: Easing.InOutSine }
                     }
@@ -140,7 +143,7 @@ Rectangle {
                 RowLayout {
                     anchors { fill: parent; leftMargin: 12; rightMargin: 12 }
                     spacing: 10
-                    Text { text: modelData.word || "--"; color: modelData.current ? Theme.accent : Theme.fg; font.family: Theme.uiFont; font.pixelSize: 14; font.bold: modelData.current }
+                    Text { text: modelData.word || "--"; color: row.isCurrent ? Theme.accent : Theme.fg; font.family: Theme.uiFont; font.pixelSize: 14; font.bold: row.isCurrent }
                     Text { text: modelData.meaning || ""; color: Theme.fgDim; font.family: Theme.uiFont; font.pixelSize: 12; Layout.fillWidth: true; elide: Text.ElideRight }
                 }
                 MouseArea {
