@@ -44,6 +44,7 @@ ShellRoot {
             id: stateFile
             path: "/tmp/qs-weather-open"
             watchChanges: true
+            printErrors: false           // silence "file missing" WARN before first click; Timer reload handles correctness
             onFileChanged: reload()      // async re-read; value lands in onTextChanged
             onTextChanged: win.syncOpen()
             onLoaded: win.syncOpen()
