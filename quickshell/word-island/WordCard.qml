@@ -229,15 +229,22 @@ Rectangle {
                     radius: 9
                     color: rowMA.containsMouse ? Theme.chipBg : (row.isCurrent ? Theme.chipBg : "transparent")
 
-                    // (A) staggered fade + slide-in entrance: each row starts 55ms after
-                    // the previous, after an 80ms lead-in. Replays on EVERY open
+                    // (A) staggered fade + slide-in entrance. Replays on EVERY open
                     // (card.introTick bumps when the card opens) so a pill click looks
-                    // the same as a fresh launch. It does NOT replay on word-pick:
-                    // picking never toggles `open`, and the today-list identity ignores
-                    // the current flag so the Repeater is not rebuilt.
+                    // the same as a fresh launch; does NOT replay on word-pick (pick
+                    // never toggles `open`; today-list identity ignores the current
+                    // flag so the Repeater is not rebuilt).
+                    //
+                    // The 260ms lead-in is load-bearing: introTick fires on the SAME
+                    // instant win.open->true, while the card-level opacity Behavior
+                    // (200ms) + scale spring are still mid-transition. Without the
+                    // lead the per-row stagger plays *under* that global card fade and
+                    // is swamped into "just a fade". Holding the rows until the card
+                    // is fully opaque makes the cascade read the same as the first-
+                    // open/hot-reload case (where fetch latency happened to do this).
                     opacity: 0
-                    transform: Translate { id: rowT; y: 18 }
-                    function playIn() { row.opacity = 0; rowT.y = 18; rowInTimer.restart() }
+                    transform: Translate { id: rowT; y: 24 }
+                    function playIn() { row.opacity = 0; rowT.y = 24; rowInTimer.restart() }
                     Component.onCompleted: playIn()
                     Connections {
                         target: card
@@ -245,14 +252,14 @@ Rectangle {
                     }
                     Timer {
                         id: rowInTimer
-                        interval: 80 + row.index * 55
+                        interval: 260 + row.index * 66
                         repeat: false
                         onTriggered: rowIn.start()
                     }
                     ParallelAnimation {
                         id: rowIn
-                        NumberAnimation { target: row;  property: "opacity"; from: 0; to: 1; duration: 300; easing.type: Easing.OutCubic }
-                        NumberAnimation { target: rowT; property: "y";       from: 18; to: 0; duration: 360; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: row;  property: "opacity"; from: 0; to: 1; duration: 320; easing.type: Easing.OutCubic }
+                        NumberAnimation { target: rowT; property: "y";       from: 24; to: 0; duration: 380; easing.type: Easing.OutCubic }
                     }
 
                     // (B) current-word glow pulse - two-part z:-1 Item so it never blocks
