@@ -18,10 +18,18 @@ ShellRoot {
         keyboardFocus: WlrKeyboardFocus.None
         namespace: "qs-weather-island"
 
-        implicitWidth: stack.width
-        implicitHeight: stack.height
+        // FIXED Wayland surface = the expanded bounding box. NEVER animated.
+        // Changes only when weather data updates card.implicitHeight (~15min),
+        // never during expand/collapse → zero per-frame surface reconfigure.
+        implicitWidth: Math.max(pill.implicitWidth, card.implicitWidth)
+        implicitHeight: pill.implicitHeight + 6 + card.implicitHeight
 
-        mask: Region { item: stack }
+        // State-driven mask (NOT spring-driven). Collapsed → input region is
+        // only the pill rect (rest of the big transparent surface passes
+        // clicks through = NO dead zone). Expanded → full stack interactive.
+        // Switches discretely on `expanded` (cheap set_input_region, no
+        // buffer/geometry reconfigure, no visual change).
+        mask: Region { item: win.expanded ? stack : pill }
 
         WeatherData { id: wx }
         property bool expanded: false
@@ -29,16 +37,14 @@ ShellRoot {
 
         Item {
             id: stack
-            width: Math.max(pill.implicitWidth, win.expanded ? card.implicitWidth : 0)
-            height: pill.implicitHeight + (win.expanded ? card.implicitHeight + 6 : 0)
+            // FIXED content area = surface size. NO spring/Behavior here.
+            width: win.implicitWidth
+            height: win.implicitHeight
             // auto-collapse only when expanded AND the pointer is off BOTH pill and card
             function evalCollapse() {
                 if (win.expanded && !cardHover.hovered && !pillHover.hovered) collapseTimer.restart()
                 else collapseTimer.stop()
             }
-            // spring/damping tuned: snappy elastic, minimal bounce
-            Behavior on width  { SpringAnimation { spring: 3.2; damping: 0.28; epsilon: 0.5 } }
-            Behavior on height { SpringAnimation { spring: 3.2; damping: 0.28; epsilon: 0.5 } }
 
             Pill {
                 id: pill
@@ -55,8 +61,13 @@ ShellRoot {
                 opacity: win.expanded ? 1 : 0
                 scale: win.expanded ? 1 : 0.96
                 transformOrigin: Item.Top
+                // Elastic reveal lives ONLY on the card (cosmetic, inside the
+                // fixed transparent surface — any overshoot is harmless clipped
+                // pixels, NO Wayland reconfigure). scale bounded ~0.96..~1.05
+                // so it cannot collapse anything through zero. Card has
+                // clip:true so scaled content stays in rounded bounds.
                 Behavior on opacity { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
-                Behavior on scale   { NumberAnimation { duration: 260; easing.type: Easing.OutCubic } }
+                Behavior on scale   { SpringAnimation { spring: 4.0; damping: 0.5; epsilon: 0.01 } }
 
                 HoverHandler { id: cardHover }
             }
