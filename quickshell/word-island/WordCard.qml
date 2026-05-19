@@ -20,7 +20,14 @@ Rectangle {
     }
     clip: true
 
-    Process { id: pickProc; command: ["bash", "-c", "true"] }       // command set per-click below
+    Process {
+        id: pickProc
+        command: ["bash", "-c", "true"]   // command set per-click below
+        // Refresh AFTER word-pick.sh exits (it has written the override by then),
+        // so word-popup.sh reads the new state — deterministic ~30ms update, no
+        // stale-flash race with the immediate-refresh approach.
+        onExited: if (card.words) card.words.refresh()
+    }
     Process { id: speakProc; command: ["bash", "-c", "~/.config/waybar/word-speak.sh"] }
 
     Rectangle {
@@ -57,7 +64,6 @@ Rectangle {
                         onClicked: {
                             speakProc.running = false
                             speakProc.running = true
-                            if (card.words) card.words.refresh()
                         }
                     }
                 }
@@ -93,7 +99,6 @@ Rectangle {
                         pickProc.command = ["bash", "-c", "~/.config/waybar/word-pick.sh " + row.modelData.idx]
                         pickProc.running = false
                         pickProc.running = true
-                        if (card.words) card.words.refresh()
                     }
                 }
             }
