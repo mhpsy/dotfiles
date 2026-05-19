@@ -29,9 +29,17 @@ Singleton {
     property color mTertiary:  "#debcdf"
     property color mError:     "#ffb4ab"
 
+    // Portable: resolve the config dir at runtime (no hardcoded username) so a
+    // plain clone works on any machine / user. matugen writes colors.json here.
+    readonly property string palPath: {
+        var x = Quickshell.env("XDG_CONFIG_HOME")
+        var base = (x && x.length) ? x : (Quickshell.env("HOME") + "/.config")
+        return base + "/quickshell/colors.json"
+    }
+
     FileView {
         id: pal
-        path: "/home/mhpsy/.config/quickshell/colors.json"
+        path: theme.palPath
         watchChanges: true
         printErrors: false
         onFileChanged: reload()
