@@ -8,7 +8,6 @@
     "modules-left": [
         "clock",
         "custom/date",
-        "custom/weather",
         "custom/sp-entertainment",
         "custom/sp-drawer",
         "custom/sp-chat",
@@ -81,16 +80,6 @@
             "(.*) - Chromium": "$1"
         },
         "separate-outputs": true
-    },
-
-    // Weather
-    "custom/weather": {
-        "format": "{}",
-        "return-type": "json",
-        "exec": "~/.config/waybar/weather.sh",
-        "interval": 900,
-        "tooltip": false,
-        "on-click": "~/.config/waybar/weather-island-toggle.sh"
     },
 
     // Quotes
