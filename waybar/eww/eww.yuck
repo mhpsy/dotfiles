@@ -1,0 +1,72 @@
+(defvar wisland_open false)
+
+(defpoll weather :interval "900s"
+                 :initial '{"ok":false,"city":"深圳宝安","msg":"加载中…","current":{"icon":"","temp":"--","desc":"--","feel":"--","humidity":"--","wind_dir":"--","wind_speed":"--","pressure":"--","visibility":"--","wind_deg":"--","uv":"--","sunrise":"--","sunset":"--","pop":"--","precip":"--","cond":"clouds"},"hourly":[{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"},{"time":"--","icon":"","temp":"--"}],"daily":[{"label":"今天","icon":"","min":"--","max":"--","desc":"--"},{"label":"明天","icon":"","min":"--","max":"--","desc":"--"},{"label":"后天","icon":"","min":"--","max":"--","desc":"--"}]}'
+  "$HOME/.config/waybar/weather-eww.sh")
+
+(defwidget chip [k v]
+  (box :class "chip" :orientation "v" :space-evenly false
+    (label :class "chip-k" :text k)
+    (label :class "chip-v" :text v)))
+
+(defwidget hcell [i]
+  (box :class "hcell" :orientation "v" :space-evenly false
+    (label :class "h-t" :text {weather.hourly[i].time ?: "--"})
+    (label :class "h-i" :text {weather.hourly[i].icon ?: ""})
+    (label :class "h-d" :text {(weather.hourly[i].temp ?: "--") + "°"})))
+
+(defwidget drow [i]
+  (box :class "drow" :orientation "h" :space-evenly false
+    (label :class "d-i" :text {weather.daily[i].icon ?: ""})
+    (label :class "d-l" :text {weather.daily[i].label ?: "--"})
+    (box :hexpand true)
+    (label :class "d-r"
+      :text {(weather.daily[i].min ?: "--") + "° ~ " + (weather.daily[i].max ?: "--") + "°C  " + (weather.daily[i].desc ?: "")})))
+
+(defwidget card-ok []
+  (box :class {"wcard cond-" + (weather.current.cond ?: "clouds")} :orientation "v" :space-evenly false :valign "start" :vexpand false
+    (overlay
+      (box :orientation "v" :space-evenly false :class "wbody"
+        (box :class "hero" :orientation "h" :space-evenly false
+          (label :class "hero-ic" :text {weather.current.icon ?: ""})
+          (box :orientation "v" :space-evenly false :hexpand true
+            (label :class "hero-city" :halign "start" :text {weather.city ?: "--"})
+            (label :class "hero-temp" :halign "start" :text {(weather.current.temp ?: "--") + "°"})
+            (label :class "hero-desc" :halign "start" :text {weather.current.desc ?: "--"})
+            (label :class "hero-feel" :halign "start" :text {"体感 " + (weather.current.feel ?: "--") + "°C"})))
+        (box :class "grid" :orientation "v" :space-evenly false
+          (box :orientation "h" :space-evenly true
+            (chip :k "湿度"   :v {(weather.current.humidity ?: "--") + "%"})
+            (chip :k {"风 " + (weather.current.wind_dir ?: "--")} :v {(weather.current.wind_speed ?: "--") + " km/h"})
+            (chip :k "气压"   :v {(weather.current.pressure ?: "--") + " hPa"}))
+          (box :orientation "h" :space-evenly true
+            (chip :k "能见度" :v {(weather.current.visibility ?: "--") + " km"})
+            (chip :k "风向"   :v {(weather.current.wind_deg ?: "--") + "°"})
+            (chip :k "紫外线" :v {"UV " + (weather.current.uv ?: "--")}))
+          (box :orientation "h" :space-evenly true
+            (chip :k "日出"   :v {weather.current.sunrise ?: "--"})
+            (chip :k "日落"   :v {weather.current.sunset ?: "--"})
+            (chip :k "降水"   :v {(weather.current.pop ?: "--") + "% · " + (weather.current.precip ?: "--") + "mm"})))
+        (label :class "sec" :halign "start" :text "逐时预报")
+        (box :class "hours" :orientation "h" :space-evenly true
+          (hcell :i 0) (hcell :i 1) (hcell :i 2) (hcell :i 3) (hcell :i 4) (hcell :i 5))
+        (label :class "sec" :halign "start" :text "未来三天")
+        (drow :i 0) (drow :i 1) (drow :i 2))
+      (box :class "amb"))))
+
+(defwidget card-err []
+  (box :class "wcard cond-clouds" :orientation "v" :space-evenly false
+    (label :class "hero-city" :text {weather.city ?: "天气"})
+    (label :class "hero-desc" :text {weather.msg ?: "天气数据不可用"})))
+
+(defwindow weather-island
+  :monitor 0
+  :geometry (geometry :x "80px" :y "0px" :anchor "top left" :width "480px" :height "660px")
+  :stacking "overlay"
+  :focusable false
+  :exclusive false
+  (eventbox :onhoverlost "bash -c 'eww --config $HOME/.config/waybar/eww update wisland_open=false; sleep 0.35; eww --config $HOME/.config/waybar/eww close weather-island'"
+    (revealer :transition "crossfade" :duration "300ms" :reveal wisland_open
+      (box :class "island-wrap"
+        (eventbox :visible {weather.ok ?: false} (card-ok))
+        (eventbox :visible {!(weather.ok ?: false)} (card-err))))))

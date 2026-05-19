@@ -2,12 +2,19 @@
 
 * { all: unset; font-family: "JetBrains Mono", "LXGW WenKai", sans-serif; }
 
+/* keep this file ASCII-only: non-ASCII makes some editors prepend a
+   charset at-rule that eww's grass SCSS rejects (all styles vanish).
+   window must be transparent or a grey box frames the rounded card. */
+window, window.background, .background, .daily-word {
+  background-color: rgba(0,0,0,0);
+}
+
 .card {
   background: $sc;
-  border: 1px solid $out_var;
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 20px;
   margin: 6px 0 0 0;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
 }
 .pad { padding: 17px 19px; }
 .word { font-size: 21px; font-weight: 600; color: $on; }
@@ -32,6 +39,8 @@
 .listhdr { color: $outline; font-size: 11px; padding: 13px 19px 7px 19px; }
 .lst { padding: 0 10px 14px 10px; }
 .row { padding: 6px 9px; border-radius: 8px; font-size: 13px; }
+.row:hover { background: rgba(255,255,255,0.05); }
 .row.cur { background: rgba($primary, 0.10); }
+.row.cur:hover { background: rgba($primary, 0.16); }
 .rw { color: $primary; }
 .rm { color: $outline; }

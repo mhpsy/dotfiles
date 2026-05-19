@@ -5,7 +5,10 @@ SCRIPT="$HOME/.config/waybar/quotes.sh"
 FIX="$(mktemp)"
 STATE_TMP="$(mktemp)"
 export WORDS_STATE_FILE="$STATE_TMP"
-trap 'rm -f "$FIX" "$STATE_TMP"' EXIT
+# 隔离手动覆盖文件：默认指向不存在路径，避免真实 ~/.cache/waybar/word-override
+# 劫持那些不显式设 WORDS_OVERRIDE_FILE 的测试（Task10 各用例自带专属路径）。
+export WORDS_OVERRIDE_FILE="$STATE_TMP.noovr"
+trap 'rm -f "$FIX" "$STATE_TMP" "$STATE_TMP.noovr"' EXIT
 
 cat > "$FIX" <<'JSON'
 {"words":[
@@ -32,11 +35,15 @@ a=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT")
 b=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT")
 chk "$a" "$b" "deterministic-same-seed-epoch"
 
-# 3. 轮换：epoch 进 10 秒 → text 通常变化（遍历 0..9 应出现 >1 种）
-uniq=$(for e in 0 10 20 30 40 50 60 70 80 90; do
+# 3. 轮换：每过 ROTATE(600s) 一桶 → 遍历各桶应出现 >1 种
+uniq=$(for e in 0 600 1200 1800 2400 3000 3600 4200 4800 5400; do
   WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=$e bash "$SCRIPT" | jq -r '.text'
 done | sort -u | wc -l)
 [ "$uniq" -gt 1 ] && chk "0" "0" "rotation-varies" || chk "1" "0" "rotation-varies"
+# 3b. 同一 600s 桶内稳定：epoch 0 与 599 同词
+t0=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$SCRIPT" | jq -r '.text')
+t599=$(WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=599 bash "$SCRIPT" | jq -r '.text')
+chk "$t599" "$t0" "rotation-stable-within-bucket"
 
 # 4. 跨天：不同 seed → 今日 10 词集合（WL_IDX）应不同（tooltip 已移除，改测选词源头）
 s1=$(WL_QUIET=1 WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=0 \
@@ -61,7 +68,7 @@ chk "$libsel" "$qtext" "lib-matches-quotes-text"
 
 # === Task2: words-cache 写缓存 + 幂等 ===
 CACHE_DIR="$(mktemp -d)"
-trap 'rm -f "$FIX" "$STATE_TMP"; rm -rf "$CACHE_DIR"' EXIT
+trap 'rm -f "$FIX" "$STATE_TMP" "$STATE_TMP.noovr"; rm -rf "$CACHE_DIR"' EXIT
 CF="$CACHE_DIR/words.json"
 CALLS="$CACHE_DIR/calls"
 : > "$CALLS"
@@ -107,13 +114,13 @@ src=$(printf '%s\n' "$dr" | sed -n 's/^AUDIO_SRC=//p')
 chk "$src" "cache" "speak-audio-src-cache"
 printf '%s\n' "$dr" | sed -n 's/^NOTIFY_BODY=//p' | grep -q "例: ex-$sw one" \
   && chk "0" "0" "speak-notify-has-example" || chk "1" "0" "speak-notify-has-example"
-# 防漂移核心：点击发生在另一个 10s 桶(EPOCH=80)，仍念 quotes 渲染时(EPOCH=10)写下的词
+# 防漂移核心：点击发生在另一个 ROTATE 桶(EPOCH=700)，仍念 quotes 渲染时(EPOCH=10)写下的词
 SF2="$CACHE_DIR/curword2"
 rword=$(WORDS_NO_PREFETCH=1 WORDS_STATE_FILE="$SF2" WORDS_CACHE_FILE="$CF" \
   WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=10 bash "$SCRIPT" \
   | jq -r '.text' | awk '{print $1}')
 dword=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="$SF2" WORDS_CACHE_FILE="$CF" \
-  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=80 bash "$SPEAK" \
+  WORDLIST_FILE="$FIX" WORDS_SEED=20260515 WORDS_EPOCH=700 bash "$SPEAK" \
   | sed -n 's/^WORD=//p')
 chk "$dword" "$rword" "speak-reads-rendered-word-not-click-epoch"
 # 无缓存且无状态文件 → 走 gtts 兜底，且不报错
@@ -194,14 +201,14 @@ txt=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260518 WORDS_EPOCH=0
   bash "$SCRIPT" | jq -r '.text')
 echo "$txt" | grep -qE '^k[0-9]+ ([a-z]+\. )?[^ ].*$'; chk "$?" "0" "quotes-text-shape"
 seen=0
-for e in 0 10 20 30 40 50 60 70 80 90 100; do
+for e in 0 600 1200 1800 2400 3000 3600 4200 4800 5400 6000; do
   t=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260518 WORDS_EPOCH=$e \
     bash "$SCRIPT" | jq -r '.text')
   echo "$t" | grep -qE '^k[0-9]+ (v|n|adj|adv)\. ' && seen=1
 done
 chk "$seen" "1" "quotes-text-has-pos"
 hit=0
-for e in 0 10 20 30 40 50 60 70 80 90 100; do
+for e in 0 600 1200 1800 2400 3000 3600 4200 4800 5400 6000; do
   t=$(WORDS_NO_PREFETCH=1 WORDLIST_FILE="$WLQ" WORDS_SEED=20260518 WORDS_EPOCH=$e \
     bash "$SCRIPT" | jq -r '.text')
   [ "$t" = "k2 纯释义" ] && hit=1
@@ -257,5 +264,79 @@ dr2=$(WORDS_DRY_RUN=1 WORDS_STATE_FILE="/nonexistent/x" \
   WORDS_CACHE_FILE="/nonexistent/n.json" WORDLIST_FILE="$WLQ" \
   WORDS_SEED=20260515 WORDS_EPOCH=20 bash "$WSPK")
 chk "$(printf '%s\n' "$dr2" | sed -n 's/^AUDIO_SRC=//p')" "gtts" "speak2-gtts-fallback"
+
+# === Task10: 10分钟轮换 + 手动覆盖（点词重置计时）===
+WPICK="$HOME/.config/waybar/word-pick.sh"
+# 锚点 epoch=1000 pos=3：当 epoch=锚点时选 WL_IDX[3]
+OVR="$CACHE_DIR/ovr"
+printf '%s\t%s\t%s' 20260515 1000 3 > "$OVR"
+r=$(WL_QUIET=1 WORDS_OVERRIDE_FILE="$OVR" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=1000 \
+  bash -c '. "$0"; wl_select; printf "%s|%s" "$WL_WORD" "$(wl_word_at "${WL_IDX[3]}")"' "$LIB")
+chk "${r%%|*}" "${r##*|}" "override-anchor-pos"
+# 锚点 +600s → 往后一位 pos=4
+r=$(WL_QUIET=1 WORDS_OVERRIDE_FILE="$OVR" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=1600 \
+  bash -c '. "$0"; wl_select; printf "%s|%s" "$WL_WORD" "$(wl_word_at "${WL_IDX[4]}")"' "$LIB")
+chk "${r%%|*}" "${r##*|}" "override-advances-after-rotate"
+# 锚点 +599s（不足一桶）→ 仍 pos=3
+r=$(WL_QUIET=1 WORDS_OVERRIDE_FILE="$OVR" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=1599 \
+  bash -c '. "$0"; wl_select; printf "%s|%s" "$WL_WORD" "$(wl_word_at "${WL_IDX[3]}")"' "$LIB")
+chk "${r%%|*}" "${r##*|}" "override-stable-within-bucket"
+# 跨天（override seed 不匹配）→ 忽略覆盖，回退纯时间公式
+printf '%s\t%s\t%s' 20991231 1000 7 > "$OVR"
+wovr=$(WL_QUIET=1 WORDS_OVERRIDE_FILE="$OVR" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=1000 \
+  bash -c '. "$0"; wl_select; printf "%s" "$WL_WORD"' "$LIB")
+wnone=$(WL_QUIET=1 WORDS_OVERRIDE_FILE="/nonexistent/x" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=1000 \
+  bash -c '. "$0"; wl_select; printf "%s" "$WL_WORD"' "$LIB")
+chk "$wovr" "$wnone" "override-stale-seed-ignored"
+# pos 越界 → 忽略，回退时间公式
+printf '%s\t%s\t%s' 20260515 1000 999 > "$OVR"
+wbad=$(WL_QUIET=1 WORDS_OVERRIDE_FILE="$OVR" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=1000 \
+  bash -c '. "$0"; wl_select; printf "%s" "$WL_WORD"' "$LIB")
+chk "$wbad" "$wnone" "override-bad-pos-ignored"
+# word-pick.sh：写出 "SEED\t<digits>\t5"
+PK="$CACHE_DIR/pick_ovr"
+WORDS_OVERRIDE_FILE="$PK" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 bash "$WPICK" 5
+IFS=$'\t' read -r ps pe pp < "$PK"
+chk "$ps" "20260515" "pick-writes-seed"
+chk "$pp" "5" "pick-writes-pos"
+case "$pe" in ''|*[!0-9]*) chk "1" "0" "pick-writes-epoch" ;; *) chk "0" "0" "pick-writes-epoch" ;; esac
+# word-pick 非法/越界参数 → 不写文件
+rm -f "$PK"
+WORDS_OVERRIDE_FILE="$PK" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 bash "$WPICK" abc
+[ -e "$PK" ] && chk "1" "0" "pick-ignores-nonint" || chk "0" "0" "pick-ignores-nonint"
+WORDS_OVERRIDE_FILE="$PK" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 bash "$WPICK" 999
+[ -e "$PK" ] && chk "1" "0" "pick-ignores-oob" || chk "0" "0" "pick-ignores-oob"
+# word-pick → words-lib 往返：pick 5 后，用写下的 epoch 读，应选 WL_IDX[5]
+WORDS_OVERRIDE_FILE="$PK" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 bash "$WPICK" 5
+IFS=$'\t' read -r _ pe2 _ < "$PK"
+r=$(WL_QUIET=1 WORDS_OVERRIDE_FILE="$PK" WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH="$pe2" \
+  bash -c '. "$0"; wl_select; printf "%s|%s" "$WL_WORD" "$(wl_word_at "${WL_IDX[5]}")"' "$LIB")
+chk "${r%%|*}" "${r##*|}" "pick-roundtrip-selects-clicked"
+# word-popup.sh：today 每项带 idx，且 0..len-1 顺序
+pj=$(WORDS_NO_PREFETCH=1 WORDS_OVERRIDE_FILE="/nonexistent/x" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$POP")
+chk "$(echo "$pj" | jq -c '[.today[].idx] == [range(0; .today|length)]')" "true" "popup-today-has-idx"
+chk "$(echo "$pj" | jq '.today[3].idx')" "3" "popup-idx-positional"
+
+# === Task11: word-stream.sh 事件推送源 ===
+STREAM="$HOME/.config/waybar/word-stream.sh"
+SFIFO="$CACHE_DIR/wake.fifo"
+# 启动即吐一行合法 JSON，且与 word-popup.sh 同环境输出一致
+sl=$(timeout 2 env WORDS_NO_PREFETCH=1 WORDS_WAKE_FIFO="$SFIFO" \
+  WORDS_OVERRIDE_FILE="/nonexistent/x" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=0 \
+  bash "$STREAM" 2>/dev/null | head -n1)
+echo "$sl" | jq -e '.current and .today' >/dev/null 2>&1; chk "$?" "0" "stream-emits-valid-json"
+pp=$(WORDS_NO_PREFETCH=1 WORDS_OVERRIDE_FILE="/nonexistent/x" WORDS_CACHE_FILE="$CF" \
+  WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 WORDS_EPOCH=0 bash "$POP")
+chk "$sl" "$pp" "stream-matches-popup"
+rm -f "$SFIFO"
+# word-pick.sh 在无 FIFO 时不挂起、仍写 override（<1s 完成）
+PK2="$CACHE_DIR/pk2"; t0=$(date +%s)
+WORDS_OVERRIDE_FILE="$PK2" WORDS_WAKE_FIFO="/nonexistent/nofifo" \
+  WORDLIST_FILE="$WLQ" WORDS_SEED=20260515 bash "$WPICK" 4
+t1=$(date +%s)
+[ -s "$PK2" ] && [ $((t1-t0)) -lt 3 ] && chk "0" "0" "pick-no-fifo-no-hang" \
+  || chk "1" "0" "pick-no-fifo-no-hang"
 
 exit $fail

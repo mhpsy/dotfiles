@@ -89,7 +89,8 @@
         "return-type": "json",
         "exec": "~/.config/waybar/weather.sh",
         "interval": 900,
-        "tooltip": true
+        "tooltip": false,
+        "on-click": "~/.config/waybar/qs-weather-toggle.sh"
     },
 
     // Quotes
@@ -97,9 +98,9 @@
         "format": "{}",
         "return-type": "json",
         "exec": "~/.config/waybar/quotes.sh",
-        "interval": 10,
+        "interval": 2,
         "tooltip": false,
-        "on-click": "~/.config/waybar/word-island-toggle.sh"
+        "on-click": "~/.config/waybar/qs-word-toggle.sh"
     },
 
     // Package Updates
