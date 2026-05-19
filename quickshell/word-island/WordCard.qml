@@ -86,41 +86,54 @@ Rectangle {
                 radius: 10
                 color: rowMA.containsMouse ? Theme.chipBg : (modelData.current ? Theme.chipBg : "transparent")
 
-                // (A) staggered fade + slide-in entrance: each row starts 35ms after
+                // (A) staggered fade + slide-in entrance: each row starts 55ms after
                 // the previous. Fires once on delegate creation (W2 content-guard keeps
                 // delegates stable across the 1.5s poll, so this does NOT replay).
                 opacity: 0
-                transform: Translate { id: rowT; y: 10 }
+                transform: Translate { id: rowT; y: 18 }
                 Component.onCompleted: rowInTimer.start()
                 Timer {
                     id: rowInTimer
-                    interval: row.index * 35
+                    interval: row.index * 55
                     repeat: false
                     onTriggered: rowIn.start()
                 }
                 ParallelAnimation {
                     id: rowIn
-                    NumberAnimation { target: row;  property: "opacity"; from: 0; to: 1; duration: 240; easing.type: Easing.OutCubic }
-                    NumberAnimation { target: rowT; property: "y";       from: 10; to: 0; duration: 280; easing.type: Easing.OutCubic }
+                    NumberAnimation { target: row;  property: "opacity"; from: 0; to: 1; duration: 300; easing.type: Easing.OutCubic }
+                    NumberAnimation { target: rowT; property: "y";       from: 18; to: 0; duration: 360; easing.type: Easing.OutCubic }
                 }
 
-                // (B) current-word glow pulse — separate z:-1 layer so it never blocks
+                // (B) current-word glow pulse — two-part z:-1 Item so it never blocks
                 // rowMA. Gated on card.visible so it STOPS when the card is closed
                 // (zero idle cost, mirrors Ambient gating).
-                Rectangle {
+                Item {
+                    id: glow
                     z: -1
                     anchors.fill: parent
-                    radius: 10
-                    color: "transparent"
-                    border.width: 1
-                    border.color: Theme.accent
                     visible: row.modelData.current
-                    opacity: 0
-                    SequentialAnimation on opacity {
+                    property real pulse: 0.35
+                    SequentialAnimation on pulse {
                         running: row.modelData.current && card.visible
                         loops: Animation.Infinite
-                        NumberAnimation { from: 0.25; to: 0.85; duration: 1300; easing.type: Easing.InOutSine }
-                        NumberAnimation { from: 0.85; to: 0.25; duration: 1300; easing.type: Easing.InOutSine }
+                        NumberAnimation { from: 0.35; to: 1.0; duration: 1100; easing.type: Easing.InOutSine }
+                        NumberAnimation { from: 1.0; to: 0.35; duration: 1100; easing.type: Easing.InOutSine }
+                    }
+                    // soft accent fill (low alpha so word/meaning stay readable on it)
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 10
+                        color: Theme.accent
+                        opacity: 0.12 + 0.20 * glow.pulse      // ~0.12 .. ~0.32 — clearly visible breathing, text still legible
+                    }
+                    // bright accent border that thickens/brightens with the pulse
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 10
+                        color: "transparent"
+                        border.color: Theme.accent
+                        border.width: 3
+                        opacity: 0.45 + 0.55 * glow.pulse      // ~0.45 .. ~1.0
                     }
                 }
 
