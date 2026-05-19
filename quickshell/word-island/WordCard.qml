@@ -80,10 +80,50 @@ Rectangle {
             delegate: Rectangle {
                 id: row
                 required property var modelData
+                required property int index
                 Layout.fillWidth: true
                 implicitHeight: 34
                 radius: 10
                 color: rowMA.containsMouse ? Theme.chipBg : (modelData.current ? Theme.chipBg : "transparent")
+
+                // (A) staggered fade + slide-in entrance: each row starts 35ms after
+                // the previous. Fires once on delegate creation (W2 content-guard keeps
+                // delegates stable across the 1.5s poll, so this does NOT replay).
+                opacity: 0
+                transform: Translate { id: rowT; y: 10 }
+                Component.onCompleted: rowInTimer.start()
+                Timer {
+                    id: rowInTimer
+                    interval: row.index * 35
+                    repeat: false
+                    onTriggered: rowIn.start()
+                }
+                ParallelAnimation {
+                    id: rowIn
+                    NumberAnimation { target: row;  property: "opacity"; from: 0; to: 1; duration: 240; easing.type: Easing.OutCubic }
+                    NumberAnimation { target: rowT; property: "y";       from: 10; to: 0; duration: 280; easing.type: Easing.OutCubic }
+                }
+
+                // (B) current-word glow pulse — separate z:-1 layer so it never blocks
+                // rowMA. Gated on card.visible so it STOPS when the card is closed
+                // (zero idle cost, mirrors Ambient gating).
+                Rectangle {
+                    z: -1
+                    anchors.fill: parent
+                    radius: 10
+                    color: "transparent"
+                    border.width: 1
+                    border.color: Theme.accent
+                    visible: row.modelData.current
+                    opacity: 0
+                    SequentialAnimation on opacity {
+                        running: row.modelData.current && card.visible
+                        loops: Animation.Infinite
+                        NumberAnimation { from: 0.25; to: 0.85; duration: 1300; easing.type: Easing.InOutSine }
+                        NumberAnimation { from: 0.85; to: 0.25; duration: 1300; easing.type: Easing.InOutSine }
+                    }
+                }
+
                 RowLayout {
                     anchors { fill: parent; leftMargin: 12; rightMargin: 12 }
                     spacing: 10
