@@ -37,7 +37,8 @@ ShellRoot {
         // would latch the stale value — confirmed via debug logging).
         property bool open: false
         function syncOpen() {
-            win.open = (stateFile.text() ? stateFile.text().trim() === "1" : false)
+            var t = stateFile.text()
+            win.open = t ? t.trim() === "1" : false
         }
         FileView {
             id: stateFile
