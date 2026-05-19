@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import "."
 
 ShellRoot {
     WlrLayershell {
@@ -19,15 +20,20 @@ ShellRoot {
         keyboardFocus: WlrKeyboardFocus.None
         namespace: "qs-weather-island"
 
+        WeatherData { id: wx }
+
         Rectangle {
             id: box
-            width: 220; height: 60
+            width: 360; height: 70
             radius: 16
-            color: "#cc1020ff"
+            color: "#cc101016"
             Text {
                 anchors.centerIn: parent
-                text: "QS WEATHER OK"
-                color: "white"; font.pixelSize: 18
+                color: "white"; font.pixelSize: 16
+                text: wx.ok
+                      ? (wx.city + "  " + (wx.current.temp || "--") + "°  " + (wx.current.desc || "")
+                         + "  [h" + wx.hourly.length + " d" + wx.daily.length + "]")
+                      : ("loading… " + wx.lastError)
             }
         }
     }
