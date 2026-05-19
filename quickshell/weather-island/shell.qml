@@ -29,7 +29,7 @@ ShellRoot {
             color: "#cc101016"
             Text {
                 anchors.centerIn: parent
-                color: "white"; font.pixelSize: 16
+                color: Theme.accent; font.pixelSize: 16
                 text: wx.ok
                       ? (wx.city + "  " + (wx.current.temp || "--") + "°  " + (wx.current.desc || "")
                          + "  [h" + wx.hourly.length + " d" + wx.daily.length + "]")
