@@ -100,7 +100,7 @@
         "exec": "~/.config/waybar/quotes.sh",
         "interval": 2,
         "tooltip": false,
-        "on-click": "~/.config/waybar/word-island-toggle.sh"
+        "on-click": "~/.config/waybar/qs-word-toggle.sh"
     },
 
     // Package Updates
