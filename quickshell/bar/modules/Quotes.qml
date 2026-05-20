@@ -16,7 +16,7 @@ Rectangle {
     radius: Theme.radius
     color:  active ? Theme.primary : Theme.surfaceContainerHigh
     implicitWidth:  row.implicitWidth + 2 * Theme.pad
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
     visible: !!cur.word
     Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
@@ -29,7 +29,7 @@ Rectangle {
             text:           root.cur.word || ""
             color:          root.active ? Theme.fgPrimaryContainer : Theme.fgSurface
             font.family:    Theme.uiFont
-            font.pixelSize: 12
+            font.pixelSize: Theme.textSize
             font.bold:      true
             Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
         }
@@ -39,7 +39,7 @@ Rectangle {
             text:           root.posArr.join(" ")
             color:          root.active ? Theme.fgPrimaryContainer : Theme.fgSurfaceVariant
             font.family:    Theme.uiFont
-            font.pixelSize: 11
+            font.pixelSize: Theme.glyphSize
             Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
         }
         Text {
@@ -47,7 +47,7 @@ Rectangle {
             text:           root.cur.meaning || ""
             color:          root.active ? Theme.fgPrimaryContainer : Theme.fgSurfaceVariant
             font.family:    Theme.uiFont
-            font.pixelSize: 12
+            font.pixelSize: Theme.textSize
             Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
         }
     }

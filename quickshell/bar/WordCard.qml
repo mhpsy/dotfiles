@@ -49,8 +49,11 @@ Rectangle {
             id: hero
             Layout.fillWidth: true
             implicitHeight: heroCol.implicitHeight + 40
-            topLeftRadius: WordTheme.radius
-            topRightRadius: WordTheme.radius
+            // Top corners squared off — card sits flush against the bar in
+            // the popup, so any radius up there leaks visible rounded edges
+            // outside the metaball outline.
+            topLeftRadius: 0
+            topRightRadius: 0
             bottomLeftRadius: 0
             bottomRightRadius: 0
             gradient: Gradient {

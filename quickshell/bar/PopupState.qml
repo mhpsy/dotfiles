@@ -32,6 +32,7 @@ Singleton {
     property real bluetoothAnchorX:   0
     property real networkAnchorX:     0
     property real systemAnchorX:      0
+    property real caffeineAnchorX:    0
     property real weatherCardW:       0
     property real wordCardW:          0
     property real audioCardW:         0
@@ -40,6 +41,7 @@ Singleton {
     property real bluetoothCardW:     0
     property real networkCardW:       0
     property real systemCardW:        0
+    property real caffeineCardW:      0
     property real weatherCardH:       0
     property real wordCardH:          0
     property real audioCardH:         0
@@ -48,6 +50,7 @@ Singleton {
     property real bluetoothCardH:     0
     property real networkCardH:       0
     property real systemCardH:        0
+    property real caffeineCardH:      0
 
     // --- resolved values the blob reads ------------------------------------
     property real currentAnchorX: 0
@@ -78,6 +81,7 @@ Singleton {
     readonly property bool bluetoothOpen:  currentPopup === "bluetooth"
     readonly property bool networkOpen:    currentPopup === "network"
     readonly property bool systemOpen:     currentPopup === "system"
+    readonly property bool caffeineOpen:   currentPopup === "caffeine"
 
     Timer {
         id: closeTimer
@@ -101,6 +105,7 @@ Singleton {
     function openBluetooth()  { _open("bluetooth",  () => root.bluetoothAnchorX,  () => root.bluetoothCardW,  () => root.bluetoothCardH)  }
     function openNetwork()    { _open("network",    () => root.networkAnchorX,    () => root.networkCardW,    () => root.networkCardH)    }
     function openSystem()     { _open("system",     () => root.systemAnchorX,     () => root.systemCardW,     () => root.systemCardH)     }
+    function openCaffeine()   { _open("caffeine",   () => root.caffeineAnchorX,   () => root.caffeineCardW,   () => root.caffeineCardH)   }
 
     // Cancel the pending close — used by the blob's hover overlay so the
     // popup stays visible while the pointer is over its card.
@@ -116,4 +121,5 @@ Singleton {
     function closeBluetooth()  { close() }
     function closeNetwork()    { close() }
     function closeSystem()     { close() }
+    function closeCaffeine()   { close() }
 }

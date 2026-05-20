@@ -58,7 +58,10 @@ ShellRoot {
         namespace:     "qs-bar"
         layer:         WlrLayer.Top
         exclusionMode: ExclusionMode.Normal
-        exclusiveZone: Theme.barHeight
+        // Reserve barHeight + (2*topMargin - gapsOut) so the gap below the
+        // bar (= gapsOut applied past the reserved zone) ends up equal to
+        // the gap above (= barTopMargin). Visual top/bottom symmetric float.
+        exclusiveZone: Theme.barHeight + Math.max(0, 2 * Theme.barTopMargin - Theme.gapsOut)
         keyboardFocus: WlrKeyboardFocus.None
         color:         "transparent"
 
@@ -67,6 +70,7 @@ ShellRoot {
             left:  true
             right: true
         }
+        margins.top:    Theme.barTopMargin
         implicitHeight: Theme.barHeight
 
         Bar { anchors.fill: parent }
@@ -90,7 +94,9 @@ ShellRoot {
             left:  true
             right: true
         }
-        margins.top:    Theme.barHeight
+        // Popup sits just below the floating bar. Match its top edge to
+        // the bar's actual visual bottom (barTopMargin above + barHeight).
+        margins.top:    Theme.barHeight + Theme.barTopMargin
         implicitHeight: maxH
 
         Binding { target: PopupState; property: "weatherCardW";    value: weatherCard.implicitWidth     }
@@ -109,6 +115,8 @@ ShellRoot {
         Binding { target: PopupState; property: "networkCardH";    value: networkCard.implicitHeight    }
         Binding { target: PopupState; property: "systemCardW";     value: systemCard.implicitWidth      }
         Binding { target: PopupState; property: "systemCardH";     value: systemCard.implicitHeight     }
+        Binding { target: PopupState; property: "caffeineCardW";   value: caffeineCard.implicitWidth    }
+        Binding { target: PopupState; property: "caffeineCardH";   value: caffeineCard.implicitHeight   }
 
         mask: Region { item: blob }
 
@@ -169,10 +177,14 @@ ShellRoot {
 
                     // bottom edge of body (left → right)
                     PathLine { x: blob.width - popupSurface.fillet - popupSurface.topCorner; y: blob.height }
-                    // bottom-right convex
+                    // bottom-right convex — Counterclockwise picks the
+                    // arc on the outward side of the chord (the body sits
+                    // upper-left of this corner, so visually-counter-clockwise
+                    // sweep = outward bulge).
                     PathArc {
                         x: blob.width - popupSurface.fillet; y: blob.height - popupSurface.topCorner
                         radiusX: popupSurface.topCorner; radiusY: popupSurface.topCorner
+                        direction: PathArc.Counterclockwise
                     }
                     // body right edge (going UP)
                     PathLine { x: blob.width - popupSurface.fillet; y: popupSurface.fillet }
@@ -192,10 +204,11 @@ ShellRoot {
                     }
                     // body left edge (going DOWN)
                     PathLine { x: popupSurface.fillet; y: blob.height - popupSurface.topCorner }
-                    // bottom-left convex — closes path
+                    // bottom-left convex — same outward-bulge rule
                     PathArc {
                         x: popupSurface.fillet + popupSurface.topCorner; y: blob.height
                         radiusX: popupSurface.topCorner; radiusY: popupSurface.topCorner
+                        direction: PathArc.Counterclockwise
                     }
                 }
             }
@@ -301,6 +314,18 @@ ShellRoot {
                     popupSurface.fillet
                     - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "system" ? 1 : 0
+                visible:                  opacity > 0.01
+                Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
+            }
+
+            CaffeineCard {
+                id: caffeineCard
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top:              parent.top
+                anchors.topMargin:
+                    popupSurface.fillet
+                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                opacity:                  PopupState.currentPopup === "caffeine" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
             }

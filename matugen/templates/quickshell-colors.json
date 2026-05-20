@@ -4,6 +4,7 @@
   "on_primary_container": "{{colors.on_primary_container.default.hex}}",
   "secondary": "{{colors.secondary.default.hex}}",
   "secondary_container": "{{colors.secondary_container.default.hex}}",
+  "on_secondary_container": "{{colors.on_secondary_container.default.hex}}",
   "tertiary": "{{colors.tertiary.default.hex}}",
   "tertiary_container": "{{colors.tertiary_container.default.hex}}",
   "on_tertiary_container": "{{colors.on_tertiary_container.default.hex}}",

@@ -12,7 +12,7 @@ Rectangle {
     radius:  Theme.radius
     color:   Theme.surfaceContainerHigh
     implicitWidth:  row.implicitWidth + 2 * Theme.pad
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
 
     function refresh() { if (!queryProc.running) queryProc.running = true }
 
@@ -52,7 +52,7 @@ Rectangle {
             text: root.dnd ? "" : ""        // bell-slash / bell
             font.family:    Theme.glyphFont
             font.styleName: Theme.glyphStyle
-            font.pixelSize: 11
+            font.pixelSize: Theme.glyphSize
             color:          root.dnd ? Theme.error : Theme.fgSurfaceVariant
         }
         Text {
@@ -60,7 +60,7 @@ Rectangle {
             visible:        root.count > 0
             text:           root.count.toString()
             font.family:    Theme.uiFont
-            font.pixelSize: 11
+            font.pixelSize: Theme.glyphSize
             color:          Theme.fgSurface
         }
     }

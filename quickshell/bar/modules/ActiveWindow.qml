@@ -20,7 +20,7 @@ Rectangle {
 
     visible: titleText.length > 0
     implicitWidth:  Math.min(label.implicitWidth + 2 * Theme.pad, 400)
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
 
     Text {
         id: label
@@ -32,6 +32,6 @@ Rectangle {
         text:                root.titleText
         color:               Theme.fgSurface
         font.family:         Theme.uiFont
-        font.pixelSize:      12
+        font.pixelSize:      Theme.textSize
     }
 }

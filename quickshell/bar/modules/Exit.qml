@@ -13,7 +13,7 @@ Rectangle {
     radius:  Theme.radius
     color:   Theme.surfaceContainerHigh
     implicitWidth:  icon.implicitWidth + 2 * Theme.pad
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
 
     Text {
         id: icon
@@ -21,7 +21,7 @@ Rectangle {
         text: ""   // fa-power-off
         font.family:    Theme.glyphFont
         font.styleName: Theme.glyphStyle
-        font.pixelSize: 12
+        font.pixelSize: Theme.textSize
         color:          Theme.fgSurfaceVariant
     }
 

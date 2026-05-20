@@ -22,7 +22,7 @@ Rectangle {
     radius:  Theme.radius
     color:   active ? Theme.primary : Theme.surfaceContainerHigh
     implicitWidth:  row.implicitWidth + 2 * Theme.pad
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
     opacity: BluetoothData.powered ? 1.0 : 0.55
     Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
@@ -35,7 +35,7 @@ Rectangle {
             text:           ""
             font.family:    Theme.glyphFont
             font.styleName: Theme.glyphStyle
-            font.pixelSize: 12
+            font.pixelSize: Theme.textSize
             color:          (root.active ? Theme.fgPrimaryContainer
                             : root.count > 0 ? Theme.primary
                             : Theme.fgSurfaceVariant)
@@ -47,7 +47,7 @@ Rectangle {
                               ? root.single.battery + "%"
                               : root.count.toString()
             font.family:    Theme.uiFont
-            font.pixelSize: 11
+            font.pixelSize: Theme.glyphSize
             color:          root.active ? Theme.fgPrimaryContainer : Theme.fgSurface
         }
     }

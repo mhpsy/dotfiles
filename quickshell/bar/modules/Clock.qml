@@ -12,7 +12,7 @@ Rectangle {
     color:  Theme.surfaceContainerHigh
     radius: Theme.radius
     implicitWidth:  label.implicitWidth + 2 * Theme.pad
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
 
     SystemClock {
         id: clock
@@ -26,6 +26,6 @@ Rectangle {
         color:       Theme.fgSurface
         // monospace so seconds tick without nudging the pill width.
         font.family: Theme.monoFont
-        font.pixelSize: 13
+        font.pixelSize: Theme.clockSize
     }
 }

@@ -18,7 +18,7 @@ Rectangle {
     color:  active ? Theme.primary : Theme.surfaceContainerHigh
     radius: Theme.radius
     implicitWidth:  row.implicitWidth + 2 * Theme.pad
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
     Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
     readonly property var  sink:     Pipewire.defaultAudioSink
@@ -47,14 +47,14 @@ Rectangle {
             text:           root.icon
             font.family:    Theme.glyphFont
             font.styleName: Theme.glyphStyle
-            font.pixelSize: 11
+            font.pixelSize: Theme.glyphSize
             color:          root.silenced ? Theme.error : Theme.fgSurfaceVariant
         }
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text:           root.percent + "%"
             font.family:    Theme.uiFont
-            font.pixelSize: 12
+            font.pixelSize: Theme.textSize
             color:          root.silenced ? Theme.error : Theme.fgSurface
         }
     }

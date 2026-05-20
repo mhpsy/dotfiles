@@ -3,27 +3,43 @@ import QtQuick.Layouts
 import Quickshell.Hyprland
 import ".."
 
-// Normal-workspace pills (1, 2, 3, ...).
+// Workspaces — waybar style:
 //
-// Hyprland assigns NEGATIVE ids to "special" workspaces (drawer / chat /
-// entertainment in this setup). They aren't switched by `workspace <id>` —
-// they need `togglespecialworkspace <name>` — so we filter them out and let
-// dedicated sp-* modules handle them (the existing waybar setup does the same).
+//   inactive → transparent bg, just the number in fg
+//   active   → primary_container bg, fg flipped to on_primary, min-width 40
+//   hover    → same look as active
 //
-// `items` is a JS array derived from Hyprland.workspaces; the binding re-runs
-// when the underlying ObjectModel mutates (insert / remove). Sorting on id
-// keeps the visual order stable regardless of insertion order.
+// Persistent: workspaces 1..N are always rendered even if Hyprland hasn't
+// allocated them yet (matches waybar's `persistent-workspaces: "*": N`).
+// Non-existent placeholders are dimmed so real-but-inactive workspaces
+// still pop.
 RowLayout {
     id: root
-    spacing: 4
+    spacing: 3
+
+    readonly property int persistentCount: 5
 
     readonly property var items: {
-        const ws = Hyprland.workspaces ? Hyprland.workspaces.values : []
-        const out = []
-        for (let i = 0; i < ws.length; i++) {
-            if (ws[i] && ws[i].id > 0) out.push(ws[i])
+        const real    = Hyprland.workspaces ? Hyprland.workspaces.values : []
+        const realMap = ({})
+        for (let i = 0; i < real.length; i++) {
+            const w = real[i]
+            if (w && w.id > 0) realMap[w.id] = w
         }
-        out.sort((a, b) => a.id - b.id)
+        const idSet = new Set()
+        for (let i = 1; i <= root.persistentCount; i++) idSet.add(i)
+        for (const k in realMap) idSet.add(parseInt(k))
+        const ids = Array.from(idSet).sort((a, b) => a - b)
+        const out = []
+        for (const id of ids) {
+            const w = realMap[id] || null
+            out.push({
+                id:       id,
+                ws:       w,
+                isReal:   w !== null,
+                isActive: w !== null && w.active === true
+            })
+        }
         return out
     }
 
@@ -34,30 +50,42 @@ RowLayout {
             id: pill
             required property var modelData
 
-            readonly property bool isActive: modelData
-                                             && (modelData.active === true
-                                                 || (Hyprland.focusedWorkspace
-                                                     && Hyprland.focusedWorkspace.id === modelData.id))
+            readonly property bool isActive: modelData && modelData.isActive
+            readonly property bool isReal:   modelData && modelData.isReal
+            // hover counts as "active-look" — matches waybar's button:hover.
+            readonly property bool litUp:    isActive || ma.containsMouse
 
-            Layout.preferredWidth:  isActive ? 28 : 22
-            Layout.preferredHeight: Theme.barHeight - 14
-            radius: height / 2
-            color:  isActive ? Theme.primary : Theme.surfaceContainerHigh
+            // Active: fixed 40px (waybar min-width). Inactive: tight around
+            // the digit (pad 8 each side, never narrower than pillHeight).
+            Layout.preferredWidth: isActive
+                                       ? 40
+                                       : Math.max(label.implicitWidth + 16, Theme.pillHeight)
+            Layout.preferredHeight: Theme.pillHeight
+            radius: 15
 
-            Behavior on Layout.preferredWidth { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-            Behavior on color                 { ColorAnimation  { duration: 150 } }
+            color:   litUp ? Theme.primaryContainer : "transparent"
+            opacity: (isActive || isReal) ? 1.0 : 0.55
+
+            Behavior on Layout.preferredWidth { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
+            Behavior on color                 { ColorAnimation  { duration: 250 } }
+            Behavior on opacity               { NumberAnimation { duration: 250 } }
 
             Text {
+                id: label
                 anchors.centerIn: parent
                 text:        modelData ? modelData.id : ""
-                color:       pill.isActive ? Theme.fgPrimaryContainer : Theme.fgSurfaceVariant
+                color:       pill.litUp ? Theme.fgPrimaryContainer : Theme.fgSurface
                 font.family: Theme.uiFont
-                font.pixelSize: 11
+                font.pixelSize: Theme.textSize
+                font.bold:   true
+                Behavior on color { ColorAnimation { duration: 250 } }
             }
 
             MouseArea {
+                id: ma
                 anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+                cursorShape:  Qt.PointingHandCursor
                 onClicked: Hyprland.dispatch("workspace " + modelData.id)
             }
         }

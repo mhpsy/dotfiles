@@ -16,7 +16,7 @@ Rectangle {
     radius:  Theme.radius
     color:   Theme.surfaceContainerHigh
     implicitWidth:  visible ? icon.implicitWidth + 2 * Theme.pad : 0
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
 
     function refresh() { if (!proc.running) proc.running = true }
 
@@ -50,7 +50,7 @@ Rectangle {
         text: ""   // fa-rotate
         font.family:    Theme.glyphFont
         font.styleName: Theme.glyphStyle
-        font.pixelSize: 12
+        font.pixelSize: Theme.textSize
         color:          Theme.error
     }
 

@@ -12,7 +12,7 @@ Rectangle {
     radius:  Theme.radius
     color:   active ? Theme.primary : Theme.surfaceContainerHigh
     implicitWidth:  visible ? row.implicitWidth + 2 * Theme.pad : 0
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
     Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
     Row {
@@ -21,17 +21,17 @@ Rectangle {
         spacing: 6
         Text {
             anchors.verticalCenter: parent.verticalCenter
-            text:           ""
+            text:           ""
             font.family:    Theme.glyphFont
             font.styleName: Theme.glyphStyle
-            font.pixelSize: 11
+            font.pixelSize: Theme.glyphSize
             color:          root.active ? Theme.fgPrimaryContainer : Theme.fgSurfaceVariant
         }
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text:           UpdatesData.totalCount.toString()
             font.family:    Theme.uiFont
-            font.pixelSize: 12
+            font.pixelSize: Theme.textSize
             color:          root.active ? Theme.fgPrimaryContainer : Theme.fgSurface
         }
     }

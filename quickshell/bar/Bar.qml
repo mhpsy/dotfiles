@@ -3,28 +3,42 @@ import QtQuick.Layouts
 import "."
 import "./modules"
 
-// Bar layout follows waybar: workspaces in the CENTER, info modules on the
-// left, status / system modules on the right. We use three anchored
-// RowLayouts (not one flex row with spacers) so the center group stays
-// truly centered on the screen regardless of how wide left/right become.
-Rectangle {
+// Bar root is a transparent Item that fills the layer-shell surface; the
+// actual bar background is an inset Rectangle (`bg`) with horizontal
+// barSideMargins, so the bar floats free from the screen edges. RowLayouts
+// anchor to `bg` (not the root), and use Theme.barInnerPad so module
+// content sits comfortably inside the rounded box.
+//
+// Layout follows waybar: workspaces CENTER, info modules LEFT, status /
+// system modules RIGHT.
+Item {
     id: root
-    color: Theme.surface
+
+    Rectangle {
+        id: bg
+        anchors {
+            fill:        parent
+            leftMargin:  Theme.barSideMargin
+            rightMargin: Theme.barSideMargin
+        }
+        color:  Theme.surface
+        radius: Theme.radius
+    }
 
     // ---- LEFT: time + content modules ----
     RowLayout {
         anchors {
-            left:           parent.left
-            leftMargin:     Theme.pad
-            verticalCenter: parent.verticalCenter
+            left:           bg.left
+            leftMargin:     Theme.barInnerPad
+            verticalCenter: bg.verticalCenter
         }
         spacing: Theme.gap
 
         Clock {}
         DatePill {}
-        SpecialButton { name: "drawer";        icon: "" }
-        SpecialButton { name: "chat";          icon: "" }
-        SpecialButton { name: "entertainment"; icon: "" }
+        SpecialButton { name: "drawer";        icon: ""; label: "DEV"  }
+        SpecialButton { name: "chat";          icon: "";   label: "CHAT" }
+        SpecialButton { name: "entertainment"; icon: "";    label: "DOCS" }
         Weather {}
         Quotes {}
         ActiveWindow { Layout.maximumWidth: 360 }
@@ -33,8 +47,8 @@ Rectangle {
     // ---- CENTER: workspaces ----
     RowLayout {
         anchors {
-            horizontalCenter: parent.horizontalCenter
-            verticalCenter:   parent.verticalCenter
+            horizontalCenter: bg.horizontalCenter
+            verticalCenter:   bg.verticalCenter
         }
         spacing: Theme.gap
 
@@ -44,14 +58,15 @@ Rectangle {
     // ---- RIGHT: status / system modules ----
     RowLayout {
         anchors {
-            right:          parent.right
-            rightMargin:    Theme.pad
-            verticalCenter: parent.verticalCenter
+            right:          bg.right
+            rightMargin:    Theme.barInnerPad
+            verticalCenter: bg.verticalCenter
         }
         spacing: Theme.gap
 
         Updates {}
         Reboot {}
+        Caffeine {}
         Brightness {}
         Audio {}
         Bluetooth {}

@@ -2,33 +2,65 @@ import QtQuick
 import Quickshell.Hyprland
 import ".."
 
-// One toggle for a Hyprland "special" workspace (drawer / chat / entertainment).
+// Hyprland special-workspace toggle. Matches waybar's style:
 //
-// Active state comes from SpecialWatcher (which polls hyprctl + listens to
-// hyprland events, mirroring how waybar's special-workspace.sh tracks it).
-// HyprlandWorkspace.active does NOT work for special workspaces — that flag
-// means "focused on its monitor", which is never true for an overlay.
+//   * min-width 64px regardless of state (no jitter on toggle).
+//   * Per-SP active palette so each toggle reads as a distinct surface:
+//       drawer        → secondary container
+//       chat          → primary   container
+//       entertainment → tertiary  container
+//   * Inactive: dimmed text on the standard pill bg.
+//   * Active: per-SP bg + matching fg, icon + small label (DEV/CHAT/DOCS)
+//     packed inside the same 64px width.
 Rectangle {
     id: root
     required property string name
     required property string icon
+    required property string label
 
     readonly property bool active: SpecialWatcher.isActive(name)
 
-    color:  active ? Theme.primary : Theme.surfaceContainerHigh
+    readonly property color activeBg:
+          name === "drawer"  ? Theme.secondaryContainer
+        : name === "chat"    ? Theme.primaryContainer
+                             : Theme.tertiaryContainer
+    readonly property color activeFg:
+          name === "drawer"  ? Theme.fgSecondaryContainer
+        : name === "chat"    ? Theme.fgPrimaryContainer
+                             : Theme.fgTertiaryContainer
+
+    color:  active ? activeBg : Theme.surfaceContainerHigh
     radius: Theme.radius
-    implicitWidth:  Theme.barHeight - 8
-    implicitHeight: Theme.barHeight - 8
+    // waybar uses min-width: 64 — fixed width prevents layout shift when
+    // the label appears/disappears on toggle.
+    implicitWidth:  Math.max(64, row.implicitWidth + 2 * Theme.pad)
+    implicitHeight: Theme.pillHeight
 
-    Behavior on color { ColorAnimation { duration: 150 } }
+    Behavior on color { ColorAnimation { duration: 180; easing.type: Easing.OutQuad } }
 
-    Text {
+    Row {
+        id: row
         anchors.centerIn: parent
-        text:           root.icon
-        font.family:    Theme.glyphFont
-        font.styleName: Theme.glyphStyle
-        font.pixelSize: 12
-        color:          root.active ? Theme.fgPrimaryContainer : Theme.fgSurfaceVariant
+        spacing: 6
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text:           root.icon
+            font.family:    Theme.glyphFont
+            font.styleName: Theme.glyphStyle
+            font.pixelSize: Theme.textSize
+            color:          root.active ? root.activeFg : Theme.fgSurfaceVariant
+            Behavior on color { ColorAnimation { duration: 180 } }
+        }
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            visible:        root.active
+            text:           root.label
+            font.family:    Theme.uiFont
+            font.pixelSize: Theme.textSize - 2
+            font.bold:      true
+            font.letterSpacing: 0.5
+            color:          root.activeFg
+        }
     }
 
     MouseArea {
@@ -36,7 +68,6 @@ Rectangle {
         cursorShape:  Qt.PointingHandCursor
         onClicked: {
             Hyprland.dispatch("togglespecialworkspace " + root.name)
-            // Snap UI without waiting for the hyprland event roundtrip.
             SpecialWatcher.refresh()
         }
     }

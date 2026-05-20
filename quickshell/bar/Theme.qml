@@ -28,10 +28,25 @@ Singleton {
     // ---- sizing -------------------------------------------------------------
     // Single source of truth for bar height. NEVER bind this to content — wlroots
     // reconfigures the layer surface on every change, causing per-frame jitter.
-    readonly property int barHeight: 36
-    readonly property int radius:    12
-    readonly property int gap:        6
-    readonly property int pad:       10
+    // Sizes match the previous waybar: bar 36, pill 24 (=36 minus 6 vertical
+    // margin each side), font 14, pill spacing 4, pill H-padding 8.
+    readonly property int barHeight:      36
+    readonly property int barTopMargin:    6
+    readonly property int barSideMargin:   8
+    readonly property int barInnerPad:    10
+    readonly property int gapsOut:         8     // Hyprland general:gaps_out
+    readonly property int pillHeight:     24
+    readonly property int radius:         12
+    readonly property int gap:             8
+    readonly property int pad:             8
+
+    // ---- typography sizing ---------------------------------------------------
+    // Single base size — matches waybar's 14px default. Special "weather /
+    // quotes" pills in waybar bumped to 15; we keep one size for consistency
+    // across the bar (font-family differences already differentiate them).
+    readonly property int textSize:  14
+    readonly property int glyphSize: 14
+    readonly property int clockSize: 14
 
     // ---- material-you palette ----------------------------------------------
     // Defaults match the current matugen output so first paint isn't black/empty
@@ -41,6 +56,7 @@ Singleton {
     property color fgPrimaryContainer:    "#d8e2ff"
     property color secondary:             "#bfc6dc"
     property color secondaryContainer:    "#3f4759"
+    property color fgSecondaryContainer:  "#dbe1f9"
     property color tertiary:              "#debcdf"
     property color tertiaryContainer:     "#583e5b"
     property color fgTertiaryContainer:   "#fbd7fc"
@@ -83,6 +99,7 @@ Singleton {
         if (c.on_primary_container)    theme.fgPrimaryContainer   = c.on_primary_container
         if (c.secondary)               theme.secondary            = c.secondary
         if (c.secondary_container)     theme.secondaryContainer   = c.secondary_container
+        if (c.on_secondary_container)  theme.fgSecondaryContainer = c.on_secondary_container
         if (c.tertiary)                theme.tertiary             = c.tertiary
         if (c.tertiary_container)      theme.tertiaryContainer    = c.tertiary_container
         if (c.on_tertiary_container)   theme.fgTertiaryContainer  = c.on_tertiary_container

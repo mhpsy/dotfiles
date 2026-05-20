@@ -9,7 +9,7 @@ Rectangle {
     color:  Theme.surfaceContainerHigh
     radius: Theme.radius
     implicitWidth:  label.implicitWidth + 2 * Theme.pad
-    implicitHeight: Theme.barHeight - 8
+    implicitHeight: Theme.pillHeight
 
     // SystemClock.Hours is the coarsest precision exposed (no Day enum); a
     // 60-minute tick is plenty for a date label — the binding still fires the
@@ -24,7 +24,7 @@ Rectangle {
         anchors.centerIn: parent
         text:        Qt.formatDate(clock.date, "MM-dd ddd")
         color:       Theme.fgSurfaceVariant
-        font.family: Theme.uiFont
-        font.pixelSize: 12
+        font.family: Theme.monoFont
+        font.pixelSize: Theme.clockSize
     }
 }
