@@ -1,0 +1,51 @@
+pragma Singleton
+import QtQuick
+import Quickshell
+import Quickshell.Io
+
+// Single shared weather provider — the bar pill and the popup card both read
+// from this singleton. weather.sh caches Open-Meteo data on a 900s TTL, so the
+// 15-min refresh here lines up with the cache.
+Singleton {
+    id: root
+    property bool   ok:      false
+    property string city:    "--"
+    property var    current: ({})
+    property var    hourly:  []
+    property var    daily:   []
+    property string lastError: ""
+
+    function refresh() { if (!proc.running) proc.running = true }
+
+    Process {
+        id: proc
+        command: ["bash", "-c",
+            "~/.config/waybar/weather.sh >/dev/null 2>&1; ~/.config/waybar/weather-eww.sh"]
+        stdout: StdioCollector {
+            id: out
+            waitForEnd: true
+            onStreamFinished: {
+                try {
+                    const j = JSON.parse(out.text)
+                    root.ok        = j.ok === true
+                    root.city      = j.city || "--"
+                    root.current   = j.current || ({})
+                    root.hourly    = j.hourly || []
+                    root.daily     = j.daily || []
+                    root.lastError = ""
+                } catch (e) {
+                    root.ok = false
+                    root.lastError = "" + e
+                }
+            }
+        }
+    }
+
+    Timer {
+        interval: 15 * 60 * 1000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.refresh()
+    }
+}

@@ -24,7 +24,11 @@ kitty/colors-matugen.conf
 rofi/colors.rasi
 waybar/colors.css
 wlogout/colors.css
+quickshell/colors.json
 
 # superpowers brainstorm scratch
 .superpowers/
 waybar/wordlist.json.bak
+
+# Claude Code 本机 agent 状态
+.claude/
