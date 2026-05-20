@@ -117,6 +117,8 @@ ShellRoot {
         Binding { target: PopupState; property: "systemCardH";     value: systemCard.implicitHeight     }
         Binding { target: PopupState; property: "caffeineCardW";   value: caffeineCard.implicitWidth    }
         Binding { target: PopupState; property: "caffeineCardH";   value: caffeineCard.implicitHeight   }
+        Binding { target: PopupState; property: "workspaceCardW";  value: workspaceCard.implicitWidth   }
+        Binding { target: PopupState; property: "workspaceCardH";  value: workspaceCard.implicitHeight  }
 
         mask: Region { item: blob }
 
@@ -326,6 +328,18 @@ ShellRoot {
                     popupSurface.fillet
                     - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "caffeine" ? 1 : 0
+                visible:                  opacity > 0.01
+                Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
+            }
+
+            WorkspacePreviewCard {
+                id: workspaceCard
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top:              parent.top
+                anchors.topMargin:
+                    popupSurface.fillet
+                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                opacity:                  PopupState.currentPopup === "workspace" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
             }

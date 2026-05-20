@@ -65,10 +65,16 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape:  Qt.PointingHandCursor
         onClicked: {
             Hyprland.dispatch("togglespecialworkspace " + root.name)
             SpecialWatcher.refresh()
         }
+        onEntered: {
+            PopupState.workspaceAnchorX = root.mapToItem(null, root.width / 2, 0).x
+            PopupState.openWorkspace("special:" + root.name)
+        }
+        onExited: PopupState.closeWorkspace()
     }
 }

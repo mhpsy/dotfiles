@@ -33,6 +33,7 @@ Singleton {
     property real networkAnchorX:     0
     property real systemAnchorX:      0
     property real caffeineAnchorX:    0
+    property real workspaceAnchorX:   0
     property real weatherCardW:       0
     property real wordCardW:          0
     property real audioCardW:         0
@@ -42,6 +43,7 @@ Singleton {
     property real networkCardW:       0
     property real systemCardW:        0
     property real caffeineCardW:      0
+    property real workspaceCardW:     0
     property real weatherCardH:       0
     property real wordCardH:          0
     property real audioCardH:         0
@@ -51,6 +53,11 @@ Singleton {
     property real networkCardH:       0
     property real systemCardH:        0
     property real caffeineCardH:      0
+    property real workspaceCardH:     0
+
+    // Identifier of the workspace being previewed (e.g. "1", "special:chat").
+    // Read by WorkspacePreviewCard to pick which windows to show.
+    property string previewWorkspaceName: ""
 
     // --- resolved values the blob reads ------------------------------------
     property real currentAnchorX: 0
@@ -82,6 +89,7 @@ Singleton {
     readonly property bool networkOpen:    currentPopup === "network"
     readonly property bool systemOpen:     currentPopup === "system"
     readonly property bool caffeineOpen:   currentPopup === "caffeine"
+    readonly property bool workspaceOpen:  currentPopup === "workspace"
 
     Timer {
         id: closeTimer
@@ -106,6 +114,12 @@ Singleton {
     function openNetwork()    { _open("network",    () => root.networkAnchorX,    () => root.networkCardW,    () => root.networkCardH)    }
     function openSystem()     { _open("system",     () => root.systemAnchorX,     () => root.systemCardW,     () => root.systemCardH)     }
     function openCaffeine()   { _open("caffeine",   () => root.caffeineAnchorX,   () => root.caffeineCardW,   () => root.caffeineCardH)   }
+    // Workspace preview: the pill setting this also writes
+    // previewWorkspaceName so the card's content matches what's hovered.
+    function openWorkspace(name) {
+        root.previewWorkspaceName = name
+        _open("workspace", () => root.workspaceAnchorX, () => root.workspaceCardW, () => root.workspaceCardH)
+    }
 
     // Cancel the pending close — used by the blob's hover overlay so the
     // popup stays visible while the pointer is over its card.
@@ -122,4 +136,5 @@ Singleton {
     function closeNetwork()    { close() }
     function closeSystem()     { close() }
     function closeCaffeine()   { close() }
+    function closeWorkspace()  { close() }
 }

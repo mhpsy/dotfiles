@@ -87,6 +87,11 @@ RowLayout {
                 hoverEnabled: true
                 cursorShape:  Qt.PointingHandCursor
                 onClicked: Hyprland.dispatch("workspace " + modelData.id)
+                onEntered: {
+                    PopupState.workspaceAnchorX = pill.mapToItem(null, pill.width / 2, 0).x
+                    PopupState.openWorkspace(modelData.id.toString())
+                }
+                onExited: PopupState.closeWorkspace()
             }
         }
     }
