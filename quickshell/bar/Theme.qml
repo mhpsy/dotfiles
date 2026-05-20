@@ -31,8 +31,8 @@ Singleton {
     // Sizes match the previous waybar: bar 36, pill 24 (=36 minus 6 vertical
     // margin each side), font 14, pill spacing 4, pill H-padding 8.
     readonly property int barHeight:      36
-    readonly property int barTopMargin:    6
-    readonly property int barSideMargin:   8
+    readonly property int barTopMargin:    0
+    readonly property int barSideMargin:   0
     readonly property int barInnerPad:    10
     readonly property int gapsOut:         8     // Hyprland general:gaps_out
     readonly property int pillHeight:     24

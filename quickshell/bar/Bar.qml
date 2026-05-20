@@ -21,8 +21,11 @@ Item {
             leftMargin:  Theme.barSideMargin
             rightMargin: Theme.barSideMargin
         }
-        color:  Theme.surface
-        radius: Theme.radius
+        // ~85% opaque surface — lets a bit of wallpaper bleed through without
+        // hurting text contrast. opacity is set on the COLOR (alpha) rather
+        // than the whole Rectangle so child modules (text/pills) stay 100%
+        // legible.
+        color: Qt.rgba(Theme.surface.r, Theme.surface.g, Theme.surface.b, 0.6)
     }
 
     // ---- LEFT: time + content modules ----

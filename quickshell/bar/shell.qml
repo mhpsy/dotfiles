@@ -90,7 +90,10 @@ ShellRoot {
         // the card (both horizontal padding and the small gap at top).
         readonly property real pad:     12
         readonly property real bottomR: Theme.radius + 2
-        readonly property real maxH:    640
+        // Generous — WordCard with hero + 10 today rows can run ~680px;
+        // if the surface is shorter, the popup's rounded bottom corners
+        // get clipped by the surface boundary.
+        readonly property real maxH:    800
 
         anchors {
             top:   true
