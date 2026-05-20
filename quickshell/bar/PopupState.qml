@@ -34,6 +34,8 @@ Singleton {
     property real systemAnchorX:      0
     property real caffeineAnchorX:    0
     property real workspaceAnchorX:   0
+    property real clockAnchorX:       0
+    property real dateAnchorX:        0
     property real weatherCardW:       0
     property real wordCardW:          0
     property real audioCardW:         0
@@ -44,6 +46,8 @@ Singleton {
     property real systemCardW:        0
     property real caffeineCardW:      0
     property real workspaceCardW:     0
+    property real clockCardW:         0
+    property real dateCardW:          0
     property real weatherCardH:       0
     property real wordCardH:          0
     property real audioCardH:         0
@@ -54,6 +58,8 @@ Singleton {
     property real systemCardH:        0
     property real caffeineCardH:      0
     property real workspaceCardH:     0
+    property real clockCardH:         0
+    property real dateCardH:          0
 
     // Identifier of the workspace being previewed (e.g. "1", "special:chat").
     // Read by WorkspacePreviewCard to pick which windows to show.
@@ -90,6 +96,8 @@ Singleton {
     readonly property bool systemOpen:     currentPopup === "system"
     readonly property bool caffeineOpen:   currentPopup === "caffeine"
     readonly property bool workspaceOpen:  currentPopup === "workspace"
+    readonly property bool clockOpen:      currentPopup === "clock"
+    readonly property bool dateOpen:       currentPopup === "date"
 
     Timer {
         id: closeTimer
@@ -120,6 +128,8 @@ Singleton {
         root.previewWorkspaceName = name
         _open("workspace", () => root.workspaceAnchorX, () => root.workspaceCardW, () => root.workspaceCardH)
     }
+    function openClock() { _open("clock", () => root.clockAnchorX, () => root.clockCardW, () => root.clockCardH) }
+    function openDate()  { _open("date",  () => root.dateAnchorX,  () => root.dateCardW,  () => root.dateCardH)  }
 
     // Cancel the pending close — used by the blob's hover overlay so the
     // popup stays visible while the pointer is over its card.
@@ -137,4 +147,6 @@ Singleton {
     function closeSystem()     { close() }
     function closeCaffeine()   { close() }
     function closeWorkspace()  { close() }
+    function closeClock()      { close() }
+    function closeDate()       { close() }
 }

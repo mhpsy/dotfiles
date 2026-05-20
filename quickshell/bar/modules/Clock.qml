@@ -28,4 +28,16 @@ Rectangle {
         font.family: Theme.monoFont
         font.pixelSize: Theme.clockSize
     }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        onEntered: PopupState.openClock()
+        onExited:  PopupState.closeClock()
+    }
+
+    function reportAnchor() { PopupState.clockAnchorX = mapToItem(null, width / 2, 0).x }
+    onXChanged:            reportAnchor()
+    onWidthChanged:        reportAnchor()
+    Component.onCompleted: reportAnchor()
 }

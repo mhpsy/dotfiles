@@ -85,9 +85,12 @@ ShellRoot {
         keyboardFocus: WlrKeyboardFocus.None
         color:         "transparent"
 
-        readonly property real fillet:    16
-        readonly property real topCorner: Theme.radius + 2
-        readonly property real maxH:      640
+        // Popup geometry. Top corners are flat (sit flush against the bar);
+        // bottom corners are rounded. `pad` is the breathing room around
+        // the card (both horizontal padding and the small gap at top).
+        readonly property real pad:     12
+        readonly property real bottomR: Theme.radius + 2
+        readonly property real maxH:    640
 
         anchors {
             top:   true
@@ -119,6 +122,10 @@ ShellRoot {
         Binding { target: PopupState; property: "caffeineCardH";   value: caffeineCard.implicitHeight   }
         Binding { target: PopupState; property: "workspaceCardW";  value: workspaceCard.implicitWidth   }
         Binding { target: PopupState; property: "workspaceCardH";  value: workspaceCard.implicitHeight  }
+        Binding { target: PopupState; property: "clockCardW";      value: clockCard.implicitWidth       }
+        Binding { target: PopupState; property: "clockCardH";      value: clockCard.implicitHeight      }
+        Binding { target: PopupState; property: "dateCardW";       value: dateCard.implicitWidth        }
+        Binding { target: PopupState; property: "dateCardH";       value: dateCard.implicitHeight       }
 
         mask: Region { item: blob }
 
@@ -152,67 +159,29 @@ ShellRoot {
             ]
 
             anchors.top: parent.top
-            x:      Math.max(0, PopupState.currentAnchorX - width / 2)
-            width:  PopupState.currentCardW + 2 * popupSurface.fillet
-            height: (PopupState.currentCardH + 16) * openness
+            // Try to center on the anchor pill; clamp to the bar's side
+            // margin band so the popup never spills past the screen edge.
+            x: {
+                const desired = PopupState.currentAnchorX - width / 2
+                const minX = Theme.barSideMargin
+                const maxX = parent.width - width - Theme.barSideMargin
+                return Math.max(minX, Math.min(maxX, desired))
+            }
+            width:  PopupState.currentCardW + 2 * popupSurface.pad
+            height: (PopupState.currentCardH + 2 * popupSurface.pad) * openness
 
             clip: true
 
-            // ---- metaball outline (TOP-anchored variant) ----
-            //
-            // Walks clockwise from bottom-left of body. Top-left + top-right
-            // are INVERSE fillets (Counterclockwise → arc center inside body
-            // → bulges into body interior); bottom-left + bottom-right are
-            // CONVEX corners. The strip y∈[0, fillet] spans full width and
-            // glues against the bar above.
-            Shape {
+            // Bar-edge slab: top corners flat (flush against the bar),
+            // bottom corners rounded. No metaball — every popup looks the
+            // same regardless of which pill it's anchored to.
+            Rectangle {
                 anchors.fill: parent
-                preferredRendererType: Shape.CurveRenderer
-                visible: blob.height > popupSurface.topCorner + popupSurface.fillet
-
-                ShapePath {
-                    strokeWidth: 0
-                    fillColor:   Theme.surface
-
-                    startX: popupSurface.fillet + popupSurface.topCorner
-                    startY: blob.height
-
-                    // bottom edge of body (left → right)
-                    PathLine { x: blob.width - popupSurface.fillet - popupSurface.topCorner; y: blob.height }
-                    // bottom-right convex — Counterclockwise picks the
-                    // arc on the outward side of the chord (the body sits
-                    // upper-left of this corner, so visually-counter-clockwise
-                    // sweep = outward bulge).
-                    PathArc {
-                        x: blob.width - popupSurface.fillet; y: blob.height - popupSurface.topCorner
-                        radiusX: popupSurface.topCorner; radiusY: popupSurface.topCorner
-                        direction: PathArc.Counterclockwise
-                    }
-                    // body right edge (going UP)
-                    PathLine { x: blob.width - popupSurface.fillet; y: popupSurface.fillet }
-                    // top-right INVERSE fillet (concave) — bulges into body
-                    PathArc {
-                        x: blob.width; y: 0
-                        radiusX: popupSurface.fillet; radiusY: popupSurface.fillet
-                        direction: PathArc.Counterclockwise
-                    }
-                    // top edge of strip (right → left)
-                    PathLine { x: 0; y: 0 }
-                    // top-left INVERSE fillet (concave) — symmetric
-                    PathArc {
-                        x: popupSurface.fillet; y: popupSurface.fillet
-                        radiusX: popupSurface.fillet; radiusY: popupSurface.fillet
-                        direction: PathArc.Counterclockwise
-                    }
-                    // body left edge (going DOWN)
-                    PathLine { x: popupSurface.fillet; y: blob.height - popupSurface.topCorner }
-                    // bottom-left convex — same outward-bulge rule
-                    PathArc {
-                        x: popupSurface.fillet + popupSurface.topCorner; y: blob.height
-                        radiusX: popupSurface.topCorner; radiusY: popupSurface.topCorner
-                        direction: PathArc.Counterclockwise
-                    }
-                }
+                color:   Theme.surface
+                topLeftRadius:     0
+                topRightRadius:    0
+                bottomLeftRadius:  popupSurface.bottomR
+                bottomRightRadius: popupSurface.bottomR
             }
 
             // Card stack — both anchored to TOP of blob (popup grows down
@@ -228,8 +197,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "weather" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -240,8 +209,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 cardOpen:                 PopupState.currentPopup === "word"
                 opacity:                  PopupState.currentPopup === "word" ? 1 : 0
                 visible:                  opacity > 0.01
@@ -253,8 +222,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "audio" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -265,8 +234,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "brightness" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -277,8 +246,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "updates" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -289,8 +258,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "bluetooth" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -301,8 +270,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "network" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -313,8 +282,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "system" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -325,8 +294,8 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "caffeine" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
@@ -337,9 +306,33 @@ ShellRoot {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top:              parent.top
                 anchors.topMargin:
-                    popupSurface.fillet
-                    - (implicitHeight + 5 + popupSurface.fillet) * (1 - blob.openness)
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
                 opacity:                  PopupState.currentPopup === "workspace" ? 1 : 0
+                visible:                  opacity > 0.01
+                Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
+            }
+
+            ClockCard {
+                id: clockCard
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top:              parent.top
+                anchors.topMargin:
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
+                opacity:                  PopupState.currentPopup === "clock" ? 1 : 0
+                visible:                  opacity > 0.01
+                Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
+            }
+
+            DateCard {
+                id: dateCard
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top:              parent.top
+                anchors.topMargin:
+                    popupSurface.pad
+                    - (implicitHeight + 5 + popupSurface.pad) * (1 - blob.openness)
+                opacity:                  PopupState.currentPopup === "date" ? 1 : 0
                 visible:                  opacity > 0.01
                 Behavior on opacity { NumberAnimation { duration: 450; easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1] } }
             }
